@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 02 · PCB／PCBA 同玩具接口</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.board {
+  position: relative; width: min(100%, 520px); margin: 0 auto; aspect-ratio: 16/11;
+  background: linear-gradient(145deg,#0d3b2e,#145c45); border-radius: 18px;
+  border: 2px solid #2f8f6d; box-shadow: inset 0 0 40px rgba(0,0,0,.35), var(--shadow);
+  transform: perspective(800px) rotateX(8deg) rotateY(-12deg); transition: transform .4s ease;
+}
+.board:hover { transform: perspective(800px) rotateX(2deg) rotateY(-4deg); }
+.pad {
+  position:absolute; border-radius:8px; border:1px solid rgba(255,209,102,.7);
+  background: rgba(255,209,102,.15); cursor:pointer; color:#ffe9b0; font-size:11px; font-weight:700;
+  display:grid; place-items:center; text-align:center; padding:4px; transition:.2s;
+}
+.pad:hover, .pad.on { background: rgba(255,209,102,.4); box-shadow: 0 0 16px rgba(255,209,102,.45); }
+.ic { position:absolute; background:#1a1f2a; border:1px solid #6b7c93; border-radius:6px; color:#c5d0e0; font-size:10px; display:grid; place-items:center; }
+.trace { position:absolute; height:3px; background: linear-gradient(90deg,#ffd166,#7ddea2); border-radius:2px; opacity:.7; }
+.pinrow { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+.pin {
+  padding:8px 10px; border-radius:10px; background:var(--card2); border:1px solid rgba(255,255,255,.08);
+  cursor:pointer; font-size:.85rem; font-weight:600;
+}
+.pin.on { border-color: var(--elec); background: rgba(255,209,102,.15); }
+.spec-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin:14px 0; }
+.spec { background:var(--card); border-radius:12px; padding:12px; border:1px solid rgba(255,255,255,.06); }
+.spec b { display:block; color:var(--elec); font-size:.8rem; margin-bottom:4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 02 · 電子</span>
+  </div>
+  <h1>PCB／PCBA 同玩具接口</h1>
+  <p class="lead">電子線第一課：板要點樣「塞入」軟綿同機構——外形、接口、功耗、安裝，四件事一齊 lock。</p>
+
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">立體板示意（撳焊盤／接口）</h3>
+      <div class="board" id="board" aria-label="PCB 互動板">
+        <div class="ic" style="left:38%;top:28%;width:24%;height:22%;">MCU</div>
+        <div class="ic" style="left:18%;top:55%;width:16%;height:14%;">AMP</div>
+        <div class="trace" style="left:34%;top:48%;width:18%;"></div>
+        <div class="trace" style="left:52%;top:38%;width:3px;height:18%; left:58%;"></div>
+        <button class="pad" data-id="spk" style="left:8%;top:20%;width:18%;height:16%;" type="button">喇叭<br>焊盤</button>
+        <button class="pad" data-id="bat" style="left:72%;top:18%;width:20%;height:16%;" type="button">電池<br>輸入</button>
+        <button class="pad" data-id="sw" style="left:70%;top:55%;width:18%;height:14%;" type="button">開關<br>接口</button>
+        <button class="pad" data-id="motor" style="left:38%;top:68%;width:22%;height:14%;" type="button">馬達<br>驅動</button>
+        <button class="pad" data-id="mount" style="left:4%;top:72%;width:14%;height:14%;" type="button">安裝<br>孔</button>
+      </div>
+      <div class="panel" id="padPanel"><strong>撳黃色區域</strong>：睇每個接口喺 OEM 要同邊條線交接。</div>
+    </div>
+  </div>
+
+  <h2>接口定義（FPC／線扣要寫死）</h2>
+  <div class="pinrow" id="pins"></div>
+  <div class="panel" id="pinPanel">揀一條信號線，睇建議定義。</div>
+
+  <h2>工程樣前要 lock 嘅板規格</h2>
+  <div class="spec-grid">
+    <div class="spec"><b>外形</b>長×寬×厚（含最高元件）</div>
+    <div class="spec"><b>安裝</b>孔距／卡扣／布袋位置</div>
+    <div class="spec"><b>接口</b>針數、極性、線長、端子</div>
+    <div class="spec"><b>功耗</b>待機／播放／馬達峰值 mA</div>
+    <div class="spec"><b>安規</b>電池化學、過流、逆向</div>
+    <div class="spec"><b>EMI／靜電</b>觸摸位、地線、間隙</div>
+  </div>
+
+  <h2>同毛絨／機構交接（電子工程師要識問）</h2>
+  <div class="timeline" id="asks"></div>
+
+  <div class="exercise">
+    <h3>單元練習</h3>
+    <p>一隻「撳手掌播音樂＋擺頭」毛絨：邊三項<strong>一定</strong>要寫入 PCB 接口文件？</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <button class="btn" type="button" id="markDone">完成本單元</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="01-oem-map.html">← 單元 01</a>
+    <a class="btn ghost" href="../index.html">目錄</a>
+  </div>
+</div>
+<script>
+const padInfo = {
+  spk: '<strong>喇叭焊盤</strong>：正負極、線長、喇叭阻抗（常 8Ω）。聲腔同布料遮擋會影響音量——電子要畀聲壓目標，毛絨要預留孔位／網布。',
+  bat: '<strong>電池輸入</strong>：電壓、極性、保險／過流。倉蓋方向決定線由邊出；逆向保護要畫喺板或線束。',
+  sw: '<strong>開關接口</strong>：按鍵／磁簧／膜片。軟綿壓縮行程要同觸發力匹配，避免誤觸或撳唔著。',
+  motor: '<strong>馬達驅動</strong>：峰值電流、PWM、EMC。齒輪箱堵轉電流可能大幾倍——電容量同驅動晶片要按堵轉計。',
+  mount: '<strong>安裝孔</strong>：同骨架／布袋定位。孔唔對＝產線靠膠紙，安規同壽命都危。'
+};
+document.querySelectorAll('.pad').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('.pad').forEach(x => x.classList.remove('on'));
+    p.classList.add('on');
+    document.getElementById('padPanel').innerHTML = padInfo[p.dataset.id];
+  });
+});
+
+const pins = [
+  {n:'VBAT+', d:'電池正。標電壓範圍（例如 3×AAA = 4.5V 標稱）。'},
+  {n:'GND', d:'地。所有回流要共地；喇叭回流唔好亂飛。'},
+  {n:'SPK+', d:'喇叭正。標阻抗同最大功率。'},
+  {n:'SPK−', d:'喇叭負。'},
+  {n:'SW_IN', d:'開關輸入。標觸發電平同防抖時間。'},
+  {n:'MOT+', d:'馬達正。標堵轉電流同限流。'},
+  {n:'LED', d:'指示燈（如有）。限流電阻位置寫明板上定外置。'},
+];
+const pinRow = document.getElementById('pins');
+pins.forEach(p => {
+  const b = document.createElement('button');
+  b.type='button'; b.className='pin'; b.textContent=p.n;
+  b.onclick = () => {
+    document.querySelectorAll('.pin').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    document.getElementById('pinPanel').innerHTML = '<strong>'+p.n+'</strong>：'+p.d;
+  };
+  pinRow.appendChild(b);
+});
+
+const asks = [
+  {t:'包絡', d:'板加最高元件嘅 3D 包絡，毛絨有冇布袋／骨架位？公差幾多？'},
+  {t:'散熱／聲', d:'喇叭同 MCU 會唔會互搶空間？布料會唔會悶聲？'},
+  {t:'線長', d:'由板到喇叭／開關／電池實際路徑長度（含彎位），唔好用「大概」.'},
+  {t:'拆裝', d:'售后換板要拆幾多針車？有冇維修口？'},
+];
+const asksEl = document.getElementById('asks');
+asks.forEach((a,i) => {
+  const el = document.createElement('div');
+  el.className = 'step';
+  el.innerHTML = '<div class="num">'+(i+1)+'</div><div><h4>'+a.t+'</h4><div class="detail" style="display:block">'+a.d+'</div></div>';
+  asksEl.appendChild(el);
+});
+
+const quizItems = [
+  {q:'喇叭阻抗同最大輸出功率', ok:true},
+  {q:'電池化學／節數同極性防呆', ok:true},
+  {q:'門店海報 Pantone 色號', ok:false},
+  {q:'板外形＋安裝孔距（含元件高度）', ok:true},
+  {q:'紙箱抗壓等級', ok:false},
+];
+const quiz = document.getElementById('quiz');
+quizItems.forEach((item,i) => {
+  const lab = document.createElement('label');
+  lab.innerHTML = '<input type="checkbox" id="q'+i+'"> <span>'+item.q+'</span>';
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change', score);
+});
+function score(){
+  let match=0;
+  quizItems.forEach((item,i)=>{ if(document.getElementById('q'+i).checked===item.ok) match++; });
+  const pct = Math.round(match/quizItems.length*100);
+  document.getElementById('bar').style.width = pct+'%';
+  document.getElementById('scoreNote').textContent = '吻合度 '+pct+'%（應勾：喇叭規格、電池極性、板外形孔距）';
+}
+score();
+document.getElementById('markDone').onclick = () => {
+  const done = JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['02']=true; localStorage.setItem('toyCourseDone', JSON.stringify(done));
+  document.getElementById('saveMsg').textContent='已儲存：單元 02 完成。';
+};
+</script>
+</body>
+</html>

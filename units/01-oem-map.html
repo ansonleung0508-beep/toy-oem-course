@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 01 · OEM 全流程地圖</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.handoff {
+  display:grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin: 18px 0 8px;
+}
+.handoff .card { cursor:pointer; min-height: 120px; }
+.handoff .card.active { border-color: rgba(255,209,102,.5); }
+.anim-flow {
+  display:flex; gap:6px; overflow-x:auto; padding: 8px 2px 16px; scroll-snap-type: x mandatory;
+}
+.chip {
+  flex:0 0 auto; scroll-snap-align: start; padding: 10px 12px; border-radius: 12px;
+  background: var(--card2); border:1px solid rgba(255,255,255,.08); font-size:.85rem; font-weight:700;
+  position:relative;
+}
+.chip::after {
+  content:"→"; position:absolute; right:-10px; top:50%; transform:translateY(-50%); color:var(--muted); font-weight:400;
+}
+.chip:last-child::after { content:""; }
+.chip.lit { background: rgba(91,140,255,.25); border-color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 01</span>
+  </div>
+  <h1>OEM 全流程地圖</h1>
+  <p class="lead">一隻電子機構軟綿玩具＝軟綿＋機構＋電子三條線。工程師要喺正確關口令佢哋「夾到口」。</p>
+
+  <div class="anim-flow" id="flowChips" aria-label="流程動畫"></div>
+
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">可點擊階段（撳開詳情）</h3>
+      <div class="timeline" id="timeline"></div>
+    </div>
+  </div>
+
+  <h2>五個關鍵交接點</h2>
+  <p class="note">撳卡睇說明——大貨前唔 lock 呢啲，最易燒樣板錢。</p>
+  <div class="handoff" id="handoff"></div>
+  <div class="panel" id="handoffPanel">揀一張卡開始。</div>
+
+  <div class="exercise">
+    <h3>單元練習（互動）</h3>
+    <p>假設你要開發一隻「撳手掌會唱歌、頭會左右擺」嘅電子毛絨。勾選你認為 <strong>工程樣（ES）前必須 lock</strong> 嘅項目：</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote">進度 0%</p>
+    <button class="btn" type="button" id="markDone">完成本單元（儲存進度）</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="../index.html">返回目錄</a>
+    <span class="note">下一單元「Brief 同成本」可按你嘅時間再加</span>
+  </div>
+</div>
+<script>
+const stages = [
+  {t:'Brief', d:'功能表、目標價、年齡、市場、電池、動作／聲。', f:'功能寫含糊 → 後期狂加單'},
+  {t:'概念／手辦', d:'外觀比例、軟硬度、機構草圖、電子佔位。', f:'只靚樣，冇預留喇叭／電池倉'},
+  {t:'工程設計', d:'3D、齒輪箱、PCB 外形、線位、BOM 初稿。', f:'軟綿內部「真空」—冇固位'},
+  {t:'工程樣 ES', d:'可動、可響、可量測，三線第一次夾口。', f:'電子同車縫各做各，裝唔入'},
+  {t:'驗證樣', d:'安規預測、壽命、跌落、拉力。', f:'臨時膠紙固定，產線做唔到'},
+  {t:'產前樣 PPS', d:'大貨工藝／大貨料，鎖外觀同工時。', f:'手作靚、大貨車位跟唔到'},
+  {t:'試產', d:'產能、不良率、工時、SOP。', f:'靠老師傅，無人複製得'},
+  {t:'大貨', d:'巡檢、變更控制、客訴閉環。', f:'偷換料無人知'}
+];
+const tl = document.getElementById('timeline');
+const chips = document.getElementById('flowChips');
+stages.forEach((s,i) => {
+  const chip = document.createElement('div');
+  chip.className = 'chip'; chip.textContent = (i+1)+'. '+s.t; chips.appendChild(chip);
+  const el = document.createElement('div');
+  el.className = 'step'; el.tabIndex = 0;
+  el.innerHTML = `<div class="num">${i+1}</div><div><h4>${s.t}</h4>
+    <div class="detail">${s.d}<br><span class="fail">常見失敗：${s.f}</span></div></div>`;
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.step').forEach(x => x.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.chip').forEach((c,j) => c.classList.toggle('lit', j===i));
+  });
+  tl.appendChild(el);
+});
+// auto play chips
+let idx = 0;
+setInterval(() => {
+  document.querySelectorAll('.chip').forEach((c,j) => c.classList.toggle('lit', j===idx));
+  idx = (idx+1) % stages.length;
+}, 1200);
+tl.querySelector('.step')?.click();
+
+const handoffs = [
+  {t:'硬件包絡', c:'soft', d:'電池倉、喇叭、齒輪箱外形要喺車縫前 lock。軟綿車完先知裝唔入＝重做。'},
+  {t:'固定方式', c:'mech', d:'螺柱／魔術貼／布袋／扣位，影響返修同細件安全。'},
+  {t:'線出位', c:'elec', d:'線由邊穿出、應力釋放、會唔會被車針刺穿。'},
+  {t:'動作行程', c:'mech', d:'擺頭／舉手行程唔好扯爛縫口或扯甩五官。'},
+  {t:'可維修性', c:'elec', d:'客退換電／換板點拆，工廠同售後都要得。'}
+];
+const hf = document.getElementById('handoff');
+handoffs.forEach(h => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `<h3>${h.t}</h3><p>撳睇詳情</p>`;
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.handoff .card').forEach(x => x.classList.remove('active'));
+    card.classList.add('active');
+    document.getElementById('handoffPanel').innerHTML = '<strong>'+h.t+'</strong>：'+h.d;
+  });
+  hf.appendChild(card);
+});
+
+const quizItems = [
+  {q:'喇叭外徑同聲腔淨空高度', ok:true},
+  {q:'齒輪箱最大外形同擺頭角度', ok:true},
+  {q:'電池倉位置同開蓋方向', ok:true},
+  {q:'大貨紙箱印刷色號', ok:false},
+  {q:'線束路徑同車縫避位', ok:true},
+  {q:'門店陳列燈箱尺寸', ok:false},
+];
+const quiz = document.getElementById('quiz');
+quizItems.forEach((item,i) => {
+  const id = 'q'+i;
+  const lab = document.createElement('label');
+  lab.innerHTML = `<input type="checkbox" id="${id}"> <span>${item.q}</span>`;
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change', score);
+});
+function score(){
+  let right=0, picked=0;
+  quizItems.forEach((item,i) => {
+    const on = document.getElementById('q'+i).checked;
+    if(on) picked++;
+    if(on === item.ok) right++;
+  });
+  // score: how many match ideal selection
+  let match = 0;
+  quizItems.forEach((item,i) => {
+    const on = document.getElementById('q'+i).checked;
+    if(on === item.ok) match++;
+  });
+  const pct = Math.round(match/quizItems.length*100);
+  document.getElementById('bar').style.width = pct+'%';
+  document.getElementById('scoreNote').textContent = '答對吻合度 '+pct+'%（應勾：喇叭／齒輪箱／電池倉／線束；唔使勾紙箱色同燈箱）';
+}
+score();
+
+document.getElementById('markDone').addEventListener('click', () => {
+  const done = JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['01'] = true;
+  localStorage.setItem('toyCourseDone', JSON.stringify(done));
+  document.getElementById('saveMsg').textContent = '已儲存：單元 01 完成。返目錄會顯示「已完成」。';
+});
+</script>
+</body>
+</html>
