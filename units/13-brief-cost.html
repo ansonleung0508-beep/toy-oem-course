@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 13 · Brief 同成本結構</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.cost { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:8px; margin:14px 0; }
+.cost-item { background:var(--card); border-radius:12px; padding:12px; text-align:center; cursor:pointer; border:1px solid rgba(255,255,255,.06); }
+.cost-item.on { border-color:var(--accent); background:var(--card2); }
+.cost-item .pct { font-size:1.4rem; font-weight:800; color:var(--accent); }
+.brief-form { display:grid; gap:10px; }
+.brief-row { display:grid; grid-template-columns:120px 1fr; gap:10px; align-items:start; background:var(--card); padding:12px; border-radius:12px; cursor:pointer; border:1px solid transparent; }
+.brief-row:hover, .brief-row.on { border-color:rgba(91,140,255,.45); }
+.brief-row b { color:#b9d0ff; }
+.stack { height:24px; border-radius:8px; overflow:hidden; display:flex; margin:12px 0; }
+.stack span { display:block; height:100%; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 13 · 其他</span>
+  </div>
+  <h1>Brief 同成本結構</h1>
+  <p class="lead">寫得清嘅 Brief 慳樣板錢；拆得明嘅成本表先同工廠談得攏。功能、年齡、電池、目標價要一齊出現。</p>
+
+  <h2>Brief 必填欄（撳睇）</h2>
+  <div class="brief-form" id="brief"></div>
+  <div class="panel" id="briefPanel">揀一欄睇點寫。</div>
+
+  <h2>示意成本結構（撳塊）</h2>
+  <div class="stack" id="stack"></div>
+  <div class="cost" id="cost"></div>
+  <div class="panel" id="costPanel">撳成本塊睇內容同砍價空間。</div>
+
+  <h2>常見 Brief 失敗</h2>
+  <div class="timeline" id="fails"></div>
+
+  <div class="exercise">
+    <h3>單元練習</h3>
+    <p>一隻唱歌擺頭毛絨 Brief，邊啲<strong>必須</strong>寫？</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <button class="btn" type="button" id="markDone">完成本單元</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="12-doll-clothes.html">← 單元 12</a>
+    <a class="btn ghost" href="14-safety-regs.html">單元 14 →</a>
+  </div>
+</div>
+<script>
+const briefs=[
+  {t:'目標市場',d:'國家／渠道／零售價帶。決定安規同包材等級。'},
+  {t:'年齡分級',d:'0–3 / 3+ / 8+… 直接影響細件、電池倉、警告語。'},
+  {t:'功能表',d:'聲、燈、動作、感應——每項要有「驗收樣貌」，唔好只寫「好玩」。'},
+  {t:'電池方案',d:'化學、節數、可否更換、預計播放時長。'},
+  {t:'目標 FOB／上架價',d:'冇目標價＝設計無限加配。'},
+  {t:'外觀／IP',d:'角色、色板、禁改項；授權邊界。'},
+];
+const briefEl=document.getElementById('brief');
+briefs.forEach(b=>{
+  const r=document.createElement('div'); r.className='brief-row';
+  r.innerHTML=`<b>${b.t}</b><span style="color:var(--muted);font-size:.9rem">撳睇寫法</span>`;
+  r.onclick=()=>{ document.querySelectorAll('.brief-row').forEach(x=>x.classList.remove('on')); r.classList.add('on');
+    document.getElementById('briefPanel').innerHTML=`<strong>${b.t}</strong>：${b.d}`; };
+  briefEl.appendChild(r);
+});
+const costs=[
+  {t:'電子', pct:28, c:'#ffd166', d:'PCB、喇叭、線束、電池接觸。砍價靠：合併功能、改阻抗、共用主板。'},
+  {t:'機構', pct:18, c:'#7ddea2', d:'齒輪箱、骨架、模具攤分。動作愈多愈貴——Brief 要敢刪。'},
+  {t:'軟綿', pct:22, c:'#ff8fab', d:'布、棉、車工。面料降級好易毀手感；工時優化較實在。'},
+  {t:'包材', pct:12, c:'#5b8cff', d:'彩盒、吸塑、说明书。渠道決定結構。'},
+  {t:'測安規', pct:8, c:'#ff7b72', d:'實驗室、認證、船頭樣。唔好當「雜費」忽略。'},
+  {t:'利潤其他', pct:12, c:'#9aa8bc', d:'管理、物流、售后預提、工廠利潤。'},
+];
+const stack=document.getElementById('stack');
+const costEl=document.getElementById('cost');
+costs.forEach(c=>{
+  const s=document.createElement('span'); s.style.width=c.pct+'%'; s.style.background=c.c; stack.appendChild(s);
+  const item=document.createElement('div'); item.className='cost-item';
+  item.innerHTML=`<div class="pct">${c.pct}%</div><div>${c.t}</div>`;
+  item.onclick=()=>{ document.querySelectorAll('.cost-item').forEach(x=>x.classList.remove('on')); item.classList.add('on');
+    document.getElementById('costPanel').innerHTML=`<strong>${c.t}（約 ${c.pct}%）</strong>：${c.d}`; };
+  costEl.appendChild(item);
+});
+const fails=[
+  {t:'功能無驗收',d:'「聲要夠大」→ 後來吵到退貨。要寫 dBA／距離。'},
+  {t:'無目標價',d:'樣板愈做愈貴，大貨先驚。'},
+  {t:'年齡同功能打架',d:'3+ 但細紐扣＋可拆電池無工具。'},
+  {t:'隱藏動作',d:'口頭加「順便擺頭」→ 齒輪箱同干涉全爆。'},
+];
+fails.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('fails').appendChild(el);
+});
+const quizItems=[
+  {q:'年齡分級同目標市場', ok:true},
+  {q:'功能驗收標準（含聲／動作）', ok:true},
+  {q:'老闆鞋碼', ok:false},
+  {q:'目標價同電池方案', ok:true},
+  {q:'茶水間海報', ok:false},
+];
+const quiz=document.getElementById('quiz');
+quizItems.forEach((item,i)=>{
+  const lab=document.createElement('label');
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change',score);
+});
+function score(){
+  let m=0; quizItems.forEach((it,i)=>{if(document.getElementById('q'+i).checked===it.ok)m++;});
+  const pct=Math.round(m/quizItems.length*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('scoreNote').textContent='吻合度 '+pct+'%（應勾：年齡市場、功能驗收、目標價電池）';
+}
+score();
+document.getElementById('markDone').onclick=()=>{
+  const done=JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['13']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
+  document.getElementById('saveMsg').textContent='已儲存：單元 13 完成。';
+};
+</script>
+</body>
+</html>

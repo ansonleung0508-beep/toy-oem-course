@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 03 · 電池倉同電源安全</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.batt-stage { position:relative; width:min(100%,480px); margin:0 auto; aspect-ratio:5/4; }
+.batt-svg { width:100%; height:auto; }
+.hotspot { cursor:pointer; transition:.2s; }
+.hotspot:hover, .hotspot.on { filter: brightness(1.3); }
+.polarity { display:flex; gap:10px; flex-wrap:wrap; margin:12px 0; }
+.pol-btn { padding:10px 14px; border-radius:12px; background:var(--card2); border:1px solid rgba(255,255,255,.08); cursor:pointer; font-weight:700; }
+.pol-btn.on { border-color:var(--elec); background:rgba(255,209,102,.18); }
+.warn-box { background:rgba(255,123,114,.12); border:1px solid rgba(255,123,114,.35); border-radius:12px; padding:12px 14px; margin:12px 0; color:#ffb4ae; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 03 · 電子</span>
+  </div>
+  <h1>電池倉同電源安全</h1>
+  <p class="lead">電池倉係軟綿玩具最易踩安規同客訴嘅位：極性、倉蓋螺絲、彈片接觸、漏液防護，全部要喺工程樣前 lock。</p>
+
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">電池倉剖面（撳零件）</h3>
+      <div class="batt-stage">
+        <svg class="batt-svg" viewBox="0 0 480 360" role="img">
+          <defs>
+            <linearGradient id="plastic" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#3a4558"/><stop offset="100%" stop-color="#1e2636"/>
+            </linearGradient>
+            <filter id="sh"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-opacity=".4"/></filter>
+          </defs>
+          <!-- housing -->
+          <rect class="hotspot" data-id="housing" x="60" y="80" width="280" height="200" rx="16" fill="url(#plastic)" stroke="#6b7c93" stroke-width="2" filter="url(#sh)"/>
+          <!-- cells -->
+          <g class="hotspot" data-id="cells">
+            <rect x="90" y="110" width="50" height="140" rx="8" fill="#2a3344" stroke="#ffd166" stroke-width="2"/>
+            <rect x="155" y="110" width="50" height="140" rx="8" fill="#2a3344" stroke="#ffd166" stroke-width="2"/>
+            <rect x="220" y="110" width="50" height="140" rx="8" fill="#2a3344" stroke="#ffd166" stroke-width="2"/>
+            <text x="115" y="185" text-anchor="middle" fill="#ffe9b0" font-size="12">AAA</text>
+            <text x="180" y="185" text-anchor="middle" fill="#ffe9b0" font-size="12">AAA</text>
+            <text x="245" y="185" text-anchor="middle" fill="#ffe9b0" font-size="12">AAA</text>
+          </g>
+          <!-- spring -->
+          <g class="hotspot" data-id="spring">
+            <path d="M85 120 Q70 130 85 140 Q70 150 85 160 Q70 170 85 180 Q70 190 85 200 Q70 210 85 220" fill="none" stroke="#7ddea2" stroke-width="3"/>
+            <text x="55" y="175" fill="#9fe9c0" font-size="11" transform="rotate(-90 55 175)">彈簧</text>
+          </g>
+          <!-- contact plate -->
+          <g class="hotspot" data-id="contact">
+            <rect x="275" y="120" width="12" height="120" rx="2" fill="#ffd166"/>
+            <text x="310" y="185" fill="#ffe9b0" font-size="11">正極片</text>
+          </g>
+          <!-- cover + screw -->
+          <g class="hotspot" data-id="cover">
+            <rect x="360" y="100" width="90" height="160" rx="10" fill="#243044" stroke="#5b8cff" stroke-width="2"/>
+            <circle cx="405" cy="180" r="14" fill="#1a2332" stroke="#b9d0ff" stroke-width="2"/>
+            <rect x="398" y="172" width="14" height="16" rx="2" fill="#9aa8bc"/>
+            <text x="405" y="280" text-anchor="middle" fill="#b9d0ff" font-size="12">倉蓋+螺絲</text>
+          </g>
+          <!-- wires -->
+          <g class="hotspot" data-id="wires">
+            <path d="M290 140 C340 100 380 90 400 90" fill="none" stroke="#ff7b72" stroke-width="3" stroke-dasharray="6 3"/>
+            <path d="M80 240 C40 280 40 300 80 320" fill="none" stroke="#5b8cff" stroke-width="3" stroke-dasharray="6 3"/>
+            <text x="120" y="340" fill="#9aa8bc" font-size="11">出線 → PCB</text>
+          </g>
+        </svg>
+      </div>
+      <div class="panel" id="battPanel"><strong>撳倉內零件</strong>：睇每個位喺 OEM 要點 lock。</div>
+    </div>
+  </div>
+
+  <h2>極性同防呆</h2>
+  <div class="polarity" id="polarity"></div>
+  <div class="panel" id="polPanel">揀一項睇點做防呆。</div>
+
+  <div class="warn-box">
+    <strong>安規紅線：</strong>可更換電池倉必須用工具先開得（螺絲／特殊扣），防止細路吞電池。倉蓋螺絲扭矩同螺牙要寫入 SOP；大貨偷換成卡扣＝不合格。
+  </div>
+
+  <h2>失效模式（FMEA 速覽）</h2>
+  <div class="timeline" id="fails"></div>
+
+  <h2>交接清單</h2>
+  <div class="timeline" id="handoffs"></div>
+
+  <div class="exercise">
+    <h3>單元練習</h3>
+    <p>3×AAA 毛絨電池倉，工程樣前邊啲<strong>必須</strong> lock？</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <button class="btn" type="button" id="markDone">完成本單元</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="02-pcb-interface.html">← 單元 02</a>
+    <a class="btn ghost" href="04-speaker-cavity.html">單元 04 →</a>
+  </div>
+</div>
+<script>
+const info = {
+  housing: '<strong>倉體</strong>：ABS/PC 常用。壁厚、加強筋、同軟綿固定（螺柱／布袋）。要預留洩壓／導液槽，防漏液腐蚀 PCB。',
+  cells: '<strong>電芯位</strong>：標化學（鹼性／碳性）、節數、串並。直徑公差要計；太鬆＝接觸不良，太緊＝裝唔入。',
+  spring: '<strong>負極彈簧</strong>：彈力、鍍層（鎳）、圈數。彈力不足→間歇斷電；過度變形→塑性失效。',
+  contact: '<strong>正極片</strong>：沖壓銅片鍍鎳。極性絲印／凸點防呆；錯極保護要喺板或二极管。',
+  cover: '<strong>倉蓋+螺絲</strong>：必須工具開啟（ASTM F963 / EN71）。螺牙鑲件定自攻？扭矩同防掉螺絲要測。',
+  wires: '<strong>出線</strong>：極性色標（紅正黑負）、應力釋放、由邊穿出軟綿——車針刺線係高發失效。'
+};
+document.querySelectorAll('.hotspot').forEach(h => {
+  h.addEventListener('click', () => {
+    document.querySelectorAll('.hotspot').forEach(x => x.classList.remove('on'));
+    h.classList.add('on');
+    document.getElementById('battPanel').innerHTML = info[h.dataset.id];
+  });
+});
+const pols = [
+  {t:'絲印＋凸點', d:'倉內 +/− 凹凸同顏色絲印，裝電池時手指摸得到。'},
+  {t:'彈簧只喺負極', d:'正極平面片、負極彈簧——行業慣例，寫入圖紙。'},
+  {t:'接頭防呆', d:'出線用不同寬度端子或鑰匙槽，插反插唔入。'},
+  {t:'板上逆向二極管', d:'二次防護；但唔可取代機械防呆。'}
+];
+const polEl = document.getElementById('polarity');
+pols.forEach(p => {
+  const b = document.createElement('button');
+  b.type='button'; b.className='pol-btn'; b.textContent=p.t;
+  b.onclick=()=>{ document.querySelectorAll('.pol-btn').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+    document.getElementById('polPanel').innerHTML='<strong>'+p.t+'</strong>：'+p.d; };
+  polEl.appendChild(b);
+});
+const fails = [
+  {t:'間歇斷電', d:'彈簧疲勞／氧化／電池公差 → 播放斷斷續續。對策：鍍層、預壓、壽命測試≥額定次數。'},
+  {t:'漏液腐蚀', d:'鹼性電池漏液流去 PCB。對策：導液槽、灌封關鍵腳、倉口朝向設計。'},
+  {t:'倉蓋鬆脫', d:'螺絲滑牙／扭矩不足 → 細件安全風險。對策：鑲件、扭矩槍、抽檢。'},
+  {t:'錯極燒板', d:'小朋友反裝。對策：機械防呆＋板上保護。'}
+];
+const failsEl=document.getElementById('fails');
+fails.forEach((f,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${f.t}</h4><div class="detail" style="display:block">${f.d}</div></div>`;
+  failsEl.appendChild(el);
+});
+const hos=[
+  {t:'→ 電子', d:'電壓範圍、峰值電流、極性、保險位置。'},
+  {t:'→ 機構', d:'倉外形、螺柱、開蓋方向、同骨架干涉。'},
+  {t:'→ 軟綿', d:'倉喺邊個布位、開蓋口車縫、布料遮擋會唔會擋螺絲。'},
+  {t:'→ 安規', d:'工具開啟、電池類型標示、警告語。'}
+];
+const hoEl=document.getElementById('handoffs');
+hos.forEach((h,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${h.t}</h4><div class="detail" style="display:block">${h.d}</div></div>`;
+  hoEl.appendChild(el);
+});
+const quizItems=[
+  {q:'倉蓋必須用工具開啟（螺絲規格＋扭矩）', ok:true},
+  {q:'極性防呆（絲印／凸點／彈簧位置）', ok:true},
+  {q:'門店陳列燈光色溫', ok:false},
+  {q:'出線極性色標同應力釋放', ok:true},
+  {q:'紙箱印刷專色', ok:false},
+];
+const quiz=document.getElementById('quiz');
+quizItems.forEach((item,i)=>{
+  const lab=document.createElement('label');
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change',score);
+});
+function score(){
+  let m=0; quizItems.forEach((it,i)=>{if(document.getElementById('q'+i).checked===it.ok)m++;});
+  const pct=Math.round(m/quizItems.length*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('scoreNote').textContent='吻合度 '+pct+'%（應勾：工具開蓋、極性防呆、出線色標）';
+}
+score();
+document.getElementById('markDone').onclick=()=>{
+  const done=JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['03']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
+  document.getElementById('saveMsg').textContent='已儲存：單元 03 完成。';
+};
+</script>
+</body>
+</html>

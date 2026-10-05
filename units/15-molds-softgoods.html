@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 15 · 模具注塑同軟綿交接</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.mold { width:min(100%,500px); margin:0 auto; }
+.mold svg { width:100%; height:auto; }
+.mp { cursor:pointer; }
+.mp:hover, .mp.on { filter:brightness(1.25); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 15 · 其他</span>
+  </div>
+  <h1>模具注塑同軟綿交接</h1>
+  <p class="lead">硬膠件（頭殼、關節、電池倉、齒輪箱）點樣「長」入毛絨——倒扣、布夾、螺柱、包膠，決定外觀同拉力。</p>
+
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">硬軟交接（撳介面）</h3>
+      <div class="mold">
+        <svg viewBox="0 0 500 320" role="img">
+          <defs>
+            <radialGradient id="fur15" cx="50%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#ffc2d4"/><stop offset="100%" stop-color="#e8799b"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="280" cy="200" rx="140" ry="100" fill="url(#fur15)" opacity=".85"/>
+          <!-- hard shell -->
+          <g class="mp" data-id="shell">
+            <ellipse cx="200" cy="160" rx="55" ry="45" fill="#3a4558" stroke="#9aa8bc" stroke-width="2"/>
+            <text x="200" y="165" text-anchor="middle" fill="#e8eef7" font-size="12">硬膠件</text>
+          </g>
+          <!-- flange -->
+          <g class="mp" data-id="flange">
+            <rect x="240" y="140" width="30" height="40" rx="4" fill="#7ddea2" opacity=".8"/>
+            <text x="255" y="120" text-anchor="middle" fill="#9fe9c0" font-size="11">夾布法蘭</text>
+          </g>
+          <!-- stitches -->
+          <g class="mp" data-id="sew">
+            <path d="M270 145 L310 145 M270 155 L310 155 M270 165 L310 165 M270 175 L310 175" stroke="#ffd166" stroke-width="2"/>
+            <text x="340" y="165" fill="#ffe9b0" font-size="11">車縫固定</text>
+          </g>
+          <!-- boss -->
+          <g class="mp" data-id="boss">
+            <circle cx="180" cy="200" r="14" fill="#5b8cff"/>
+            <circle cx="180" cy="200" r="5" fill="#1a2332"/>
+            <text x="180" y="230" text-anchor="middle" fill="#b9d0ff" font-size="11">螺柱</text>
+          </g>
+          <!-- undercut -->
+          <g class="mp" data-id="undercut">
+            <path d="M160 130 Q150 160 160 190" fill="none" stroke="#ff7b72" stroke-width="3"/>
+            <text x="100" y="160" fill="#ffb4ae" font-size="11">倒扣</text>
+          </g>
+        </svg>
+      </div>
+      <div class="panel" id="moldPanel"><strong>撳交接結構</strong>：睇模具同車縫點夾口。</div>
+    </div>
+  </div>
+
+  <h2>模具要注意</h2>
+  <div class="timeline" id="moldTips"></div>
+
+  <h2>失效</h2>
+  <div class="timeline" id="fails"></div>
+
+  <div class="exercise">
+    <h3>單元練習</h3>
+    <p>硬膠進毛絨，邊啲<strong>必須</strong> lock？</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <button class="btn" type="button" id="markDone">完成本單元</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="14-safety-regs.html">← 單元 14</a>
+    <a class="btn ghost" href="16-sample-stages.html">單元 16 →</a>
+  </div>
+</div>
+<script>
+const info={
+  shell:'<strong>硬膠件</strong>：材料（ABS/PC/POM）、表面（晒紋／亮面）、縮水。外觀面同藏布面要分清。',
+  flange:'<strong>夾布法蘭</strong>：布夾入膠件槽再車或熱壓。寬度要夠拉力；毛向同厚度要試。',
+  sew:'<strong>車縫固定</strong>：針距、距離邊緣、加固。開孔位要預留，唔好車崩膠。',
+  boss:'<strong>螺柱</strong>：壁厚、牙型、扭矩。過緊崩柱；過鬆晃動。',
+  undercut:'<strong>倒扣</strong>：裝配快但模具要滑塊／強制頂出——成本升。評：產量 vs 模費。',
+};
+document.querySelectorAll('.mp').forEach(p=>{
+  p.addEventListener('click',()=>{
+    document.querySelectorAll('.mp').forEach(x=>x.classList.remove('on'));
+    p.classList.add('on');
+    document.getElementById('moldPanel').innerHTML=info[p.dataset.id];
+  });
+});
+const tips=[
+  {t:'分模線',d:'避開外觀同夾布面；飛邊會割布同割傷手。'},
+  {t:'拔模斜度',d:'深腔要斜度，否則拉傷、頂白。'},
+  {t:'壁厚均勻',d:'縮水凹痕影響裝配。'},
+  {t:'嵌件',d:'銅牙、磁鐵嵌件定位同包膠工藝。'},
+];
+tips.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('moldTips').appendChild(el);
+});
+const fails=[
+  {t:'夾布脫落',d:'法蘭太窄／車縫太外邊。拉力測試失敗。'},
+  {t:'露膠一圈',d:'外觀不良；要加深藏布或改顏色。'},
+  {t:'螺柱滑牙',d:'大貨扭矩槍設定同抽檢。'},
+  {t:'模費爆炸',d:'倒扣過多。簡化裝配結構。'},
+];
+fails.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('fails').appendChild(el);
+});
+const quizItems=[
+  {q:'夾布／固位方式同拉力目標', ok:true},
+  {q:'分模線同外觀面定義', ok:true},
+  {q:'週末球賽比分預測', ok:false},
+  {q:'螺柱規格同扭矩', ok:true},
+  {q:'辦公室溫度設定', ok:false},
+];
+const quiz=document.getElementById('quiz');
+quizItems.forEach((item,i)=>{
+  const lab=document.createElement('label');
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change',score);
+});
+function score(){
+  let m=0; quizItems.forEach((it,i)=>{if(document.getElementById('q'+i).checked===it.ok)m++;});
+  const pct=Math.round(m/quizItems.length*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('scoreNote').textContent='吻合度 '+pct+'%（應勾：夾布拉力、分模線、螺柱扭矩）';
+}
+score();
+document.getElementById('markDone').onclick=()=>{
+  const done=JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['15']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
+  document.getElementById('saveMsg').textContent='已儲存：單元 15 完成。';
+};
+</script>
+</body>
+</html>

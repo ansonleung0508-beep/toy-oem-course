@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 14 · 安全法規 ASTM/EN71/CPC</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.reg-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
+.reg-card { background:var(--card); border-radius:14px; padding:16px; cursor:pointer; border:1px solid rgba(255,255,255,.06); transition:.2s; }
+.reg-card:hover, .reg-card.on { border-color:var(--warn); background:rgba(255,123,114,.1); }
+.reg-card h4 { margin:0 0 6px; color:#ffb4ae; }
+.check-map { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; }
+.check-map .card { cursor:pointer; min-height:90px; }
+.check-map .card.active { border-color:rgba(255,209,102,.5); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 14 · 其他</span>
+  </div>
+  <h1>安全法規入門 ASTM / EN71 / CPC</h1>
+  <p class="lead">電子毛絨＝玩具安規＋電安規思維。設計階段預埋，唔好等船頭先測。</p>
+
+  <h2>主要框架（撳卡）</h2>
+  <div class="reg-grid" id="regs"></div>
+  <div class="panel" id="regPanel">揀一個法規框架。</div>
+
+  <h2>電子毛絨高發檢查點</h2>
+  <div class="check-map" id="checks"></div>
+  <div class="panel" id="chkPanel">揀一項檢查點。</div>
+
+  <h2>工程師實務</h2>
+  <div class="timeline" id="prac"></div>
+
+  <div class="exercise">
+    <h3>單元練習</h3>
+    <p>出口美國電子毛絨，邊啲<strong>一定</strong>要規劃？</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <button class="btn" type="button" id="markDone">完成本單元</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="13-brief-cost.html">← 單元 13</a>
+    <a class="btn ghost" href="15-molds-softgoods.html">單元 15 →</a>
+  </div>
+</div>
+<script>
+const regs=[
+  {t:'ASTM F963',d:'美國玩具標準：機械物理、可燃、重金屬、電池操作玩具條款等。'},
+  {t:'CPSIA / CPC',d:'美國消費品：鉛、邻苯、第三方檢測、兒童產品證書（CPC）。'},
+  {t:'EN71',d:'歐盟玩具：Part 1 物理、Part 2 可燃、Part 3 遷移元素；另有 REACH。'},
+  {t:'IEC/電安',d:'視市場：電池玩具、充電器、EMI。毛絨電子常涉及電池倉同溫升。'},
+  {t:'標籤',d:'年齡警告、電池警告、追溯碼、製造商資訊——包裝同吊牌要一齊設計。'},
+  {t:'市場差異',d:'美／歐／中／日要求唔同。Brief 寫清出口國，測項先準。'},
+];
+const regEl=document.getElementById('regs');
+regs.forEach(r=>{
+  const c=document.createElement('div'); c.className='reg-card';
+  c.innerHTML=`<h4>${r.t}</h4><p style="margin:0;color:var(--muted);font-size:.85rem">撳睇</p>`;
+  c.onclick=()=>{ document.querySelectorAll('.reg-card').forEach(x=>x.classList.remove('on')); c.classList.add('on');
+    document.getElementById('regPanel').innerHTML=`<strong>${r.t}</strong>：${r.d}`; };
+  regEl.appendChild(c);
+});
+const checks=[
+  {t:'細件',d:'眼鼻紐扣拉力／扭力；年龄 <3 更嚴。'},
+  {t:'尖點銳邊',d:'骨架倒角、金屬彈片外露。'},
+  {t:'電池倉',d:'工具開啟、極性、標示。'},
+  {t:'線同焊點',d:'可觸及帶電、絕緣、短路。'},
+  {t:'聲壓',d:'近耳玩具聲壓限值（視標準）。'},
+  {t:'材料化學',d:'布、漆、塑膠的受限物質。'},
+];
+const chkEl=document.getElementById('checks');
+checks.forEach(c=>{
+  const card=document.createElement('div'); card.className='card';
+  card.innerHTML=`<h3>${c.t}</h3><p>撳睇</p>`;
+  card.onclick=()=>{ document.querySelectorAll('.check-map .card').forEach(x=>x.classList.remove('active')); card.classList.add('active');
+    document.getElementById('chkPanel').innerHTML=`<strong>${c.t}</strong>：${c.d}`; };
+  chkEl.appendChild(card);
+});
+const prac=[
+  {t:'設計預審',d:'開模前用 checklist 過一輪，改圖平過改模。'},
+  {t:'預測試',d:'工程樣做關鍵項（拉力、跌落、電池倉）。'},
+  {t:'正式送測',d:'PPS／大貨料；留樣同報告版本管理。'},
+  {t:'變更重測',d:'換料／改結構可能要部分重測——ECN 要問安規。'},
+];
+prac.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('prac').appendChild(el);
+});
+const quizItems=[
+  {q:'ASTM F963／CPSIA 適用測項規劃', ok:true},
+  {q:'電池倉工具開啟同標籤', ok:true},
+  {q:'員工旅遊目的地', ok:false},
+  {q:'細件拉力同材料化學', ok:true},
+  {q:'食堂菜式投票', ok:false},
+];
+const quiz=document.getElementById('quiz');
+quizItems.forEach((item,i)=>{
+  const lab=document.createElement('label');
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change',score);
+});
+function score(){
+  let m=0; quizItems.forEach((it,i)=>{if(document.getElementById('q'+i).checked===it.ok)m++;});
+  const pct=Math.round(m/quizItems.length*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('scoreNote').textContent='吻合度 '+pct+'%（應勾：測項規劃、電池倉標籤、細件化學）';
+}
+score();
+document.getElementById('markDone').onclick=()=>{
+  const done=JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['14']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
+  document.getElementById('saveMsg').textContent='已儲存：單元 14 完成。';
+};
+</script>
+</body>
+</html>

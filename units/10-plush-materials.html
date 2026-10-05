@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 10 · 毛絨物料同填充</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.mat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; }
+.mat-card { background:var(--card); border-radius:14px; padding:16px; cursor:pointer; border:1px solid rgba(255,255,255,.06); transition:.2s; text-align:center; }
+.mat-card:hover, .mat-card.on { border-color:var(--soft); background:rgba(255,143,171,.12); transform:translateY(-3px); }
+.swatch { height:48px; border-radius:10px; margin-bottom:10px; }
+.fill-demo { width:min(100%,480px); margin:0 auto; }
+.fill-demo svg { width:100%; height:auto; }
+.fzone { cursor:pointer; }
+.fzone:hover, .fzone.on { filter:brightness(1.2); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 10 · 毛絨</span>
+  </div>
+  <h1>毛絨物料同填充</h1>
+  <p class="lead">面料同填充決定手感、外觀、透聲、成本同安規（掉毛、可燃、有害物質）。電子機構位要「特別填」。</p>
+
+  <h2>常用面料（撳卡）</h2>
+  <div class="mat-grid" id="mats"></div>
+  <div class="panel" id="matPanel">揀一種面料睇特性同風險。</div>
+
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">填充分區（撳區域）</h3>
+      <div class="fill-demo">
+        <svg viewBox="0 0 480 300" role="img">
+          <defs>
+            <radialGradient id="fur10" cx="50%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="#ffc2d4"/><stop offset="100%" stop-color="#e8799b"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="240" cy="190" rx="130" ry="95" fill="url(#fur10)"/>
+          <circle cx="240" cy="95" r="55" fill="url(#fur10)"/>
+          <g class="fzone" data-id="head">
+            <circle cx="240" cy="95" r="40" fill="rgba(91,140,255,.35)" stroke="#5b8cff" stroke-width="2"/>
+            <text x="240" y="100" text-anchor="middle" fill="#e8eef7" font-size="12">頭：定型棉</text>
+          </g>
+          <g class="fzone" data-id="chest">
+            <ellipse cx="240" cy="175" rx="50" ry="35" fill="rgba(255,209,102,.3)" stroke="#ffd166" stroke-width="2"/>
+            <text x="240" y="180" text-anchor="middle" fill="#1a2332" font-size="11">胸：少填／腔</text>
+          </g>
+          <g class="fzone" data-id="limb">
+            <ellipse cx="140" cy="200" rx="30" ry="40" fill="rgba(125,222,162,.3)" stroke="#7ddea2" stroke-width="2"/>
+            <text x="140" y="205" text-anchor="middle" fill="#1a2332" font-size="11">肢：PP棉</text>
+          </g>
+          <g class="fzone" data-id="core">
+            <rect x="210" y="210" width="60" height="40" rx="8" fill="rgba(255,123,114,.3)" stroke="#ff7b72" stroke-width="2"/>
+            <text x="240" y="235" text-anchor="middle" fill="#ffb4ae" font-size="11">機芯避位</text>
+          </g>
+        </svg>
+      </div>
+      <div class="panel" id="fillPanel"><strong>撳填充區</strong>：電子／機構位唔好同一般公仔一樣塞滿。</div>
+    </div>
+  </div>
+
+  <h2>手感・安規・交接</h2>
+  <div class="timeline" id="pts"></div>
+
+  <div class="exercise">
+    <h3>單元練習</h3>
+    <p>電子毛絨物料，邊啲<strong>必須</strong> lock？</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <button class="btn" type="button" id="markDone">完成本單元</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="09-motion-interference.html">← 單元 09</a>
+    <a class="btn ghost" href="11-sewing.html">單元 11 →</a>
+  </div>
+</div>
+<script>
+const mats=[
+  {t:'超柔短毛', c:'linear-gradient(135deg,#ffc2d4,#e8799b)', d:'手感好、掉毛要控。密絨影響透聲——出聲位改網布或剪毛。'},
+  {t:'長毛絨', c:'linear-gradient(135deg,#d4a574,#a67c52)', d:'外觀高級但纏機構、吸塵。關節位建議短毛或內襯。'},
+  {t:'彈力絨', c:'linear-gradient(135deg,#b9d0ff,#5b8cff)', d:'易包骨架，但車縫易起波浪；要控張力同針距。'},
+  {t:'透聲網', c:'linear-gradient(135deg,#2a3344,#5b8cff)', d:'喇叭窗專用。目數兼顧聲同安規異物；色要同主布協調。'},
+  {t:'內襯布', c:'linear-gradient(135deg,#3a4558,#9aa8bc)', d:'內膽、布袋、線通道。減少刺線同露骨。'},
+  {t:'仿皮／腳墊', c:'linear-gradient(135deg,#4a3728,#2b2430)', d:'腳底耐磨。注意塑化劑同可燃性測試。'},
+];
+const matEl=document.getElementById('mats');
+mats.forEach(m=>{
+  const c=document.createElement('div'); c.className='mat-card';
+  c.innerHTML=`<div class="swatch" style="background:${m.c}"></div><strong>${m.t}</strong>`;
+  c.onclick=()=>{ document.querySelectorAll('.mat-card').forEach(x=>x.classList.remove('on')); c.classList.add('on');
+    document.getElementById('matPanel').innerHTML=`<strong>${m.t}</strong>：${m.d}`; };
+  matEl.appendChild(c);
+});
+const fills={
+  head:'<strong>頭：定型棉／切片棉</strong>：保形、五官不沉。太鬆＝塌臉；太實＝擺頭力矩大。',
+  chest:'<strong>胸：少填或硬腔</strong>：讓位畀喇叭／PCB。用布袋隔離，防棉入聲腔。',
+  limb:'<strong>肢：PP棉</strong>：常用、回彈好。關節活動位少填或用珠棉／泡沫粒控形。',
+  core:'<strong>機芯避位</strong>：齒輪箱周圍禁止亂填。用隔板或成形泡沫定位。',
+};
+document.querySelectorAll('.fzone').forEach(z=>{
+  z.addEventListener('click',()=>{
+    document.querySelectorAll('.fzone').forEach(x=>x.classList.remove('on'));
+    z.classList.add('on');
+    document.getElementById('fillPanel').innerHTML=fills[z.dataset.id];
+  });
+});
+const pts=[
+  {t:'物料卡',d:'料號、成分、克重、色牢度、供應商、替代料規則。'},
+  {t:'掉毛／起球',d:'摩擦測試；深色衣物客訴常見。'},
+  {t:'有害物質',d:'REACH／丙毒／偶氮等跟市場。'},
+  {t:'同電子交接',d:'透聲、絕緣、阻燃（如要求）、靜電。'},
+];
+pts.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('pts').appendChild(el);
+});
+const quizItems=[
+  {q:'面料料號＋克重＋色牢度', ok:true},
+  {q:'機芯／喇叭位填充避位方案', ok:true},
+  {q:'辦公室咖啡品牌', ok:false},
+  {q:'掉毛／有害物質測試計劃', ok:true},
+  {q:'年會表演歌單', ok:false},
+];
+const quiz=document.getElementById('quiz');
+quizItems.forEach((item,i)=>{
+  const lab=document.createElement('label');
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change',score);
+});
+function score(){
+  let m=0; quizItems.forEach((it,i)=>{if(document.getElementById('q'+i).checked===it.ok)m++;});
+  const pct=Math.round(m/quizItems.length*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('scoreNote').textContent='吻合度 '+pct+'%（應勾：物料卡、填充避位、安規測試）';
+}
+score();
+document.getElementById('markDone').onclick=()=>{
+  const done=JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['10']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
+  document.getElementById('saveMsg').textContent='已儲存：單元 10 完成。';
+};
+</script>
+</body>
+</html>

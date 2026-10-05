@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 06 · 線束同焊接可靠性</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.harness { width:min(100%,520px); margin:0 auto; }
+.harness svg { width:100%; height:auto; }
+.node { cursor:pointer; }
+.node:hover, .node.on { filter:brightness(1.35); }
+.pulse-line { stroke-dasharray:8 6; animation:dash 1.5s linear infinite; }
+@keyframes dash { to { stroke-dashoffset:-28; } }
+.risk { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
+.risk .card { cursor:pointer; min-height:100px; }
+.risk .card.active { border-color:rgba(255,123,114,.5); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 06 · 電子</span>
+  </div>
+  <h1>線束同焊接可靠性</h1>
+  <p class="lead">線係軟綿玩具「隱形殺手」：車針刺穿、拉扯斷焊、絞線疲勞。路徑同應力釋放要同車縫一齊設計。</p>
+
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">線束路徑（撳節點）</h3>
+      <div class="harness">
+        <svg viewBox="0 0 520 300" role="img">
+          <!-- soft outline -->
+          <ellipse cx="260" cy="160" rx="200" ry="120" fill="rgba(255,143,171,.15)" stroke="#ff8fab" stroke-width="2" stroke-dasharray="4 3"/>
+          <!-- PCB -->
+          <g class="node" data-id="pcb">
+            <rect x="220" y="130" width="70" height="45" rx="6" fill="#3a2f12" stroke="#ffd166" stroke-width="2"/>
+            <text x="255" y="158" text-anchor="middle" fill="#ffe9b0" font-size="12">PCB</text>
+          </g>
+          <!-- speaker -->
+          <g class="node" data-id="spk">
+            <circle cx="100" cy="120" r="28" fill="#1f3d2d" stroke="#7ddea2" stroke-width="2"/>
+            <text x="100" y="125" text-anchor="middle" fill="#9fe9c0" font-size="11">喇叭</text>
+          </g>
+          <!-- switch -->
+          <g class="node" data-id="sw">
+            <rect x="380" y="80" width="50" height="30" rx="6" fill="#1a2332" stroke="#5b8cff" stroke-width="2"/>
+            <text x="405" y="100" text-anchor="middle" fill="#b9d0ff" font-size="11">開關</text>
+          </g>
+          <!-- battery -->
+          <g class="node" data-id="bat">
+            <rect x="360" y="200" width="70" height="40" rx="6" fill="#1a2332" stroke="#ffd166" stroke-width="2"/>
+            <text x="395" y="225" text-anchor="middle" fill="#ffe9b0" font-size="11">電池倉</text>
+          </g>
+          <!-- sew risk zone -->
+          <g class="node" data-id="sew">
+            <rect x="150" y="60" width="90" height="36" rx="8" fill="rgba(255,123,114,.25)" stroke="#ff7b72" stroke-width="2"/>
+            <text x="195" y="83" text-anchor="middle" fill="#ffb4ae" font-size="11">車縫危險區</text>
+          </g>
+          <!-- strain relief -->
+          <g class="node" data-id="strain">
+            <circle cx="200" cy="150" r="12" fill="#7ddea2" opacity=".8"/>
+            <text x="200" y="175" text-anchor="middle" fill="#9fe9c0" font-size="10">應力釋放</text>
+          </g>
+          <!-- wires -->
+          <path class="pulse-line" d="M128 120 C170 120 200 140 220 150" fill="none" stroke="#ffd166" stroke-width="2.5"/>
+          <path class="pulse-line" d="M290 140 C340 110 360 100 380 95" fill="none" stroke="#5b8cff" stroke-width="2.5"/>
+          <path class="pulse-line" d="M290 160 C330 180 350 210 360 220" fill="none" stroke="#ff7b72" stroke-width="2.5"/>
+        </svg>
+      </div>
+      <div class="panel" id="hPanel"><strong>撳節點</strong>：睇焊接、路徑、車縫避位。</div>
+    </div>
+  </div>
+
+  <h2>高發風險（撳卡）</h2>
+  <div class="risk" id="risks"></div>
+  <div class="panel" id="riskPanel">揀一張風險卡。</div>
+
+  <h2>焊接同線規 checklist</h2>
+  <div class="timeline" id="chk"></div>
+
+  <div class="exercise">
+    <h3>單元練習</h3>
+    <p>線束可靠性，邊啲<strong>一定</strong>要寫進工藝？</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <button class="btn" type="button" id="markDone">完成本單元</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="05-switches-sensors.html">← 單元 05</a>
+    <a class="btn ghost" href="07-skeleton-joints.html">單元 07 →</a>
+  </div>
+</div>
+<script>
+const nodes={
+  pcb:'<strong>PCB 焊點</strong>：焊盤尺寸、助焊劑殘留、點膠加固。振動位（近馬達／喇叭）必須有應力釋放或膠固。',
+  spk:'<strong>喇叭端</strong>：留服務圈；線唔好硬扯振膜。焊錫溫度同時間寫 SOP，防脫焊。',
+  sw:'<strong>開關端</strong>：端子壓接或焊；線由活動關節經過要套管／絞線。',
+  bat:'<strong>電池線</strong>：截面積按峰值電流；極性色標；倉口應力釋放。',
+  sew:'<strong>車縫危險區</strong>：線唔好穿過車針路徑。用布通道、膠管或避開縫位——同車縫工程師對圖。',
+  strain:'<strong>應力釋放</strong>：打結、熱縮、線扣、點膠、布縫固定。每個出線口至少一種。',
+};
+document.querySelectorAll('.node').forEach(n=>{
+  n.addEventListener('click',()=>{
+    document.querySelectorAll('.node').forEach(x=>x.classList.remove('on'));
+    n.classList.add('on');
+    document.getElementById('hPanel').innerHTML=nodes[n.dataset.id];
+  });
+});
+const risks=[
+  {t:'車針刺線',d:'短路／斷路，產線難查。對策：線位圖＋車縫避位標註＋套管。'},
+  {t:'焊點疲勞',d:'擺頭／舉手反復折。對策：服務圈、多股軟線、點膠。'},
+  {t:'壓接不良',d:'端子拉力不足。對策：拉力測試標準、抽檢。'},
+  {t:'線徑不足',d:'馬達峰值壓降、發熱。對策：按堵轉電流選 AWG。'},
+];
+const riskEl=document.getElementById('risks');
+risks.forEach(r=>{
+  const c=document.createElement('div'); c.className='card';
+  c.innerHTML=`<h3>${r.t}</h3><p>撳睇對策</p>`;
+  c.onclick=()=>{ document.querySelectorAll('.risk .card').forEach(x=>x.classList.remove('active')); c.classList.add('active');
+    document.getElementById('riskPanel').innerHTML=`<strong>${r.t}</strong>：${r.d}`; };
+  riskEl.appendChild(c);
+});
+const chk=[
+  {t:'線規',d:'AWG／顏色／長度公差、扭線規格。'},
+  {t:'焊／壓',d:'溫度、時間、助焊、拉力標準（例如 ≥20N）。'},
+  {t:'路徑圖',d:'2D/3D 線位，標車縫避位同固定點。'},
+  {t:'安規',d:'絕緣、間距、可觸及金屬、電池線保護。'},
+];
+chk.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('chk').appendChild(el);
+});
+const quizItems=[
+  {q:'線位圖含車縫避位', ok:true},
+  {q:'每個出線口應力釋放方式', ok:true},
+  {q:'包裝彩盒烫金工藝', ok:false},
+  {q:'焊點／壓接拉力標準', ok:true},
+  {q:'網紅直播話術腳本', ok:false},
+];
+const quiz=document.getElementById('quiz');
+quizItems.forEach((item,i)=>{
+  const lab=document.createElement('label');
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change',score);
+});
+function score(){
+  let m=0; quizItems.forEach((it,i)=>{if(document.getElementById('q'+i).checked===it.ok)m++;});
+  const pct=Math.round(m/quizItems.length*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('scoreNote').textContent='吻合度 '+pct+'%（應勾：線位避位、應力釋放、拉力標準）';
+}
+score();
+document.getElementById('markDone').onclick=()=>{
+  const done=JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['06']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
+  document.getElementById('saveMsg').textContent='已儲存：單元 06 完成。';
+};
+</script>
+</body>
+</html>

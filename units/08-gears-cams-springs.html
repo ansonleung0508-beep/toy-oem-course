@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 08 · 齒輪／凸輪／彈簧</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.gb { width:min(100%,480px); margin:0 auto; position:relative; }
+.gb svg { width:100%; height:auto; }
+.gear { transform-origin: center; transform-box: fill-box; }
+.spinning .g1 { animation: spin 2s linear infinite; }
+.spinning .g2 { animation: spinR 3.2s linear infinite; }
+.spinning .cam { animation: spin 2.5s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spinR { to { transform: rotate(-360deg); } }
+.part { cursor:pointer; }
+.part:hover, .part.on { filter:brightness(1.25); }
+.ctrl button { padding:8px 14px; border-radius:10px; background:var(--card2); border:1px solid rgba(255,255,255,.08); color:var(--text); cursor:pointer; font-weight:600; margin:4px; }
+.ctrl button.on { border-color:var(--mech); background:rgba(125,222,162,.2); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 08 · 機械</span>
+  </div>
+  <h1>齒輪／凸輪／彈簧</h1>
+  <p class="lead">傳動決定動作、噪音、壽命同電流。OEM 要 lock 齒數比、材料、潤滑同堵轉保護。</p>
+
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">齒輪箱示意（撳零件 · 開傳動動畫）</h3>
+      <div class="ctrl">
+        <button type="button" id="spinOn" class="on">▶ 傳動中</button>
+        <button type="button" id="spinOff">⏸ 暫停</button>
+      </div>
+      <div class="gb">
+        <svg id="gearSvg" class="spinning" viewBox="0 0 480 320" role="img">
+          <rect x="60" y="50" width="360" height="220" rx="16" fill="#1a2830" stroke="#7ddea2" stroke-width="2"/>
+          <!-- motor -->
+          <g class="part" data-id="motor">
+            <rect x="80" y="120" width="70" height="50" rx="8" fill="#3a2f12" stroke="#ffd166" stroke-width="2"/>
+            <text x="115" y="150" text-anchor="middle" fill="#ffe9b0" font-size="11">馬達</text>
+          </g>
+          <!-- gear 1 -->
+          <g class="part g1 gear" data-id="gear" transform="translate(200,145)">
+            <circle r="36" fill="#2a3d32" stroke="#7ddea2" stroke-width="3"/>
+            <circle r="10" fill="#7ddea2"/>
+            <path d="M0-36 L4-28 L-4-28 Z M0 36 L4 28 L-4 28 Z M36 0 L28 4 L28-4 Z M-36 0 L-28 4 L-28-4 Z" fill="#7ddea2"/>
+          </g>
+          <!-- gear 2 -->
+          <g class="part g2 gear" data-id="gear2" transform="translate(280,160)">
+            <circle r="48" fill="#243528" stroke="#4bbf7a" stroke-width="3"/>
+            <circle r="12" fill="#4bbf7a"/>
+          </g>
+          <!-- cam -->
+          <g class="part cam gear" data-id="cam" transform="translate(355,150)">
+            <ellipse rx="28" ry="18" fill="#2a3344" stroke="#5b8cff" stroke-width="2"/>
+            <circle r="6" fill="#5b8cff"/>
+            <text y="45" text-anchor="middle" fill="#b9d0ff" font-size="11">凸輪</text>
+          </g>
+          <!-- spring -->
+          <g class="part" data-id="spring">
+            <path d="M100 220 Q110 210 120 220 Q130 230 140 220 Q150 210 160 220 Q170 230 180 220" fill="none" stroke="#ff8fab" stroke-width="3"/>
+            <text x="140" y="250" text-anchor="middle" fill="#ffd0dc" font-size="11">复位彈簧</text>
+          </g>
+          <!-- output -->
+          <g class="part" data-id="out">
+            <rect x="340" y="70" width="50" height="14" rx="4" fill="#ffd166"/>
+            <text x="365" y="60" text-anchor="middle" fill="#ffe9b0" font-size="11">輸出軸</text>
+          </g>
+        </svg>
+      </div>
+      <div class="panel" id="gbPanel"><strong>撳馬達／齒輪／凸輪／彈簧</strong>：睇設計同失效。</div>
+    </div>
+  </div>
+
+  <h2>噪音・壽命・堵轉</h2>
+  <div class="timeline" id="keys"></div>
+
+  <div class="exercise">
+    <h3>單元練習</h3>
+    <p>齒輪箱工程文件，邊啲<strong>必須</strong>有？</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <button class="btn" type="button" id="markDone">完成本單元</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="07-skeleton-joints.html">← 單元 07</a>
+    <a class="btn ghost" href="09-motion-interference.html">單元 09 →</a>
+  </div>
+</div>
+<script>
+const info={
+  motor:'<strong>馬達</strong>：額定／堵轉電流、電壓、轉向。電子驅動要按堵轉計；EMI 可能影響語音芯片。',
+  gear:'<strong>齒輪</strong>：模數、齒數比、材料（POM 常用）。側隙太大＝空程噪音；太小＝咬死發熱。',
+  gear2:'<strong>大齒輪</strong>：減速級。注意軸承位磨損；潤滑脂型號同量要寫 SOP（過多甩油、過少干磨）。',
+  cam:'<strong>凸輪</strong>：把旋轉變擺頭／舉手曲線。曲線要順，避免衝擊；從動件行程同軟綿干涉一齊查。',
+  spring:'<strong>复位彈簧</strong>：扭簧／拉簧。疲勞壽命、預壓、生鏽（鍍層）。彈力影響馬達電流。',
+  out:'<strong>輸出軸</strong>：鍵槽／D 型／螺絲固定。防脫同對中；輸出力矩要夠帶負載（頭＋布）。',
+};
+document.querySelectorAll('.part').forEach(p=>{
+  p.addEventListener('click',()=>{
+    document.querySelectorAll('.part').forEach(x=>x.classList.remove('on'));
+    p.classList.add('on');
+    document.getElementById('gbPanel').innerHTML=info[p.dataset.id];
+  });
+});
+const svg=document.getElementById('gearSvg');
+document.getElementById('spinOn').onclick=()=>{ svg.classList.add('spinning'); document.getElementById('spinOn').classList.add('on'); document.getElementById('spinOff').classList.remove('on'); };
+document.getElementById('spinOff').onclick=()=>{ svg.classList.remove('spinning'); document.getElementById('spinOff').classList.add('on'); document.getElementById('spinOn').classList.remove('on'); };
+
+const keys=[
+  {t:'噪音',d:'齒形、側隙、箱體剛度、潤滑。驗收：距離 X cm ≤ Y dBA。毛絨會吸音，但要以裸箱＋整機各測一次。'},
+  {t:'壽命',d:'連續／間歇循環（例如 5000 次擺頭）。磨損、彈簧疲勞、潤滑乾涸。'},
+  {t:'堵轉',d:'手按停輸出 → 電流暴升。電子限流／滑差／機械打滑保護。'},
+  {t:'材料',d:'POM 吸濕尺寸漂；金屬齒貴但壽命長。成本同安靜度取捨寫入 Brief。'},
+];
+keys.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('keys').appendChild(el);
+});
+const quizItems=[
+  {q:'齒數比／模數／材料同潤滑', ok:true},
+  {q:'堵轉電流同保護策略', ok:true},
+  {q:'LOGO 字體版權合同', ok:false},
+  {q:'噪音同壽命驗收標準', ok:true},
+  {q:'員工午餐供應商', ok:false},
+];
+const quiz=document.getElementById('quiz');
+quizItems.forEach((item,i)=>{
+  const lab=document.createElement('label');
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change',score);
+});
+function score(){
+  let m=0; quizItems.forEach((it,i)=>{if(document.getElementById('q'+i).checked===it.ok)m++;});
+  const pct=Math.round(m/quizItems.length*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('scoreNote').textContent='吻合度 '+pct+'%（應勾：齒輪規格、堵轉保護、噪音壽命）';
+}
+score();
+document.getElementById('markDone').onclick=()=>{
+  const done=JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['08']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
+  document.getElementById('saveMsg').textContent='已儲存：單元 08 完成。';
+};
+</script>
+</body>
+</html>

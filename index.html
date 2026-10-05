@@ -65,30 +65,30 @@
 
   <h2 style="margin:8px 0 14px;">單元目錄（已按你指定次序）</h2>
   <div class="grid" id="unitGrid"></div>
-  <p class="note" style="margin-top:20px;">單元 01 總覽已開放。下一優先做電子線（02 起）。想我而家開做單元 02，直接講。</p>
+  <p class="note" style="margin-top:20px;">全 20 單元已開放。進度存在本機 <code>localStorage.toyCourseDone</code>；完成練習後返嚟目錄會顯示「已完成」。</p>
 </div>
 <script>
 const units = [
   {id:'01', title:'OEM 全流程地圖', desc:'三條線並行、階段關口、交接點', href:'units/01-oem-map.html', ready:true, track:'總覽'},
   {id:'02', title:'PCB／PCBA 同玩具接口', desc:'板外形、接口、消耗電流', href:'units/02-pcb-interface.html', ready:true, track:'電子'},
-  {id:'03', title:'電池倉同電源安全', desc:'倉蓋、極性、安規', href:'#', ready:false, track:'電子'},
-  {id:'04', title:'喇叭同聲腔', desc:'聲壓、腔體、布料遮擋', href:'#', ready:false, track:'電子'},
-  {id:'05', title:'開關／感測／IR', desc:'觸發、誤觸、可靠性', href:'#', ready:false, track:'電子'},
-  {id:'06', title:'線束同焊接可靠性', desc:'應力釋放、刺線風險', href:'#', ready:false, track:'電子'},
-  {id:'07', title:'機構骨架同關節', desc:'骨架、行程、固位', href:'#', ready:false, track:'機械'},
-  {id:'08', title:'齒輪／凸輪／彈簧', desc:'傳動、噪音、壽命', href:'#', ready:false, track:'機械'},
-  {id:'09', title:'動作行程同軟綿干涉', desc:'擺頭舉手唔扯爛縫', href:'#', ready:false, track:'機械'},
-  {id:'10', title:'毛絨物料同填充', desc:'布料、填充、手感', href:'#', ready:false, track:'毛絨'},
-  {id:'11', title:'車縫工藝', desc:'縫型、難度、外觀 AQL', href:'#', ready:false, track:'毛絨'},
-  {id:'12', title:'公仔衫同服飾', desc:'樣版、車縫、面料', href:'#', ready:false, track:'毛絨'},
-  {id:'13', title:'Brief 同成本結構', desc:'功能表、目標價、拆成本', href:'#', ready:false, track:'其他'},
-  {id:'14', title:'安全法規入門', desc:'ASTM / EN71 / CPC', href:'#', ready:false, track:'其他'},
-  {id:'15', title:'模具注塑同軟綿交接', desc:'硬膠件進毛絨', href:'#', ready:false, track:'其他'},
-  {id:'16', title:'樣板階段', desc:'手辦→工程樣→產前', href:'#', ready:false, track:'其他'},
-  {id:'17', title:'測試同失效分析', desc:'壽命、跌落、FMEA', href:'#', ready:false, track:'其他'},
-  {id:'18', title:'BOM／SOP／工藝檔', desc:'文件同產線落地', href:'#', ready:false, track:'其他'},
-  {id:'19', title:'工廠審核、報價、變更', desc:'產能、ECN、成本鎖', href:'#', ready:false, track:'其他'},
-  {id:'20', title:'包裝、運輸同綜合專案', desc:'包材測試＋全流程模擬', href:'#', ready:false, track:'其他'},
+  {id:'03', title:'電池倉同電源安全', desc:'倉蓋、極性、安規', href:'units/03-battery-power.html', ready:true, track:'電子'},
+  {id:'04', title:'喇叭同聲腔', desc:'聲壓、腔體、布料遮擋', href:'units/04-speaker-cavity.html', ready:true, track:'電子'},
+  {id:'05', title:'開關／感測／IR', desc:'觸發、誤觸、可靠性', href:'units/05-switches-sensors.html', ready:true, track:'電子'},
+  {id:'06', title:'線束同焊接可靠性', desc:'應力釋放、刺線風險', href:'units/06-harness-solder.html', ready:true, track:'電子'},
+  {id:'07', title:'機構骨架同關節', desc:'骨架、行程、固位', href:'units/07-skeleton-joints.html', ready:true, track:'機械'},
+  {id:'08', title:'齒輪／凸輪／彈簧', desc:'傳動、噪音、壽命', href:'units/08-gears-cams-springs.html', ready:true, track:'機械'},
+  {id:'09', title:'動作行程同軟綿干涉', desc:'擺頭舉手唔扯爛縫', href:'units/09-motion-interference.html', ready:true, track:'機械'},
+  {id:'10', title:'毛絨物料同填充', desc:'布料、填充、手感', href:'units/10-plush-materials.html', ready:true, track:'毛絨'},
+  {id:'11', title:'車縫工藝', desc:'縫型、難度、外觀 AQL', href:'units/11-sewing.html', ready:true, track:'毛絨'},
+  {id:'12', title:'公仔衫同服飾', desc:'樣版、車縫、面料', href:'units/12-doll-clothes.html', ready:true, track:'毛絨'},
+  {id:'13', title:'Brief 同成本結構', desc:'功能表、目標價、拆成本', href:'units/13-brief-cost.html', ready:true, track:'其他'},
+  {id:'14', title:'安全法規入門', desc:'ASTM / EN71 / CPC', href:'units/14-safety-regs.html', ready:true, track:'其他'},
+  {id:'15', title:'模具注塑同軟綿交接', desc:'硬膠件進毛絨', href:'units/15-molds-softgoods.html', ready:true, track:'其他'},
+  {id:'16', title:'樣板階段', desc:'手辦→工程樣→產前', href:'units/16-sample-stages.html', ready:true, track:'其他'},
+  {id:'17', title:'測試同失效分析', desc:'壽命、跌落、FMEA', href:'units/17-test-fmea.html', ready:true, track:'其他'},
+  {id:'18', title:'BOM／SOP／工藝檔', desc:'文件同產線落地', href:'units/18-bom-sop.html', ready:true, track:'其他'},
+  {id:'19', title:'工廠審核、報價、變更', desc:'產能、ECN、成本鎖', href:'units/19-factory-quote-ecn.html', ready:true, track:'其他'},
+  {id:'20', title:'包裝、運輸同綜合專案', desc:'包材測試＋全流程模擬', href:'units/20-packaging-capstone.html', ready:true, track:'其他'},
 ];
 const done = JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
 const grid = document.getElementById('unitGrid');

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 09 · 動作行程同軟綿干涉</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.motion { width:min(100%,500px); margin:0 auto; }
+.motion svg { width:100%; height:auto; }
+#armMove { transform-origin: 150px 160px; }
+.moving #armMove { animation: raise 1.8s ease-in-out infinite; }
+@keyframes raise { 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(-55deg)} }
+.warn-zone { fill:rgba(255,123,114,.25); stroke:#ff7b72; stroke-width:2; stroke-dasharray:4 3; }
+.ok-zone { fill:rgba(125,222,162,.2); stroke:#7ddea2; stroke-width:2; }
+.ctrl button { padding:8px 14px; border-radius:10px; background:var(--card2); border:1px solid rgba(255,255,255,.08); color:var(--text); cursor:pointer; font-weight:600; margin:4px; }
+.ctrl button.on { border-color:var(--mech); background:rgba(125,222,162,.2); }
+.issue { cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 09 · 機械</span>
+  </div>
+  <h1>動作行程同軟綿干涉</h1>
+  <p class="lead">機構「得」，整機未必得——舉手扯爛腋下縫、擺頭扯甩眼珠，都係干涉問題。三線一齊做行程檢查。</p>
+
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">舉手干涉示意</h3>
+      <div class="ctrl">
+        <button type="button" id="go" class="on">▶ 舉手循環</button>
+        <button type="button" id="stop">⏸ 停</button>
+      </div>
+      <div class="motion">
+        <svg id="motSvg" class="moving" viewBox="0 0 500 340" role="img">
+          <defs>
+            <radialGradient id="fur9" cx="50%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#ffc2d4"/><stop offset="100%" stop-color="#e8799b"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="280" cy="200" rx="110" ry="90" fill="url(#fur9)"/>
+          <circle cx="280" cy="100" r="55" fill="url(#fur9)"/>
+          <circle cx="260" cy="92" r="6" fill="#2b2430"/><circle cx="300" cy="92" r="6" fill="#2b2430"/>
+          <!-- seam risk -->
+          <g class="issue" data-id="seam">
+            <path class="warn-zone" d="M200 160 Q220 180 210 220" fill="none" stroke="#ff7b72" stroke-width="6" stroke-linecap="round"/>
+            <text x="150" y="190" fill="#ffb4ae" font-size="12">腋下縫</text>
+          </g>
+          <!-- arm -->
+          <g id="armMove" class="issue" data-id="arm">
+            <rect x="80" y="150" width="100" height="22" rx="10" fill="#e8799b" stroke="#ff8fab" stroke-width="2"/>
+            <circle cx="150" cy="161" r="12" fill="#7ddea2"/>
+            <circle cx="90" cy="161" r="14" fill="#ffc2d4" stroke="#ff8fab" stroke-width="2"/>
+          </g>
+          <!-- eye risk -->
+          <g class="issue" data-id="eye">
+            <circle cx="300" cy="92" r="14" fill="none" stroke="#ffd166" stroke-width="2" stroke-dasharray="3 2"/>
+            <text x="330" y="70" fill="#ffe9b0" font-size="11">五官拉力</text>
+          </g>
+          <!-- fill bunch -->
+          <g class="issue" data-id="bunch">
+            <ellipse cx="230" cy="170" rx="24" ry="18" class="warn-zone"/>
+            <text x="230" y="145" text-anchor="middle" fill="#ffb4ae" font-size="11">填充堆積</text>
+          </g>
+          <!-- safe envelope -->
+          <path class="ok-zone" d="M150 161 A90 90 0 0 1 150 70" fill="none" stroke="#7ddea2" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="100" y="50" fill="#9fe9c0" font-size="11">設計行程包絡</text>
+        </svg>
+      </div>
+      <div class="panel" id="motPanel"><strong>撳紅／黃警示位</strong>：睇干涉同對策。綠虛線＝允許行程。</div>
+    </div>
+  </div>
+
+  <h2>檢查流程</h2>
+  <div class="timeline" id="flow"></div>
+
+  <h2>典型失效同交接</h2>
+  <div class="timeline" id="fail"></div>
+
+  <div class="exercise">
+    <h3>單元練習</h3>
+    <p>動作干涉檢查，邊啲<strong>一定</strong>要做？</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <button class="btn" type="button" id="markDone">完成本單元</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="08-gears-cams-springs.html">← 單元 08</a>
+    <a class="btn ghost" href="10-plush-materials.html">單元 10 →</a>
+  </div>
+</div>
+<script>
+const info={
+  seam:'<strong>腋下縫</strong>：舉手拉應力集中。對策：加大縫份、加固條、減行程、改關節位置。',
+  arm:'<strong>手臂</strong>：布筒太窄＝卡；太鬆＝露骨架。袖型同行程一齊打版。',
+  eye:'<strong>五官</strong>：擺頭／扯布令眼鼻鬆脫。對策：五官背扣加固、頭內骨架分力。',
+  bunch:'<strong>填充堆積</strong>：動作位棉團卡住機構。對策：局部少填、隔布袋、定型棉。',
+};
+document.querySelectorAll('.issue').forEach(el=>{
+  el.addEventListener('click',()=>{
+    document.getElementById('motPanel').innerHTML=info[el.dataset.id];
+  });
+});
+const svg=document.getElementById('motSvg');
+document.getElementById('go').onclick=()=>{ svg.classList.add('moving'); document.getElementById('go').classList.add('on'); document.getElementById('stop').classList.remove('on'); };
+document.getElementById('stop').onclick=()=>{ svg.classList.remove('moving'); document.getElementById('stop').classList.add('on'); document.getElementById('go').classList.remove('on'); };
+
+const flow=[
+  {t:'1. 裸機構行程',d:'無布狀態量角度、力矩、限位。'},
+  {t:'2. 內膽試裝',d:'薄布內膽＋骨架，睇扯縫同皺褶。'},
+  {t:'3. 大貨布＋填充',d:'完整手感下再測；填充量要標稱±公差。'},
+  {t:'4. 壽命循環',d:'動作 N 次後查縫口、五官、電流、噪音。'},
+];
+flow.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('flow').appendChild(el);
+});
+const fail=[
+  {t:'縫口裂',d:'交接：機構減行程 ↔ 車縫加固 ↔ 面料延展。'},
+  {t:'露骨／起角',d:'交接：骨架倒角 ↔ 填充 ↔ 布筒版型。'},
+  {t:'動作變慢',d:'棉阻／潤滑乾 → 電流升。交接：電子限流閾值要按整機。'},
+  {t:'五官脫',d:'交接：頭殼固位 ↔ 車縫拉力 ↔ 安規細件。'},
+];
+fail.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('fail').appendChild(el);
+});
+const quizItems=[
+  {q:'裸機構＋整機兩階段行程驗證', ok:true},
+  {q:'腋下／頸位縫口加固方案', ok:true},
+  {q:'公司年會場地選址', ok:false},
+  {q:'填充在動作位的避位／定型', ok:true},
+  {q:'股票代碼設計', ok:false},
+];
+const quiz=document.getElementById('quiz');
+quizItems.forEach((item,i)=>{
+  const lab=document.createElement('label');
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change',score);
+});
+function score(){
+  let m=0; quizItems.forEach((it,i)=>{if(document.getElementById('q'+i).checked===it.ok)m++;});
+  const pct=Math.round(m/quizItems.length*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('scoreNote').textContent='吻合度 '+pct+'%（應勾：兩階段行程、縫口加固、填充避位）';
+}
+score();
+document.getElementById('markDone').onclick=()=>{
+  const done=JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['09']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
+  document.getElementById('saveMsg').textContent='已儲存：單元 09 完成。';
+};
+</script>
+</body>
+</html>

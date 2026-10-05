@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 12 · 公仔衫同服飾</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.doll { width:min(100%,420px); margin:0 auto; }
+.doll svg { width:100%; height:auto; }
+.cpart { cursor:pointer; transition:.2s; }
+.cpart:hover, .cpart.on { filter:brightness(1.2); }
+.pat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; }
+.pat-grid .card { cursor:pointer; }
+.pat-grid .card.active { border-color:var(--soft); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 12 · 毛絨</span>
+  </div>
+  <h1>公仔衫同服飾</h1>
+  <p class="lead">Fashion doll／着衫公仔：樣版、面料、車縫、脫穿便利同安規細件（紐扣、拉鍊）一齊管。</p>
+
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">服飾分層（撳件）</h3>
+      <div class="doll">
+        <svg viewBox="0 0 420 380" role="img">
+          <!-- body -->
+          <ellipse cx="210" cy="220" rx="55" ry="70" fill="#f5d0c5"/>
+          <circle cx="210" cy="100" r="45" fill="#f5d0c5"/>
+          <circle cx="195" cy="95" r="5" fill="#2b2430"/><circle cx="225" cy="95" r="5" fill="#2b2430"/>
+          <ellipse cx="210" cy="110" rx="7" ry="5" fill="#e8899a"/>
+          <!-- hair -->
+          <g class="cpart" data-id="hair">
+            <path d="M165 100 Q170 50 210 45 Q250 50 255 100" fill="#6b3a2a" stroke="#8b5a3a" stroke-width="2"/>
+            <text x="300" y="70" fill="#ffd0dc" font-size="12">頭髮／頭飾</text>
+          </g>
+          <!-- dress -->
+          <g class="cpart" data-id="dress">
+            <path d="M160 180 L260 180 L290 300 L130 300 Z" fill="#ff8fab" stroke="#e8799b" stroke-width="2"/>
+            <text x="210" y="250" text-anchor="middle" fill="#1a2332" font-size="12" font-weight="700">衫／裙</text>
+          </g>
+          <!-- shoes -->
+          <g class="cpart" data-id="shoes">
+            <ellipse cx="180" cy="340" rx="28" ry="14" fill="#5b8cff"/>
+            <ellipse cx="240" cy="340" rx="28" ry="14" fill="#5b8cff"/>
+            <text x="210" y="370" text-anchor="middle" fill="#b9d0ff" font-size="12">鞋</text>
+          </g>
+          <!-- fasteners -->
+          <g class="cpart" data-id="fast">
+            <circle cx="210" cy="200" r="6" fill="#ffd166"/>
+            <circle cx="210" cy="220" r="6" fill="#ffd166"/>
+            <circle cx="210" cy="240" r="6" fill="#ffd166"/>
+            <text x="100" y="220" fill="#ffe9b0" font-size="11">紐扣／魔術貼</text>
+          </g>
+          <!-- arms cloth -->
+          <g class="cpart" data-id="sleeve">
+            <rect x="100" y="180" width="50" height="20" rx="8" fill="#e8799b" transform="rotate(-30 125 190)"/>
+            <rect x="270" y="180" width="50" height="20" rx="8" fill="#e8799b" transform="rotate(30 295 190)"/>
+            <text x="70" y="170" fill="#ffd0dc" font-size="11">袖</text>
+          </g>
+        </svg>
+      </div>
+      <div class="panel" id="dollPanel"><strong>撳服飾件</strong>：睇樣版同安規要點。</div>
+    </div>
+  </div>
+
+  <h2>樣版重點（撳卡）</h2>
+  <div class="pat-grid" id="pats"></div>
+  <div class="panel" id="patPanel">揀一項。</div>
+
+  <h2>同電子機構交接</h2>
+  <div class="timeline" id="ho"></div>
+
+  <div class="exercise">
+    <h3>單元練習</h3>
+    <p>公仔衫開發，邊啲<strong>必須</strong>確認？</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <button class="btn" type="button" id="markDone">完成本單元</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="11-sewing.html">← 單元 11</a>
+    <a class="btn ghost" href="13-brief-cost.html">單元 13 →</a>
+  </div>
+</div>
+<script>
+const parts={
+  hair:'<strong>頭髮／頭飾</strong>：植髮密度、膠粘、拉力。細件（髮夾）過安規；唔好擋 IR／開關。',
+  dress:'<strong>衫／裙</strong>：樣版要跟身體＋關節行程。太貼＝舉手撕縫；太鬆＝露骨架。面料伸縮同色牢度。',
+  shoes:'<strong>鞋</strong>：易脫穿、防丟（腳踝帶）。物料硬度防刮花腿部。',
+  fast:'<strong>紐扣／魔術貼／拉鍊</strong>：細件安全（扭力拉力）、咬合壽命、兒童年齡分級。',
+  sleeve:'<strong>袖</strong>：臂關節活動空間；電子手掌開關要按得到——袖口唔好太緊。',
+};
+document.querySelectorAll('.cpart').forEach(p=>{
+  p.addEventListener('click',()=>{
+    document.querySelectorAll('.cpart').forEach(x=>x.classList.remove('on'));
+    p.classList.add('on');
+    document.getElementById('dollPanel').innerHTML=parts[p.dataset.id];
+  });
+});
+const pats=[
+  {t:'净尺寸',d:'跟身體模型＋服装鬆量。電子凸位（電池倉）要加鬆。'},
+  {t:'脫穿',d:'目標用戶（細路／收藏家）決定開口位置。'},
+  {t:'面料',d:'透氣、起毛、印花對位、縮水率。'},
+  {t:'工藝單',d:'車縫順序、熨燙、包裝摺法。'},
+];
+const patEl=document.getElementById('pats');
+pats.forEach(p=>{
+  const c=document.createElement('div'); c.className='card';
+  c.innerHTML=`<h3>${p.t}</h3><p>撳睇</p>`;
+  c.onclick=()=>{ document.querySelectorAll('.pat-grid .card').forEach(x=>x.classList.remove('active')); c.classList.add('active');
+    document.getElementById('patPanel').innerHTML=`<strong>${p.t}</strong>：${p.d}`; };
+  patEl.appendChild(c);
+});
+const ho=[
+  {t:'開關可達',d:'着衫後仲撳到手掌／肚開關？'},
+  {t:'聲腔',d:'厚裙會唔會封住出聲孔？'},
+  {t:'行程',d:'裙擺卡唔卡腿部機構？'},
+  {t:'洗護',d:'可唔可脫衫洗？電子防水等級？標示要清楚。'},
+];
+ho.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('ho').appendChild(el);
+});
+const quizItems=[
+  {q:'樣版含關節行程同電子凸位鬆量', ok:true},
+  {q:'紐扣等細件安規測試', ok:true},
+  {q:'投資人愛好咖啡濃度', ok:false},
+  {q:'着衫後開關／出聲仍可用', ok:true},
+  {q:'辦公室牆漆色號', ok:false},
+];
+const quiz=document.getElementById('quiz');
+quizItems.forEach((item,i)=>{
+  const lab=document.createElement('label');
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change',score);
+});
+function score(){
+  let m=0; quizItems.forEach((it,i)=>{if(document.getElementById('q'+i).checked===it.ok)m++;});
+  const pct=Math.round(m/quizItems.length*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('scoreNote').textContent='吻合度 '+pct+'%（應勾：樣版鬆量、細件安規、着衫後功能）';
+}
+score();
+document.getElementById('markDone').onclick=()=>{
+  const done=JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['12']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
+  document.getElementById('saveMsg').textContent='已儲存：單元 12 完成。';
+};
+</script>
+</body>
+</html>

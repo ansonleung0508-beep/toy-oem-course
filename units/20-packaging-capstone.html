@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 20 · 包裝、運輸同綜合專案</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.pack { width:min(100%,480px); margin:0 auto; }
+.pack svg { width:100%; height:auto; }
+.pp { cursor:pointer; }
+.pp:hover, .pp.on { filter:brightness(1.25); }
+.cap { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; }
+.cap .card { cursor:pointer; min-height:110px; }
+.cap .card.active { border-color:var(--ok); }
+.cap .card h3 { font-size:.95rem; }
+.final-banner { background:linear-gradient(135deg,rgba(91,140,255,.2),rgba(125,222,162,.15)); border:1px solid rgba(91,140,255,.35); border-radius:16px; padding:18px; margin:20px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 20 · 其他 · 綜合</span>
+  </div>
+  <h1>包裝、運輸同綜合專案</h1>
+  <p class="lead">最後一哩：包材保護電子同外形、通過運輸測試、標籤合規。再用一個綜合專案串起全課程。</p>
+
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">包裝結構（撳層）</h3>
+      <div class="pack">
+        <svg viewBox="0 0 480 340" role="img">
+          <!-- outer carton -->
+          <g class="pp" data-id="carton">
+            <rect x="40" y="40" width="400" height="260" rx="12" fill="none" stroke="#5b8cff" stroke-width="3" stroke-dasharray="8 4"/>
+            <text x="240" y="30" text-anchor="middle" fill="#b9d0ff" font-size="13">外箱</text>
+          </g>
+          <!-- color box -->
+          <g class="pp" data-id="colorbox">
+            <rect x="90" y="80" width="300" height="180" rx="10" fill="#243044" stroke="#ff8fab" stroke-width="2"/>
+            <text x="240" y="100" text-anchor="middle" fill="#ffd0dc" font-size="12">彩盒</text>
+          </g>
+          <!-- tray -->
+          <g class="pp" data-id="tray">
+            <rect x="120" y="130" width="240" height="100" rx="8" fill="#1a2830" stroke="#7ddea2" stroke-width="2"/>
+            <text x="240" y="155" text-anchor="middle" fill="#9fe9c0" font-size="12">吸塑／紙托</text>
+          </g>
+          <!-- product -->
+          <g class="pp" data-id="product">
+            <ellipse cx="240" cy="195" rx="50" ry="35" fill="rgba(255,143,171,.5)"/>
+            <circle cx="240" cy="175" r="22" fill="rgba(255,143,171,.6)"/>
+            <text x="240" y="250" text-anchor="middle" fill="#ffd0dc" font-size="11">產品</text>
+          </g>
+          <!-- docs -->
+          <g class="pp" data-id="docs">
+            <rect x="330" y="140" width="40" height="50" rx="3" fill="#ffd166"/>
+            <text x="350" y="210" text-anchor="middle" fill="#ffe9b0" font-size="10">說明書</text>
+          </g>
+          <!-- labels -->
+          <g class="pp" data-id="label">
+            <rect x="100" y="90" width="70" height="24" rx="4" fill="#ff7b72"/>
+            <text x="135" y="106" text-anchor="middle" fill="#1a2332" font-size="10" font-weight="700">標籤</text>
+          </g>
+        </svg>
+      </div>
+      <div class="panel" id="packPanel"><strong>撳包裝層</strong>：睇保護、成本、合規。</div>
+    </div>
+  </div>
+
+  <h2>運輸測試要點</h2>
+  <div class="timeline" id="ship"></div>
+
+  <div class="final-banner">
+    <h2 style="margin-top:0;">綜合專案：唱歌擺頭毛絨「星語熊」</h2>
+    <p class="note">假設你係 OEM 工程師，由 Brief 到船頭。撳關卡複習要交咩。</p>
+    <div class="cap" id="cap"></div>
+    <div class="panel" id="capPanel">揀一個專案關卡。</div>
+  </div>
+
+  <div class="exercise">
+    <h3>畢業練習（綜合）</h3>
+    <p>綜合專案交付，邊啲<strong>一定</strong>要齊？</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <button class="btn" type="button" id="markDone">完成課程最後單元</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="19-factory-quote-ecn.html">← 單元 19</a>
+    <a class="btn" href="../index.html">返回目錄（睇進度）</a>
+  </div>
+</div>
+<script>
+const pack={
+  carton:'<strong>外箱</strong>：抗壓、堆碼、濕度。標：SKU、數量、Fragile、向上箭頭。混裝規則寫清。',
+  colorbox:'<strong>彩盒</strong>：銷售外觀＋開窗（如有）要防刮毛。結構要固定頭肢，減少運輸變形。',
+  tray:'<strong>吸塑／紙托</strong>：定位產品、保護臉同機構。電子位防壓；材料過化學。',
+  product:'<strong>產品</strong>：包裝前功能抽測、外觀 AQL、電池隔離（運輸法規／防耗電）。',
+  docs:'<strong>說明書／警告</strong>：年齡、電池、清洗、故障排查。多語言跟市場。',
+  label:'<strong>標籤</strong>：追溯、認證標記、條碼。同 CPC／技術文件一致。',
+};
+document.querySelectorAll('.pp').forEach(p=>{
+  p.addEventListener('click',()=>{
+    document.querySelectorAll('.pp').forEach(x=>x.classList.remove('on'));
+    p.classList.add('on');
+    document.getElementById('packPanel').innerHTML=pack[p.dataset.id];
+  });
+});
+const ship=[
+  {t:'振動／跌落',d:'包裝態測試；不只裸機跌落。'},
+  {t:'壓縮',d:'倉庫堆碼；彩盒變形會壓壞鼻同倉蓋。'},
+  {t:'氣候',d:'熱濕後開箱檢查掉毛、霉、功能。'},
+  {t:'電量',d:'試裝電池要隔離片；防運輸誤觸耗電。'},
+];
+ship.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('ship').appendChild(el);
+});
+const caps=[
+  {t:'① Brief',d:'年齡 3+、美線、3×AAA、播 6 首歌、擺頭 ±25°、目標 FOB $X。'},
+  {t:'② 電子',d:'PCB 包絡、喇叭聲腔、開關行程、線位、電池倉螺絲。'},
+  {t:'③ 機構',d:'齒輪箱噪音、頸限位、干涉檢查、固位拉力。'},
+  {t:'④ 軟綿',d:'面料卡、填充避位、車縫加固、AQL。'},
+  {t:'⑤ 安規文件',d:'ASTM/CPC 測項、標籤、預測試。'},
+  {t:'⑥ 樣板關口',d:'ES→驗證→PPS 簽核。'},
+  {t:'⑦ 工廠',d:'審核、BOM 報價、SOP、ECN 規則。'},
+  {t:'⑧ 包裝出貨',d:'包材測試、船頭樣、首單加嚴。'},
+];
+const capEl=document.getElementById('cap');
+caps.forEach(c=>{
+  const card=document.createElement('div'); card.className='card';
+  card.innerHTML=`<h3>${c.t}</h3><p>撳睇交付</p>`;
+  card.onclick=()=>{ document.querySelectorAll('.cap .card').forEach(x=>x.classList.remove('active')); card.classList.add('active');
+    document.getElementById('capPanel').innerHTML=`<strong>${c.t}</strong>：${c.d}`; };
+  capEl.appendChild(card);
+});
+const quizItems=[
+  {q:'包裝態運輸測試（跌落／振動／壓縮）', ok:true},
+  {q:'標籤警告同追溯資訊齊全', ok:true},
+  {q:'老闆高爾夫球杆品牌', ok:false},
+  {q:'綜合：Brief→三線→安規→PPS→工廠→包裝閉環', ok:true},
+  {q:'辦公室風水擺設', ok:false},
+];
+const quiz=document.getElementById('quiz');
+quizItems.forEach((item,i)=>{
+  const lab=document.createElement('label');
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change',score);
+});
+function score(){
+  let m=0; quizItems.forEach((it,i)=>{if(document.getElementById('q'+i).checked===it.ok)m++;});
+  const pct=Math.round(m/quizItems.length*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('scoreNote').textContent='吻合度 '+pct+'%（應勾：運輸測試、標籤追溯、全流程閉環）';
+}
+score();
+document.getElementById('markDone').onclick=()=>{
+  const done=JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['20']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
+  document.getElementById('saveMsg').textContent='已儲存：單元 20 完成。恭喜完成全課程！返目錄睇晒「已完成」。';
+};
+</script>
+</body>
+</html>

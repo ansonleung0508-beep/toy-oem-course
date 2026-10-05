@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 04 · 喇叭同聲腔</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.spk-wrap { width:min(100%,500px); margin:0 auto; }
+.spk-svg { width:100%; height:auto; }
+.wave { animation: waveMove 1.2s ease-in-out infinite; opacity:.6; }
+@keyframes waveMove { 0%,100%{transform:scale(1);opacity:.35} 50%{transform:scale(1.15);opacity:.8} }
+.hs { cursor:pointer; }
+.hs:hover, .hs.on { filter:brightness(1.25); }
+.meter { height:14px; background:rgba(255,255,255,.08); border-radius:999px; overflow:hidden; margin:8px 0; }
+.meter>i { display:block; height:100%; background:linear-gradient(90deg,var(--elec),var(--ok)); width:0; transition:width .4s; }
+.opt { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; }
+.opt button { padding:8px 12px; border-radius:10px; background:var(--card2); border:1px solid rgba(255,255,255,.08); color:var(--text); cursor:pointer; font-weight:600; }
+.opt button.on { border-color:var(--elec); background:rgba(255,209,102,.18); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 04 · 電子</span>
+  </div>
+  <h1>喇叭同聲腔</h1>
+  <p class="lead">毛絨入面喇叭唔係「焊上去就得」——聲腔體積、出聲孔、布料遮擋，決定聲壓同音色。電子同軟綿要夾口。</p>
+
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">聲腔剖面（撳部件）</h3>
+      <div class="spk-wrap">
+        <svg class="spk-svg" viewBox="0 0 500 340" role="img">
+          <defs>
+            <radialGradient id="fur4" cx="50%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#ffc2d4"/><stop offset="100%" stop-color="#e8799b"/>
+            </radialGradient>
+          </defs>
+          <!-- soft body -->
+          <ellipse cx="250" cy="200" rx="180" ry="110" fill="url(#fur4)" opacity=".85"/>
+          <!-- cavity -->
+          <g class="hs" data-id="cavity">
+            <ellipse cx="250" cy="195" rx="70" ry="48" fill="#1a2332" stroke="#ffd166" stroke-width="2" stroke-dasharray="5 3"/>
+            <text x="250" y="155" text-anchor="middle" fill="#ffe9b0" font-size="12">聲腔淨空</text>
+          </g>
+          <!-- speaker -->
+          <g class="hs" data-id="spk">
+            <circle cx="250" cy="195" r="32" fill="#2a3344" stroke="#7ddea2" stroke-width="3"/>
+            <circle cx="250" cy="195" r="18" fill="#1a1f2a" stroke="#ffd166" stroke-width="2"/>
+            <circle cx="250" cy="195" r="6" fill="#ffd166" class="glow"/>
+          </g>
+          <!-- mesh / fabric hole -->
+          <g class="hs" data-id="mesh">
+            <ellipse cx="250" cy="100" rx="28" ry="12" fill="#243044" stroke="#5b8cff" stroke-width="2"/>
+            <path d="M230 100 H270 M240 94 V106 M260 94 V106" stroke="#b9d0ff" stroke-width="1.5"/>
+            <text x="250" y="85" text-anchor="middle" fill="#b9d0ff" font-size="11">出聲網／孔</text>
+          </g>
+          <!-- sound waves -->
+          <g class="wave" style="transform-origin:250px 195px">
+            <ellipse cx="250" cy="195" rx="50" ry="38" fill="none" stroke="#ffd166" stroke-width="1.5" opacity=".5"/>
+            <ellipse cx="250" cy="195" rx="65" ry="50" fill="none" stroke="#ffd166" stroke-width="1" opacity=".35"/>
+          </g>
+          <!-- stuffing interference -->
+          <g class="hs" data-id="fill">
+            <circle cx="160" cy="180" r="14" fill="#ff8fab" opacity=".7"/>
+            <circle cx="340" cy="210" r="16" fill="#ff8fab" opacity=".7"/>
+            <circle cx="180" cy="240" r="12" fill="#ff8fab" opacity=".7"/>
+            <text x="120" y="175" fill="#ffd0dc" font-size="11">填充</text>
+          </g>
+          <!-- wires -->
+          <g class="hs" data-id="wire">
+            <path d="M282 195 C330 195 360 160 380 140" fill="none" stroke="#5b8cff" stroke-width="3"/>
+            <text x="390" y="135" fill="#b9d0ff" font-size="11">→ PCB</text>
+          </g>
+        </svg>
+      </div>
+      <div class="panel" id="spkPanel"><strong>撳聲腔／喇叭／網孔／填充</strong>：睇點影響聲壓。</div>
+    </div>
+  </div>
+
+  <h2>布料遮擋實驗（互動）</h2>
+  <p class="note">揀遮擋條件，睇估算聲壓損失（示意，非實驗室數據）。</p>
+  <div class="opt" id="coverOpts"></div>
+  <div class="meter"><i id="splBar"></i></div>
+  <p class="note" id="splNote">相對聲壓：—</p>
+
+  <h2>工程 lock 清單</h2>
+  <div class="timeline" id="locks"></div>
+
+  <h2>常見失效</h2>
+  <div class="timeline" id="fails"></div>
+
+  <div class="exercise">
+    <h3>單元練習</h3>
+    <p>喇叭工程樣前，邊啲<strong>一定</strong>要同軟綿／機構對齊？</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <button class="btn" type="button" id="markDone">完成本單元</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="03-battery-power.html">← 單元 03</a>
+    <a class="btn ghost" href="05-switches-sensors.html">單元 05 →</a>
+  </div>
+</div>
+<script>
+const info={
+  cavity:'<strong>聲腔淨空</strong>：喇叭背面要有密封或半密封腔體。體積影響低頻；填充塞滿＝悶聲。毛絨要預留「硬膠腔」或「布袋定型」。',
+  spk:'<strong>喇叭</strong>：常 28/36/40mm、8Ω。標額定／最大功率、共振頻率。焊盤極性同線長寫入接口文件。',
+  mesh:'<strong>出聲網／孔</strong>：外觀布要開孔或用透聲網。孔太密／布太厚＝高頻損；孔太大＝露內部、安規異物。',
+  fill:'<strong>填充干涉</strong>：珍珠棉／PP棉擠住振膜＝失真、雜音。要用隔板或腔體隔離。',
+  wire:'<strong>喇叭線</strong>：短、固定、避車針。振動位要留服務圈，防焊點疲勞。'
+};
+document.querySelectorAll('.hs').forEach(h=>{
+  h.addEventListener('click',()=>{
+    document.querySelectorAll('.hs').forEach(x=>x.classList.remove('on'));
+    h.classList.add('on');
+    document.getElementById('spkPanel').innerHTML=info[h.dataset.id];
+  });
+});
+const covers=[
+  {t:'裸喇叭（對照）', v:100},
+  {t:'薄網布', v:85},
+  {t:'雙層毛絨', v:55},
+  {t:'毛絨+厚填充貼面', v:30},
+];
+const covEl=document.getElementById('coverOpts');
+covers.forEach(c=>{
+  const b=document.createElement('button'); b.type='button'; b.textContent=c.t;
+  b.onclick=()=>{
+    document.querySelectorAll('#coverOpts button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    document.getElementById('splBar').style.width=c.v+'%';
+    document.getElementById('splNote').textContent='相對聲壓約 '+c.v+'%（示意）— 厚布+填充最傷高頻同響度';
+  };
+  covEl.appendChild(b);
+});
+covEl.querySelector('button').click();
+
+const locks=[
+  {t:'喇叭規格',d:'尺寸、阻抗、功率、安裝方式（螺牙／卡扣／膠）。'},
+  {t:'腔體外形',d:'淨空體積、密封方式、同骨架干涉檢查。'},
+  {t:'出聲路徑',d:'孔位、網布料號、外觀是否接受露網。'},
+  {t:'聲壓目標',d:'距離 10/50cm 嘅 dBA 目標同公差——寫入驗收。'},
+];
+locks.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('locks').appendChild(el);
+});
+const fails=[
+  {t:'悶聲／太細',d:'腔被棉塞滿或布太厚。對策：硬腔、透聲網、填充避位。'},
+  {t:'破音／雜音',d:'功率過大或振膜擦件。對策：限幅、腔內無銳邊。'},
+  {t:'焊點斷',d:'振動＋硬拉線。對策：應力釋放、點膠、服務圈。'},
+  {t:'進異物',d:'出聲孔太大。對策：網布目數符合安規。'},
+];
+fails.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('fails').appendChild(el);
+});
+const quizItems=[
+  {q:'喇叭阻抗／功率同安裝方式', ok:true},
+  {q:'聲腔淨空同出聲孔／網布', ok:true},
+  {q:'品牌門店裝修風格指南', ok:false},
+  {q:'填充避位，避免塞住振膜', ok:true},
+  {q:'快遞面單字體', ok:false},
+];
+const quiz=document.getElementById('quiz');
+quizItems.forEach((item,i)=>{
+  const lab=document.createElement('label');
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change',score);
+});
+function score(){
+  let m=0; quizItems.forEach((it,i)=>{if(document.getElementById('q'+i).checked===it.ok)m++;});
+  const pct=Math.round(m/quizItems.length*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('scoreNote').textContent='吻合度 '+pct+'%（應勾：喇叭規格、聲腔出聲、填充避位）';
+}
+score();
+document.getElementById('markDone').onclick=()=>{
+  const done=JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['04']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
+  document.getElementById('saveMsg').textContent='已儲存：單元 04 完成。';
+};
+</script>
+</body>
+</html>

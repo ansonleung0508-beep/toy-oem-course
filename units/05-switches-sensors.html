@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 05 · 開關／感測／IR</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.sw-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; margin:14px 0; }
+.sw-card { background:var(--card); border-radius:14px; padding:16px; text-align:center; cursor:pointer; border:1px solid rgba(255,255,255,.06); transition:.2s; }
+.sw-card:hover, .sw-card.on { border-color:var(--elec); background:rgba(255,209,102,.12); transform:translateY(-3px); }
+.sw-icon { font-size:2rem; margin-bottom:8px; }
+.plush-demo { width:min(100%,420px); margin:0 auto; position:relative; }
+.plush-demo svg { width:100%; height:auto; }
+.zone { cursor:pointer; transition:.2s; }
+.zone:hover, .zone.on { filter:brightness(1.3); }
+.force-bar { height:12px; background:rgba(255,255,255,.08); border-radius:999px; margin:8px 0; overflow:hidden; }
+.force-bar>i { display:block; height:100%; width:40%; background:linear-gradient(90deg,var(--ok),var(--elec),var(--warn)); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 05 · 電子</span>
+  </div>
+  <h1>開關／感測／IR</h1>
+  <p class="lead">觸發點決定玩法——亦決定誤觸、按唔著、壽命。軟綿壓縮行程要同開關行程匹配。</p>
+
+  <h2>觸發類型（撳卡）</h2>
+  <div class="sw-grid" id="swTypes"></div>
+  <div class="panel" id="swPanel">揀一種觸發，睇優缺同交接。</div>
+
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">軟綿觸發區示意（撳粉紅區）</h3>
+      <div class="plush-demo">
+        <svg viewBox="0 0 420 300" role="img">
+          <defs>
+            <radialGradient id="fur5" cx="50%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="#ffc2d4"/><stop offset="100%" stop-color="#e8799b"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="210" cy="190" rx="120" ry="90" fill="url(#fur5)"/>
+          <circle cx="210" cy="100" r="58" fill="url(#fur5)"/>
+          <circle cx="188" cy="92" r="6" fill="#2b2430"/><circle cx="232" cy="92" r="6" fill="#2b2430"/>
+          <ellipse cx="210" cy="110" rx="9" ry="6" fill="#ff6b8a"/>
+          <!-- zones -->
+          <ellipse class="zone" data-id="paw" cx="130" cy="200" rx="36" ry="28" fill="rgba(255,209,102,.45)" stroke="#ffd166" stroke-width="2"/>
+          <text x="130" y="205" text-anchor="middle" fill="#1a2332" font-size="11" font-weight="700">手掌</text>
+          <ellipse class="zone" data-id="belly" cx="210" cy="200" rx="40" ry="32" fill="rgba(125,222,162,.4)" stroke="#7ddea2" stroke-width="2"/>
+          <text x="210" y="205" text-anchor="middle" fill="#1a2332" font-size="11" font-weight="700">肚</text>
+          <ellipse class="zone" data-id="head" cx="210" cy="70" rx="30" ry="16" fill="rgba(91,140,255,.4)" stroke="#5b8cff" stroke-width="2"/>
+          <text x="210" y="74" text-anchor="middle" fill="#e8eef7" font-size="11" font-weight="700">頭頂</text>
+          <circle class="zone" data-id="ir" cx="300" cy="150" r="22" fill="rgba(255,123,114,.35)" stroke="#ff7b72" stroke-width="2"/>
+          <text x="300" y="154" text-anchor="middle" fill="#ffb4ae" font-size="10">IR</text>
+        </svg>
+      </div>
+      <div class="panel" id="zonePanel"><strong>撳觸發區</strong>：睇行程、誤觸風險同固定方式。</div>
+      <p class="note">觸發力示意（綠＝剛好，黃＝偏硬，紅＝太硬／小朋友撳唔動）</p>
+      <div class="force-bar"><i id="forceI"></i></div>
+    </div>
+  </div>
+
+  <h2>可靠性要點</h2>
+  <div class="timeline" id="rel"></div>
+
+  <div class="exercise">
+    <h3>單元練習</h3>
+    <p>「撳手掌播音樂」毛絨，邊啲<strong>必須</strong>喺 ES 前確認？</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <button class="btn" type="button" id="markDone">完成本單元</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="04-speaker-cavity.html">← 單元 04</a>
+    <a class="btn ghost" href="06-harness-solder.html">單元 06 →</a>
+  </div>
+</div>
+<script>
+const types=[
+  {t:'輕觸開關', icon:'🔘', d:'便宜可靠。要硬膠座或布強化，否則軟綿吞行程。壽命按鍵次數寫入規格。'},
+  {t:'膜片／導電布', icon:'🖐️', d:'手感軟、適合大面積。濕度同折痕會令電阻漂；要防抖同閾值校準。'},
+  {t:'磁簧／霍爾', icon:'🧲', d:'無外露按鍵，用磁鐵觸發。距離同磁鐵牌號要 lock；填充位移會失效。'},
+  {t:'IR 收發', icon:'📡', d:'揮手／靠近觸發。毛絨布會衰減 IR；窗口要用透 IR 料或開孔，避太陽光誤觸。'},
+  {t:'傾斜／振動', icon:'📶', d:'擺動觸發。運輸誤觸要軟件濾波；安裝方向寫死。'},
+  {t:'TOC／電容', icon:'✨', d:'觸摸感應。布料濕度影響大；電極形狀同地線要同軟綿一齊試。'},
+];
+const swEl=document.getElementById('swTypes');
+types.forEach(t=>{
+  const c=document.createElement('div'); c.className='sw-card';
+  c.innerHTML=`<div class="sw-icon">${t.icon}</div><strong>${t.t}</strong>`;
+  c.onclick=()=>{ document.querySelectorAll('.sw-card').forEach(x=>x.classList.remove('on')); c.classList.add('on');
+    document.getElementById('swPanel').innerHTML=`<strong>${t.t}</strong>：${t.d}`; };
+  swEl.appendChild(c);
+});
+const zones={
+  paw:{d:'<strong>手掌</strong>：最常見。布層壓縮量要 ≥ 開關行程+裕量。太厚＝撳唔著；太薄＝誤觸同露形。', f:'55%'},
+  belly:{d:'<strong>肚</strong>：面積大易誤觸（抱住就響）。要用較高觸發力或雙點確認。', f:'70%'},
+  head:{d:'<strong>頭頂</strong>：常配輕觸或磁簧。注意跌落時頭部撞擊會唔會誤觸或損壞。', f:'45%'},
+  ir:{d:'<strong>IR 窗</strong>：避開厚毛同深色吸光布。標接收角度同測試距離；日光燈／陽光要做誤觸測試。', f:'35%'},
+};
+document.querySelectorAll('.zone').forEach(z=>{
+  z.addEventListener('click',()=>{
+    document.querySelectorAll('.zone').forEach(x=>x.classList.remove('on'));
+    z.classList.add('on');
+    const info=zones[z.dataset.id];
+    document.getElementById('zonePanel').innerHTML=info.d;
+    document.getElementById('forceI').style.width=info.f;
+  });
+});
+const rel=[
+  {t:'行程匹配',d:'開關行程 + 回彈 vs 布+填充壓縮曲線。用實際大貨布打樣量。'},
+  {t:'防誤觸',d:'抱、壓箱、運輸振動。軟件防抖＋力學閾值。'},
+  {t:'壽命',d:'按鍵次數（例如 5 萬次）寫入驗收；膜片要算折痕壽命。'},
+  {t:'固定',d:'開關座同布袋／骨架定位，防止走位。'},
+];
+rel.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('rel').appendChild(el);
+});
+const quizItems=[
+  {q:'觸發行程同布料壓縮匹配', ok:true},
+  {q:'誤觸場景（抱／運輸）測試計劃', ok:true},
+  {q:'APP 開屏動畫風格', ok:false},
+  {q:'開關壽命次數同固定方式', ok:true},
+  {q:'倉儲貨架顏色', ok:false},
+];
+const quiz=document.getElementById('quiz');
+quizItems.forEach((item,i)=>{
+  const lab=document.createElement('label');
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change',score);
+});
+function score(){
+  let m=0; quizItems.forEach((it,i)=>{if(document.getElementById('q'+i).checked===it.ok)m++;});
+  const pct=Math.round(m/quizItems.length*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('scoreNote').textContent='吻合度 '+pct+'%（應勾：行程匹配、誤觸測試、壽命固定）';
+}
+score();
+document.getElementById('markDone').onclick=()=>{
+  const done=JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['05']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
+  document.getElementById('saveMsg').textContent='已儲存：單元 05 完成。';
+};
+</script>
+</body>
+</html>

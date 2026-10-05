@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 16 · 樣板階段</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.chips { display:flex; gap:8px; overflow-x:auto; padding:8px 2px 16px; }
+.chip { flex:0 0 auto; padding:10px 14px; border-radius:12px; background:var(--card2); border:1px solid rgba(255,255,255,.08); font-weight:700; font-size:.85rem; cursor:pointer; position:relative; }
+.chip::after { content:"→"; position:absolute; right:-12px; color:var(--muted); }
+.chip:last-child::after { content:""; }
+.chip.lit { background:rgba(91,140,255,.25); border-color:var(--accent); }
+.gate { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; }
+.gate .card { cursor:pointer; }
+.gate .card.active { border-color:rgba(61,214,140,.5); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 16 · 其他</span>
+  </div>
+  <h1>樣板階段</h1>
+  <p class="lead">手辦 → 工程樣 → 驗證樣 → 產前樣 → 船頭樣。每級有關口；跳級＝大貨還債。</p>
+
+  <div class="chips" id="chips"></div>
+
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">階段詳情（撳時間線）</h3>
+      <div class="timeline" id="stages"></div>
+    </div>
+  </div>
+
+  <h2>關口清單（撳卡）</h2>
+  <div class="gate" id="gates"></div>
+  <div class="panel" id="gatePanel">揀一個關口。</div>
+
+  <h2>電子毛絨特別叮囑</h2>
+  <div class="timeline" id="tips"></div>
+
+  <div class="exercise">
+    <h3>單元練習</h3>
+    <p>產前樣（PPS）前，邊啲<strong>必須</strong>完成？</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <button class="btn" type="button" id="markDone">完成本單元</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="15-molds-softgoods.html">← 單元 15</a>
+    <a class="btn ghost" href="17-test-fmea.html">單元 17 →</a>
+  </div>
+</div>
+<script>
+const stages=[
+  {t:'手辦／概念樣',d:'外觀比例、手感方向。電子可用假件佔位。',f:'無佔位 → 後期塞唔入', lit:true},
+  {t:'工程樣 ES',d:'真電子＋真機構＋可車縫內膽。第一次三線夾口。',f:'各做各 → 裝配失敗'},
+  {t:'驗證樣',d:'安規預測、壽命、跌落、聲壓。料接近大貨。',f:'手作料過測、大貨料不過'},
+  {t:'產前樣 PPS',d:'大貨工藝／大貨料／大貨工裝。鎖外觀同工時。',f:'手作靚、產線做唔出'},
+  {t:'船頭／銷售樣',d:'客戶確認、拍照、下單基線。',f:'同 PPS 不一致 → 糾紛'},
+];
+const chips=document.getElementById('chips');
+const stagesEl=document.getElementById('stages');
+stages.forEach((s,i)=>{
+  const chip=document.createElement('div'); chip.className='chip'+(i===0?' lit':''); chip.textContent=(i+1)+'. '+s.t;
+  chip.onclick=()=>activate(i);
+  chips.appendChild(chip);
+  const el=document.createElement('div'); el.className='step'+(i===0?' active':'');
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${s.t}</h4><div class="detail">${s.d}<br><span class="fail">失敗：${s.f}</span></div></div>`;
+  el.onclick=()=>activate(i);
+  stagesEl.appendChild(el);
+});
+function activate(i){
+  document.querySelectorAll('.chip').forEach((c,j)=>c.classList.toggle('lit',j===i));
+  document.querySelectorAll('#stages .step').forEach((c,j)=>c.classList.toggle('active',j===i));
+}
+let idx=0; setInterval(()=>{ idx=(idx+1)%stages.length; activate(idx); }, 2200);
+
+const gates=[
+  {t:'ES 入場',d:'包絡、接口、電池、動作角度草案齊。'},
+  {t:'ES 出場',d:'可動可響、干涉清單關閉、BOM 初稿。'},
+  {t:'驗證出場',d:'關鍵測試 Pass 或有改善計劃。'},
+  {t:'PPS 出場',d:'工時、AQL、SOP、大貨料確認簽核。'},
+];
+const gateEl=document.getElementById('gates');
+gates.forEach(g=>{
+  const c=document.createElement('div'); c.className='card';
+  c.innerHTML=`<h3>${g.t}</h3><p>撳睇</p>`;
+  c.onclick=()=>{ document.querySelectorAll('.gate .card').forEach(x=>x.classList.remove('active')); c.classList.add('active');
+    document.getElementById('gatePanel').innerHTML=`<strong>${g.t}</strong>：${g.d}`; };
+  gateEl.appendChild(c);
+});
+const tips=[
+  {t:'假電池真電流',d:'ES 要用真電池化學或可模擬內阻嘅電源。'},
+  {t:'大貨布早試',d:'透聲、掉毛、車縫張力——愈早用大貨布愈好。'},
+  {t:'封樣拍照',d:'PPS 六面相＋細節，ECN 對照用。'},
+  {t:'數量',d:'每階段樣板數要夠拆、夠測、夠留樣。'},
+];
+tips.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('tips').appendChild(el);
+});
+const quizItems=[
+  {q:'ES 完成三線夾口同干涉關閉', ok:true},
+  {q:'驗證樣關鍵測試通過或有計劃', ok:true},
+  {q:'公司吉祥物命名投票', ok:false},
+  {q:'PPS 用大貨料／工藝並簽核', ok:true},
+  {q:'前台鮮花預訂', ok:false},
+];
+const quiz=document.getElementById('quiz');
+quizItems.forEach((item,i)=>{
+  const lab=document.createElement('label');
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change',score);
+});
+function score(){
+  let m=0; quizItems.forEach((it,i)=>{if(document.getElementById('q'+i).checked===it.ok)m++;});
+  const pct=Math.round(m/quizItems.length*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('scoreNote').textContent='吻合度 '+pct+'%（應勾：ES 夾口、驗證測試、PPS 大貨料）';
+}
+score();
+document.getElementById('markDone').onclick=()=>{
+  const done=JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['16']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
+  document.getElementById('saveMsg').textContent='已儲存：單元 16 完成。';
+};
+</script>
+</body>
+</html>

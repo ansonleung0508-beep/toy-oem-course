@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 18 · BOM／SOP／工藝檔</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.doc-tabs { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+.doc-tabs button { padding:10px 14px; border-radius:10px; background:var(--card2); border:1px solid rgba(255,255,255,.08); color:var(--text); cursor:pointer; font-weight:700; }
+.doc-tabs button.on { border-color:var(--accent); background:rgba(91,140,255,.2); }
+.bom-row { display:grid; grid-template-columns:80px 1fr 60px 80px; gap:8px; padding:8px; background:var(--card); border-radius:8px; margin:6px 0; font-size:.88rem; cursor:pointer; border:1px solid transparent; }
+.bom-row:hover, .bom-row.on { border-color:rgba(91,140,255,.4); }
+.sop-step { border-left:3px solid var(--ok); padding:8px 12px; margin:8px 0; background:var(--card); border-radius:0 10px 10px 0; cursor:pointer; }
+.sop-step.on { background:var(--card2); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 18 · 其他</span>
+  </div>
+  <h1>BOM／SOP／工藝檔</h1>
+  <p class="lead">文件係產線嘅「唯一真相」。BOM 錯＝買錯料；SOP 含糊＝靠老師傅；工藝檔唔更新＝ECN 失控。</p>
+
+  <div class="doc-tabs" id="tabs">
+    <button type="button" class="on" data-tab="bom">BOM</button>
+    <button type="button" data-tab="sop">SOP</button>
+    <button type="button" data-tab="proc">工藝檔</button>
+  </div>
+  <div class="panel" id="tabPanel"></div>
+
+  <div id="bomView">
+    <h3>示例 BOM（撳行）</h3>
+    <div class="bom-row" style="background:var(--card2);font-weight:700;cursor:default"><span>料號</span><span>名稱</span><span>用量</span><span>階</span></div>
+    <div id="bomList"></div>
+  </div>
+  <div id="sopView" style="display:none">
+    <h3>裝配 SOP 節選（撳步）</h3>
+    <div id="sopList"></div>
+  </div>
+  <div id="procView" style="display:none">
+    <h3>工藝檔要有咩</h3>
+    <div class="timeline" id="procList"></div>
+  </div>
+
+  <h2>版本同落地</h2>
+  <div class="timeline" id="ver"></div>
+
+  <div class="exercise">
+    <h3>單元練習</h3>
+    <p>量產文件，邊啲<strong>必須</strong>齊？</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <button class="btn" type="button" id="markDone">完成本單元</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="17-test-fmea.html">← 單元 17</a>
+    <a class="btn ghost" href="19-factory-quote-ecn.html">單元 19 →</a>
+  </div>
+</div>
+<script>
+const tabInfo={
+  bom:'<strong>BOM</strong>：料號、名稱、規格、用量、位階、供應商、替代料、環保屬性。電子／機構／軟綿分階清楚。',
+  sop:'<strong>SOP</strong>：圖文步驟、扭矩、工時、防錯、安全。關鍵工位要有「不良示例」相。',
+  proc:'<strong>工藝檔</strong>：車縫圖、線位圖、填充圖、測試工站、包裝摺法——同 BOM／SOP 互鎖版本號。',
+};
+document.getElementById('tabPanel').innerHTML=tabInfo.bom;
+document.querySelectorAll('#tabs button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    document.getElementById('tabPanel').innerHTML=tabInfo[b.dataset.tab];
+    document.getElementById('bomView').style.display=b.dataset.tab==='bom'?'block':'none';
+    document.getElementById('sopView').style.display=b.dataset.tab==='sop'?'block':'none';
+    document.getElementById('procView').style.display=b.dataset.tab==='proc'?'block':'none';
+  };
+});
+const bom=[
+  {pn:'E-PCB-01', n:'主控 PCBA', qty:'1', lvl:'1', d:'含固件版本；返修要對版本。'},
+  {pn:'E-SPK-36', n:'喇叭 36mm 8Ω', qty:'1', lvl:'2', d:'阻抗同功率寫規格欄。'},
+  {pn:'M-GB-SW', n:'擺頭齒輪箱', qty:'1', lvl:'1', d:'含潤滑脂料號。'},
+  {pn:'S-FAB-PK', n:'超柔絨 粉', qty:'0.18m', lvl:'1', d:'克重／色號／毛向。'},
+  {pn:'S-FIL-PP', n:'PP棉', qty:'80g', lvl:'2', d:'分區克重見填充圖。'},
+  {pn:'P-BOX-01', n:'彩盒', qty:'1', lvl:'1', d:'結構同印刷版本。'},
+];
+const bomList=document.getElementById('bomList');
+bom.forEach(r=>{
+  const row=document.createElement('div'); row.className='bom-row';
+  row.innerHTML=`<span>${r.pn}</span><span>${r.n}</span><span>${r.qty}</span><span>${r.lvl}</span>`;
+  row.onclick=()=>{ document.querySelectorAll('.bom-row').forEach(x=>x.classList.remove('on')); row.classList.add('on');
+    document.getElementById('tabPanel').innerHTML=`<strong>${r.pn} ${r.n}</strong>：${r.d}`; };
+  bomList.appendChild(row);
+});
+const sops=[
+  {t:'1. 裝齒輪箱入骨架',d:'對孔、塗指定膠、扭矩 0.4 N·m。'},
+  {t:'2. 佈線經布通道',d:'對線位圖；禁穿越縫線標紅區。'},
+  {t:'3. 插 PCBA',d:'防靜電；卡扣聽「咔」聲。'},
+  {t:'4. 半成品通電測',d:'播一段音＋擺頭 1 循環。'},
+  {t:'5. 翻布封口',d:'暗縫；線頭處理；外觀自檢。'},
+];
+const sopList=document.getElementById('sopList');
+sops.forEach(s=>{
+  const el=document.createElement('div'); el.className='sop-step';
+  el.innerHTML=`<strong>${s.t}</strong>`;
+  el.onclick=()=>{ document.querySelectorAll('.sop-step').forEach(x=>x.classList.remove('on')); el.classList.add('on');
+    document.getElementById('tabPanel').innerHTML=s.d; };
+  sopList.appendChild(el);
+});
+const procs=[
+  {t:'車縫工藝圖',d:'縫型、針距、加固、毛向箭頭。'},
+  {t:'線位／線束圖',d:'路徑、固定點、色標。'},
+  {t:'填充圖',d:'分區克重、避位。'},
+  {t:'測試工站',d:'項目、儀器、記錄表。'},
+];
+procs.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('procList').appendChild(el);
+});
+const ver=[
+  {t:'版本號',d:'文件同物料版本聯動；舊版回收。'},
+  {t:'受控發放',d:'產線只准受控复印件／系統端末。'},
+  {t:'培訓',d:'SOP 更新要簽培訓記錄。'},
+  {t:'審核',d:'巡線對照文件；發現口頭習慣要抓返文件。'},
+];
+ver.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('ver').appendChild(el);
+});
+const quizItems=[
+  {q:'受控 BOM（含規格／用量／版本）', ok:true},
+  {q:'圖文 SOP 含扭矩同防錯', ok:true},
+  {q:'員工寵物名字彙編', ok:false},
+  {q:'車縫／線位／填充工藝圖互鎖版本', ok:true},
+  {q:'午餐外賣連結', ok:false},
+];
+const quiz=document.getElementById('quiz');
+quizItems.forEach((item,i)=>{
+  const lab=document.createElement('label');
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change',score);
+});
+function score(){
+  let m=0; quizItems.forEach((it,i)=>{if(document.getElementById('q'+i).checked===it.ok)m++;});
+  const pct=Math.round(m/quizItems.length*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('scoreNote').textContent='吻合度 '+pct+'%（應勾：BOM、SOP、工藝圖版本）';
+}
+score();
+document.getElementById('markDone').onclick=()=>{
+  const done=JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['18']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
+  document.getElementById('saveMsg').textContent='已儲存：單元 18 完成。';
+};
+</script>
+</body>
+</html>

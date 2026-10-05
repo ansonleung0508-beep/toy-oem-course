@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 11 · 車縫工藝</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.sew { width:min(100%,500px); margin:0 auto; }
+.sew svg { width:100%; height:auto; }
+.stitch { stroke-dasharray:6 4; animation: stitchMove 1s linear infinite; }
+@keyframes stitchMove { to { stroke-dashoffset:-20; } }
+.spart { cursor:pointer; }
+.spart:hover, .spart.on { filter:brightness(1.25); }
+.aql { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; }
+.aql .card { cursor:pointer; }
+.aql .card.active { border-color:var(--soft); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 11 · 毛絨</span>
+  </div>
+  <h1>車縫工藝</h1>
+  <p class="lead">車縫決定外觀 AQL、強度同能不能「藏得住」電子線。針距、縫型、打開方式要寫進 SOP。</p>
+
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">車縫結構（撳部位）</h3>
+      <div class="sew">
+        <svg viewBox="0 0 500 320" role="img">
+          <ellipse cx="250" cy="180" rx="140" ry="100" fill="rgba(255,143,171,.2)" stroke="#ff8fab" stroke-width="2"/>
+          <g class="spart" data-id="outline">
+            <ellipse cx="250" cy="180" rx="130" ry="90" fill="none" stroke="#ffd166" stroke-width="2.5" class="stitch"/>
+            <text x="250" y="60" text-anchor="middle" fill="#ffe9b0" font-size="12">外輪廓縫</text>
+          </g>
+          <g class="spart" data-id="open">
+            <path d="M180 250 Q250 270 320 250" fill="none" stroke="#5b8cff" stroke-width="4" stroke-linecap="round"/>
+            <text x="250" y="295" text-anchor="middle" fill="#b9d0ff" font-size="12">翻口／裝配口</text>
+          </g>
+          <g class="spart" data-id="reinf">
+            <path d="M160 140 L200 170" stroke="#7ddea2" stroke-width="5" stroke-linecap="round"/>
+            <path d="M340 140 L300 170" stroke="#7ddea2" stroke-width="5" stroke-linecap="round"/>
+            <text x="100" y="130" fill="#9fe9c0" font-size="11">加固</text>
+          </g>
+          <g class="spart" data-id="channel">
+            <rect x="230" y="150" width="40" height="50" rx="6" fill="rgba(91,140,255,.25)" stroke="#5b8cff" stroke-width="2"/>
+            <text x="250" y="145" text-anchor="middle" fill="#b9d0ff" font-size="10">線通道</text>
+          </g>
+          <g class="spart" data-id="face">
+            <circle cx="250" cy="110" r="28" fill="rgba(255,209,102,.2)" stroke="#ffd166" stroke-width="2"/>
+            <text x="250" y="115" text-anchor="middle" fill="#ffe9b0" font-size="10">五官</text>
+          </g>
+        </svg>
+      </div>
+      <div class="panel" id="sewPanel"><strong>撳縫位</strong>：睇工藝同電子／機構交接。</div>
+    </div>
+  </div>
+
+  <h2>外觀 AQL 常見項（撳卡）</h2>
+  <div class="aql" id="aql"></div>
+  <div class="panel" id="aqlPanel">揀一項缺陷。</div>
+
+  <h2>工藝 lock</h2>
+  <div class="timeline" id="lock"></div>
+
+  <div class="exercise">
+    <h3>單元練習</h3>
+    <p>電子毛絨車縫，邊啲<strong>必須</strong>寫入工藝？</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <button class="btn" type="button" id="markDone">完成本單元</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="10-plush-materials.html">← 單元 10</a>
+    <a class="btn ghost" href="12-doll-clothes.html">單元 12 →</a>
+  </div>
+</div>
+<script>
+const parts={
+  outline:'<strong>外輪廓縫</strong>：針距（例如 3–4mm）、線色、縫份。毛向要對齊，否則外觀花。',
+  open:'<strong>翻口／裝配口</strong>：電子整機裝入後先封口。暗縫／拉鍊／魔術貼取捨：外觀 vs 維修。',
+  reinf:'<strong>加固</strong>：腋下、頸、耳朵根。動作位雙車或加布條；同單元 09 干涉對應。',
+  channel:'<strong>線通道</strong>：車縫前埋布筒或套管，避免車針刺線。位置同線位圖一致。',
+  face:'<strong>五官</strong>：繡／塑膠眼／燙印。拉力測試、尖點安規；同頭骨固位。',
+};
+document.querySelectorAll('.spart').forEach(p=>{
+  p.addEventListener('click',()=>{
+    document.querySelectorAll('.spart').forEach(x=>x.classList.remove('on'));
+    p.classList.add('on');
+    document.getElementById('sewPanel').innerHTML=parts[p.dataset.id];
+  });
+});
+const aqls=[
+  {t:'跳針／斷線',d:'強度同外觀雙殺。查張力、針號、線質。'},
+  {t:'毛向錯',d:'左右腳毛向相反好明顯。開料圖要標箭頭。'},
+  {t:'露線頭',d:'AQL 常客。剪線同鎖結工藝。'},
+  {t:'變形歪臉',d:'填充不均或車縫拉力不均。樣板封樣對照。'},
+  {t:'對稱度',d:'耳眼高低。用工裝定位。'},
+  {t:'髒污油漬',d:'產線管理；包裝前清潔標準。'},
+];
+const aqlEl=document.getElementById('aql');
+aqls.forEach(a=>{
+  const c=document.createElement('div'); c.className='card';
+  c.innerHTML=`<h3>${a.t}</h3><p>撳睇</p>`;
+  c.onclick=()=>{ document.querySelectorAll('.aql .card').forEach(x=>x.classList.remove('active')); c.classList.add('active');
+    document.getElementById('aqlPanel').innerHTML=`<strong>${a.t}</strong>：${a.d}`; };
+  aqlEl.appendChild(c);
+});
+const lock=[
+  {t:'縫型圖',d:'每條縫的縫型、針距、線色、加固。'},
+  {t:'裝配順序',d:'先裝電子定先車——影響返修同刺線風險。'},
+  {t:'工時',d:'產前樣鎖工時，報價同產能基線。'},
+  {t:'AQL',d:'嚴重／主要／次要缺陷定義同抽樣水準。'},
+];
+lock.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('lock').appendChild(el);
+});
+const quizItems=[
+  {q:'縫型圖（針距／線色／加固）', ok:true},
+  {q:'裝配口同線通道避位', ok:true},
+  {q:'董事會茶歇甜品', ok:false},
+  {q:'外觀 AQL 缺陷定義', ok:true},
+  {q:'年會場地訂金收據', ok:false},
+];
+const quiz=document.getElementById('quiz');
+quizItems.forEach((item,i)=>{
+  const lab=document.createElement('label');
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change',score);
+});
+function score(){
+  let m=0; quizItems.forEach((it,i)=>{if(document.getElementById('q'+i).checked===it.ok)m++;});
+  const pct=Math.round(m/quizItems.length*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('scoreNote').textContent='吻合度 '+pct+'%（應勾：縫型圖、裝配口線通道、AQL）';
+}
+score();
+document.getElementById('markDone').onclick=()=>{
+  const done=JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['11']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
+  document.getElementById('saveMsg').textContent='已儲存：單元 11 完成。';
+};
+</script>
+</body>
+</html>

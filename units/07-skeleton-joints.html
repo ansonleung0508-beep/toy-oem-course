@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 07 · 機構骨架同關節</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.skel { width:min(100%,480px); margin:0 auto; }
+.skel svg { width:100%; height:auto; }
+.j { cursor:pointer; transition:transform .3s; transform-origin:center; }
+.j:hover, .j.on { filter:brightness(1.3); }
+@keyframes sway { 0%,100%{transform:rotate(-8deg)} 50%{transform:rotate(8deg)} }
+.sway-on { animation:sway 1.6s ease-in-out infinite; transform-origin: 240px 90px; }
+.bone { fill:#2a3d32; stroke:#7ddea2; stroke-width:2; }
+.joint-c { fill:#7ddea2; }
+.range-ctrl { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; }
+.range-ctrl button { padding:8px 12px; border-radius:10px; background:var(--card2); border:1px solid rgba(255,255,255,.08); color:var(--text); cursor:pointer; font-weight:600; }
+.range-ctrl button.on { border-color:var(--mech); background:rgba(125,222,162,.2); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 07 · 機械</span>
+  </div>
+  <h1>機構骨架同關節</h1>
+  <p class="lead">骨架係「內骨」——支撐外形、固定電子／齒輪箱、定義關節行程。固位唔夠＝電子晃、縫口裂。</p>
+
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">可動骨架（撳關節 · 撳播放睇擺頭）</h3>
+      <div class="range-ctrl">
+        <button type="button" id="playSway" class="on">▶ 擺頭動畫</button>
+        <button type="button" id="stopSway">⏸ 停止</button>
+      </div>
+      <div class="skel">
+        <svg viewBox="0 0 480 360" role="img">
+          <!-- soft ghost -->
+          <ellipse cx="240" cy="220" rx="100" ry="80" fill="rgba(255,143,171,.12)" stroke="#ff8fab" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <circle cx="240" cy="100" r="50" fill="rgba(255,143,171,.12)" stroke="#ff8fab" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <g id="headGroup">
+            <!-- head plate -->
+            <g class="j" data-id="head">
+              <ellipse cx="240" cy="95" rx="36" ry="28" class="bone"/>
+              <text x="240" y="100" text-anchor="middle" fill="#c9f5db" font-size="11">頭板</text>
+            </g>
+            <!-- neck joint -->
+            <g class="j" data-id="neck">
+              <circle cx="240" cy="130" r="14" class="joint-c"/>
+              <text x="270" y="135" fill="#9fe9c0" font-size="11">頸關節</text>
+            </g>
+          </g>
+          <!-- spine -->
+          <g class="j" data-id="spine">
+            <rect x="228" y="140" width="24" height="70" rx="6" class="bone"/>
+            <text x="280" y="180" fill="#9fe9c0" font-size="11">主幹</text>
+          </g>
+          <!-- gearbox mount -->
+          <g class="j" data-id="gearbox">
+            <rect x="205" y="200" width="70" height="45" rx="8" fill="#1f3d2d" stroke="#7ddea2" stroke-width="2"/>
+            <circle cx="225" cy="222" r="8" fill="#7ddea2" class="glow"/>
+            <circle cx="255" cy="222" r="8" fill="#4bbf7a"/>
+            <text x="240" y="260" text-anchor="middle" fill="#9fe9c0" font-size="11">齒輪箱座</text>
+          </g>
+          <!-- arm L -->
+          <g class="j" data-id="armL">
+            <rect x="120" y="175" width="80" height="16" rx="8" class="bone" transform="rotate(-20 160 183)"/>
+            <circle cx="120" cy="165" r="10" class="joint-c"/>
+            <text x="100" y="155" fill="#9fe9c0" font-size="11">臂關節</text>
+          </g>
+          <!-- arm R -->
+          <g class="j" data-id="armR">
+            <rect x="280" y="175" width="80" height="16" rx="8" class="bone" transform="rotate(20 320 183)"/>
+            <circle cx="360" cy="165" r="10" class="joint-c"/>
+          </g>
+          <!-- mount points -->
+          <g class="j" data-id="mount">
+            <circle cx="200" cy="155" r="6" fill="#ffd166"/>
+            <circle cx="280" cy="155" r="6" fill="#ffd166"/>
+            <circle cx="240" cy="280" r="6" fill="#ffd166"/>
+            <text x="240" y="300" text-anchor="middle" fill="#ffe9b0" font-size="11">固位點（黃）</text>
+          </g>
+        </svg>
+      </div>
+      <div class="panel" id="skelPanel"><strong>撳關節／骨架件</strong>：睇行程、固位、同軟綿交接。</div>
+    </div>
+  </div>
+
+  <h2>設計要點</h2>
+  <div class="timeline" id="pts"></div>
+
+  <h2>失效模式</h2>
+  <div class="timeline" id="fails"></div>
+
+  <div class="exercise">
+    <h3>單元練習</h3>
+    <p>擺頭毛絨骨架，ES 前邊啲<strong>必須</strong> lock？</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <button class="btn" type="button" id="markDone">完成本單元</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="06-harness-solder.html">← 單元 06</a>
+    <a class="btn ghost" href="08-gears-cams-springs.html">單元 08 →</a>
+  </div>
+</div>
+<script>
+const info={
+  head:'<strong>頭板</strong>：固定五官／頭殼，傳擺頭力矩。太軟＝五官歪；太重＝馬達吃力、頸關節壽命短。',
+  neck:'<strong>頸關節</strong>：軸承／軸銷／限位。標角度（例如 ±30°）、間隙、潤滑。限位要硬碰硬，唔好靠布扯停。',
+  spine:'<strong>主幹</strong>：承受齒輪箱同電池重量。材料 POM／ABS／尼龍；壁厚同加強筋防彎。',
+  gearbox:'<strong>齒輪箱座</strong>：孔距、防轉、螺絲規格。座變形＝齒輪咬死或噪音。',
+  armL:'<strong>臂關節</strong>：舉手行程、同袖／縫干涉。軸銷防脫（卡簧／熱鉚）。',
+  armR:'<strong>臂關節（右）</strong>：左右對稱或單邊驅動要標明；虛位臂都要固位防晃。',
+  mount:'<strong>固位點</strong>：同布袋／車縫／螺柱連接。至少 3 點防轉；細件要過拉力測試。',
+};
+document.querySelectorAll('.j').forEach(j=>{
+  j.addEventListener('click',()=>{
+    document.querySelectorAll('.j').forEach(x=>x.classList.remove('on'));
+    j.classList.add('on');
+    document.getElementById('skelPanel').innerHTML=info[j.dataset.id];
+  });
+});
+const hg=document.getElementById('headGroup');
+document.getElementById('playSway').onclick=()=>{
+  hg.classList.add('sway-on');
+  document.getElementById('playSway').classList.add('on');
+  document.getElementById('stopSway').classList.remove('on');
+};
+document.getElementById('stopSway').onclick=()=>{
+  hg.classList.remove('sway-on');
+  document.getElementById('stopSway').classList.add('on');
+  document.getElementById('playSway').classList.remove('on');
+};
+hg.classList.add('sway-on');
+
+const pts=[
+  {t:'包絡',d:'骨架最大外形要入得軟綿內膽；預留電子／線位通道。'},
+  {t:'行程限位',d:'機械硬限位 + 軟件（如有）。布同縫唔係限位器。'},
+  {t:'固位',d:'螺柱、卡扣、布縫環。可維修 vs 一次成型要取捨。'},
+  {t:'公差',d:'軸孔間隙、左右對稱度；大貨模具收縮要計。'},
+];
+pts.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('pts').appendChild(el);
+});
+const fails=[
+  {t:'關節鬆脫',d:'軸銷無防脫 → 頭甩、客訴。對策：卡簧／熱鉚／螺母＋膠水。'},
+  {t:'骨架斷裂',d:'跌落／薄壁。對策：加強筋、韌性料、跌落測試。'},
+  {t:'固位扯布',d:'集中應力撕縫。對策：加大接觸面、分力點。'},
+  {t:'干涉卡死',d:'行程內撞到電池倉／喇叭。對策：3D 干涉檢查。'},
+];
+fails.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('fails').appendChild(el);
+});
+const quizItems=[
+  {q:'頸／臂關節角度同硬限位', ok:true},
+  {q:'齒輪箱座孔距同防轉', ok:true},
+  {q:'電商詳情頁字數', ok:false},
+  {q:'骨架固位點同拉力要求', ok:true},
+  {q:'辦公室綠植品種', ok:false},
+];
+const quiz=document.getElementById('quiz');
+quizItems.forEach((item,i)=>{
+  const lab=document.createElement('label');
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change',score);
+});
+function score(){
+  let m=0; quizItems.forEach((it,i)=>{if(document.getElementById('q'+i).checked===it.ok)m++;});
+  const pct=Math.round(m/quizItems.length*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('scoreNote').textContent='吻合度 '+pct+'%（應勾：關節限位、齒輪箱座、固位拉力）';
+}
+score();
+document.getElementById('markDone').onclick=()=>{
+  const done=JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['07']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
+  document.getElementById('saveMsg').textContent='已儲存：單元 07 完成。';
+};
+</script>
+</body>
+</html>

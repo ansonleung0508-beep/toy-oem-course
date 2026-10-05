@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>單元 17 · 測試同失效分析</title>
+<link rel="stylesheet" href="../assets/course.css" />
+<style>
+.test-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; }
+.test-card { background:var(--card); border-radius:12px; padding:14px; cursor:pointer; border:1px solid rgba(255,255,255,.06); }
+.test-card.on { border-color:var(--accent); background:var(--card2); }
+.fmea-table { width:100%; border-collapse:collapse; font-size:.88rem; margin:12px 0; }
+.fmea-table th, .fmea-table td { border:1px solid rgba(255,255,255,.08); padding:8px; text-align:left; }
+.fmea-table th { background:var(--card2); color:#b9d0ff; }
+.fmea-table tr { cursor:pointer; }
+.fmea-table tr.on { background:rgba(91,140,255,.15); }
+.rpn { font-weight:800; color:var(--warn); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a class="btn ghost" href="../index.html">← 課程目錄</a>
+    <span class="badge">單元 17 · 其他</span>
+  </div>
+  <h1>測試同失效分析</h1>
+  <p class="lead">壽命、跌落、拉力、聲壓、溫升——用數據關閉風險。FMEA 幫你排優先次序，唔好平均用力。</p>
+
+  <h2>測試菜單（撳卡）</h2>
+  <div class="test-grid" id="tests"></div>
+  <div class="panel" id="testPanel">揀一項測試睇方法同判定。</div>
+
+  <h2>簡化 FMEA（撳列睇詳情）</h2>
+  <div style="overflow-x:auto">
+    <table class="fmea-table" id="fmea">
+      <thead><tr><th>失效</th><th>嚴重度S</th><th>發生O</th><th>偵測D</th><th>RPN</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <div class="panel" id="fmeaPanel">撳表格列睇建議對策。</div>
+
+  <h2>閉環</h2>
+  <div class="timeline" id="loop"></div>
+
+  <div class="exercise">
+    <h3>單元練習</h3>
+    <p>電子擺頭毛絨量產前，邊啲<strong>必須</strong>測？</p>
+    <div class="checklist" id="quiz"></div>
+    <div class="progress"><span id="bar"></span></div>
+    <p class="note" id="scoreNote"></p>
+    <button class="btn" type="button" id="markDone">完成本單元</button>
+    <p class="note" id="saveMsg"></p>
+  </div>
+
+  <div class="footer-nav">
+    <a class="btn ghost" href="16-sample-stages.html">← 單元 16</a>
+    <a class="btn ghost" href="18-bom-sop.html">單元 18 →</a>
+  </div>
+</div>
+<script>
+const tests=[
+  {t:'動作壽命',d:'擺頭／舉手 N 次（如 3000–10000）。判：不斷軸、不超噪、電流不飄。'},
+  {t:'跌落',d:'按年齡／標準高度多面跌。判：無銳邊、功能仍可、電池唔爆出。'},
+  {t:'拉力／扭力',d:'五官、耳朵、倉蓋。跟 ASTM／EN71 數值。'},
+  {t:'聲壓',d:'指定距離 dBA；近耳玩具更嚴。'},
+  {t:'溫升／放電',d:'播放＋動作連續；電池倉表面溫。'},
+  {t:'按鍵壽命',d:'觸發次數；誤觸場景（抱壓）。'},
+  {t:'運輸振動',d:'模擬物流；防開機、防斷線。'},
+  {t:'環境',d:'高溫高濕存放後功能（視市場）。'},
+];
+const testEl=document.getElementById('tests');
+tests.forEach(t=>{
+  const c=document.createElement('div'); c.className='test-card';
+  c.innerHTML=`<strong>${t.t}</strong>`;
+  c.onclick=()=>{ document.querySelectorAll('.test-card').forEach(x=>x.classList.remove('on')); c.classList.add('on');
+    document.getElementById('testPanel').innerHTML=`<strong>${t.t}</strong>：${t.d}`; };
+  testEl.appendChild(c);
+});
+const fmea=[
+  {f:'頸軸鬆脫',s:8,o:4,d:5, a:'卡簧＋熱鉚；壽命後拆檢；入 SOP 扭矩。'},
+  {f:'車針刺線短路',s:9,o:3,d:6, a:'線位圖＋套管；ICT／功能測；產線防錯治具。'},
+  {f:'倉蓋螺絲滑牙',s:9,o:3,d:4, a:'鑲件；扭矩槍；抽檢。'},
+  {f:'填充塞喇叭',s:6,o:5,d:3, a:'硬腔；填充工藝定位；聲壓抽測。'},
+  {f:'齒輪噪音客訴',s:5,o:6,d:4, a:'側隙／潤滑／箱剛度；驗收 dBA。'},
+];
+const tb=document.querySelector('#fmea tbody');
+fmea.forEach((r,i)=>{
+  const tr=document.createElement('tr');
+  const rpn=r.s*r.o*r.d;
+  tr.innerHTML=`<td>${r.f}</td><td>${r.s}</td><td>${r.o}</td><td>${r.d}</td><td class="rpn">${rpn}</td>`;
+  tr.onclick=()=>{ document.querySelectorAll('#fmea tr').forEach(x=>x.classList.remove('on')); tr.classList.add('on');
+    document.getElementById('fmeaPanel').innerHTML=`<strong>${r.f}</strong>（RPN ${rpn}）：${r.a}`; };
+  tb.appendChild(tr);
+});
+const loop=[
+  {t:'定義',d:'測什麼、抽多少、Pass/Fail、儀器。'},
+  {t:'執行',d:'記錄環境、批次、異常相片。'},
+  {t:'分析',d:'5Why／魚骨；區分設計 vs 工藝 vs 料。'},
+  {t:'對策驗證',d:'改完重測；更新 FMEA 同 SOP。'},
+];
+loop.forEach((a,i)=>{
+  const el=document.createElement('div'); el.className='step';
+  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  document.getElementById('loop').appendChild(el);
+});
+const quizItems=[
+  {q:'動作壽命＋跌落＋關鍵拉力', ok:true},
+  {q:'聲壓同連續工作溫升', ok:true},
+  {q:'公關稿語氣偏好', ok:false},
+  {q:'高 RPN 項要有對策同重測', ok:true},
+  {q:'團建球衣顏色', ok:false},
+];
+const quiz=document.getElementById('quiz');
+quizItems.forEach((item,i)=>{
+  const lab=document.createElement('label');
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  quiz.appendChild(lab);
+  lab.querySelector('input').addEventListener('change',score);
+});
+function score(){
+  let m=0; quizItems.forEach((it,i)=>{if(document.getElementById('q'+i).checked===it.ok)m++;});
+  const pct=Math.round(m/quizItems.length*100);
+  document.getElementById('bar').style.width=pct+'%';
+  document.getElementById('scoreNote').textContent='吻合度 '+pct+'%（應勾：壽命跌落拉力、聲壓溫升、FMEA 對策）';
+}
+score();
+document.getElementById('markDone').onclick=()=>{
+  const done=JSON.parse(localStorage.getItem('toyCourseDone')||'{}');
+  done['17']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
+  document.getElementById('saveMsg').textContent='已儲存：單元 17 完成。';
+};
+</script>
+</body>
+</html>
