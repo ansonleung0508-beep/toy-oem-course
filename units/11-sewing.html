@@ -6,6 +6,9 @@
 <title>單元 11 · 車縫工藝</title>
 <link rel="stylesheet" href="../assets/course.css" />
 <style>
+.pad.on rect, .pad.on circle { fill: rgba(255,209,102,.45) !important; }
+.hit.on { outline: 2px solid var(--accent); }
+
 .sew { width:min(100%,500px); margin:0 auto; }
 .sew svg { width:100%; height:auto; }
 .stitch { stroke-dasharray:6 4; animation: stitchMove 1s linear infinite; }
@@ -26,38 +29,28 @@
   <h1>車縫工藝</h1>
   <p class="lead">車縫決定外觀 AQL、強度同能不能「藏得住」電子線。針距、縫型、打開方式要寫進 SOP。</p>
 
-  <div class="hero-stage">
+    <div class="hero-stage">
     <div class="stage3d">
-      <h3 style="margin-top:0;">車縫結構（撳部位）</h3>
-      <div class="sew">
-        <svg viewBox="0 0 500 320" role="img">
-          <ellipse cx="250" cy="180" rx="140" ry="100" fill="rgba(255,143,171,.2)" stroke="#ff8fab" stroke-width="2"/>
-          <g class="spart" data-id="outline">
-            <ellipse cx="250" cy="180" rx="130" ry="90" fill="none" stroke="#ffd166" stroke-width="2.5" class="stitch"/>
-            <text x="250" y="60" text-anchor="middle" fill="#ffe9b0" font-size="12">外輪廓縫</text>
-          </g>
-          <g class="spart" data-id="open">
-            <path d="M180 250 Q250 270 320 250" fill="none" stroke="#5b8cff" stroke-width="4" stroke-linecap="round"/>
-            <text x="250" y="295" text-anchor="middle" fill="#b9d0ff" font-size="12">翻口／裝配口</text>
-          </g>
-          <g class="spart" data-id="reinf">
-            <path d="M160 140 L200 170" stroke="#7ddea2" stroke-width="5" stroke-linecap="round"/>
-            <path d="M340 140 L300 170" stroke="#7ddea2" stroke-width="5" stroke-linecap="round"/>
-            <text x="100" y="130" fill="#9fe9c0" font-size="11">加固</text>
-          </g>
-          <g class="spart" data-id="channel">
-            <rect x="230" y="150" width="40" height="50" rx="6" fill="rgba(91,140,255,.25)" stroke="#5b8cff" stroke-width="2"/>
-            <text x="250" y="145" text-anchor="middle" fill="#b9d0ff" font-size="10">線通道</text>
-          </g>
-          <g class="spart" data-id="face">
-            <circle cx="250" cy="110" r="28" fill="rgba(255,209,102,.2)" stroke="#ffd166" stroke-width="2"/>
-            <text x="250" y="115" text-anchor="middle" fill="#ffe9b0" font-size="10">五官</text>
-          </g>
+      <h3 style="margin-top:0;">縫份同針法（切換針距）</h3>
+      <p class="hero-caption">撳針法同拖縫份：睇車線同布邊距離——動作位要加固。</p>
+      <div class="hero-widget">
+        <svg viewBox="0 0 640 280" role="img" aria-label="車縫">
+          <rect x="8" y="8" width="624" height="264" rx="16" fill="#121925"/>
+          <rect x="80" y="60" width="400" height="140" rx="8" fill="#2a2030" stroke="#ff8fab"/>
+          <line id="seamLine" x1="120" y1="60" x2="120" y2="200" stroke="#5b8cff" stroke-width="2" stroke-dasharray="6 4"/>
+          <text id="seamLabel" x="120" y="230" text-anchor="middle" fill="#b9d0ff" font-size="12">縫份 8mm</text>
+          <path id="stitchPath" d="" fill="none" stroke="#ffd166" stroke-width="2"/>
+          <text id="stitchLabel" x="400" y="230" text-anchor="middle" fill="#ffe9b0" font-size="12">平車 · 針距 3mm</text>
         </svg>
+        <div class="hero-controls">
+          <label>縫份 mm <input type="range" id="seamAllow" min="4" max="15" value="8"></label>
+          <button class="btn ghost" type="button" id="stitchType">切換針法</button>
+        </div>
       </div>
-      <div class="panel" id="sewPanel"><strong>撳縫位</strong>：睇工藝同電子／機構交接。</div>
+      <div class="panel" id="sewPanel"><strong>車縫互動</strong>：縫份同針距要寫入工藝圖。</div>
     </div>
   </div>
+
 
   <h2>外觀 AQL 常見項（撳卡）</h2>
   <div class="aql" id="aql"></div>
@@ -149,6 +142,31 @@ document.getElementById('markDone').onclick=()=>{
   done['11']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
   document.getElementById('saveMsg').textContent='已儲存：單元 11 完成。';
 };
+
+
+(function(){
+  const types=[{n:'平車',dash:'6 4'},{n:'雙針',dash:'3 3'},{n:'拷邊',dash:'1 2'}];
+  let ti=0;
+  const line=document.getElementById('seamLine');
+  const lab=document.getElementById('seamLabel');
+  const stitch=document.getElementById('stitchPath');
+  const slab=document.getElementById('stitchLabel');
+  const panel=document.getElementById('sewPanel');
+  function render(){
+    const a=+document.getElementById('seamAllow').value;
+    const x=80+a*6;
+    if(line){ line.setAttribute('x1',x); line.setAttribute('x2',x); }
+    if(lab) lab.textContent=`縫份 ${a}mm`;
+    const t=types[ti];
+    if(stitch){ stitch.setAttribute('d',`M${x+10} 80 V180`); stitch.setAttribute('stroke-dasharray', t.dash); }
+    if(slab) slab.textContent=`${t.n} · 針距示意`;
+    if(panel) panel.innerHTML=`<strong>車縫<\/strong>：縫份 ${a}mm、${t.n}——動作位建議加固。`;
+  }
+  document.getElementById('seamAllow')?.addEventListener('input', render);
+  document.getElementById('stitchType')?.addEventListener('click',()=>{ ti=(ti+1)%types.length; render(); });
+  render();
+})();
+
 </script>
 </body>
 </html>

@@ -6,6 +6,9 @@
 <title>單元 14 · 安全法規 ASTM/EN71/CPC</title>
 <link rel="stylesheet" href="../assets/course.css" />
 <style>
+.pad.on rect, .pad.on circle { fill: rgba(255,209,102,.45) !important; }
+.hit.on { outline: 2px solid var(--accent); }
+
 .reg-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
 .reg-card { background:var(--card); border-radius:14px; padding:16px; cursor:pointer; border:1px solid rgba(255,255,255,.06); transition:.2s; }
 .reg-card:hover, .reg-card.on { border-color:var(--warn); background:rgba(255,123,114,.1); }
@@ -24,9 +27,38 @@
   <h1>安全法規入門 ASTM / EN71 / CPC</h1>
   <p class="lead">電子毛絨＝玩具安規＋電安規思維。設計階段預埋，唔好等船頭先測。</p>
 
-  <h2>主要框架（撳卡）</h2>
+  
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">安規測試示意（撳測試）</h3>
+      <p class="hero-caption">撳測試項目：小零件圓筒、銳邊、拉力——電子毛絨一樣中招。</p>
+      <div class="hero-widget">
+        <svg viewBox="0 0 640 280" role="img" aria-label="安規測試">
+          <rect x="8" y="8" width="624" height="264" rx="16" fill="#121925"/>
+          <g class="reg-card hit" data-test="cylinder" transform="translate(50 50)">
+            <rect width="150" height="140" rx="12" fill="#1a2332" stroke="#5b8cff"/>
+            <ellipse cx="75" cy="80" rx="35" ry="50" fill="none" stroke="#ffd166" stroke-width="3"/>
+            <text x="75" y="160" text-anchor="middle" fill="#b9d0ff" font-size="12">小零件圓筒</text>
+          </g>
+          <g class="reg-card hit" data-test="sharp" transform="translate(245 50)">
+            <rect width="150" height="140" rx="12" fill="#1a2332" stroke="#5b8cff"/>
+            <path d="M40 100 L75 40 L110 100 Z" fill="#ff7b72"/>
+            <text x="75" y="160" text-anchor="middle" fill="#b9d0ff" font-size="12">銳尖／銳邊</text>
+          </g>
+          <g class="reg-card hit" data-test="pull" transform="translate(440 50)">
+            <rect width="150" height="140" rx="12" fill="#1a2332" stroke="#5b8cff"/>
+            <line x1="40" y1="70" x2="110" y2="70" stroke="#7ddea2" stroke-width="4"/>
+            <text x="75" y="100" text-anchor="middle" fill="#9fe9c0" font-size="18" font-weight="700">N</text>
+            <text x="75" y="160" text-anchor="middle" fill="#b9d0ff" font-size="12">拉力／扭力</text>
+          </g>
+        </svg>
+      </div>
+      <div class="panel" id="regPanel"><strong>安規互動</strong>：撳測試卡睇設計要預埋咩。</div>
+    </div>
+  </div>
+<h2>主要框架（撳卡）</h2>
   <div class="reg-grid" id="regs"></div>
-  <div class="panel" id="regPanel">揀一個法規框架。</div>
+  
 
   <h2>電子毛絨高發檢查點</h2>
   <div class="check-map" id="checks"></div>
@@ -120,6 +152,25 @@ document.getElementById('markDone').onclick=()=>{
   done['14']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
   document.getElementById('saveMsg').textContent='已儲存：單元 14 完成。';
 };
+
+
+(function(){
+  const info={
+    cylinder:{t:'小零件圓筒',d:'鈕扣、眼睛、倉蓋螺絲若通過圓筒＝扼頸風險，要加固或加大。'},
+    sharp:{t:'銳尖／銳邊',d:'斷軸、破殼、金屬彈簧外露——跌落後都要再測。'},
+    pull:{t:'拉力／扭力',d:'五官、耳朵、倉蓋跟 ASTM／EN71 數值；電子線唔好當拉力件。'}
+  };
+  const panel=document.getElementById('regPanel');
+  document.querySelectorAll('[data-test]').forEach(el=>{
+    el.addEventListener('click',()=>{
+      document.querySelectorAll('[data-test]').forEach(x=>x.classList.remove('on'));
+      el.classList.add('on');
+      const m=info[el.getAttribute('data-test')];
+      if(panel) panel.innerHTML='<strong>'+m.t+'<\/strong>：'+m.d;
+    });
+  });
+})();
+
 </script>
 </body>
 </html>

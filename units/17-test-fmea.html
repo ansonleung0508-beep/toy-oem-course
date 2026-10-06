@@ -6,6 +6,9 @@
 <title>單元 17 · 測試同失效分析</title>
 <link rel="stylesheet" href="../assets/course.css" />
 <style>
+.pad.on rect, .pad.on circle { fill: rgba(255,209,102,.45) !important; }
+.hit.on { outline: 2px solid var(--accent); }
+
 .test-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; }
 .test-card { background:var(--card); border-radius:12px; padding:14px; cursor:pointer; border:1px solid rgba(255,255,255,.06); }
 .test-card.on { border-color:var(--accent); background:var(--card2); }
@@ -26,9 +29,39 @@
   <h1>測試同失效分析</h1>
   <p class="lead">壽命、跌落、拉力、聲壓、溫升——用數據關閉風險。FMEA 幫你排優先次序，唔好平均用力。</p>
 
-  <h2>測試菜單（撳卡）</h2>
+  
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">跌落測試 + FMEA RPN（調數字）</h3>
+      <p class="hero-caption">撳「跌落」睇動畫；調嚴重度／發生度／偵測度計 RPN——優先改高分項。</p>
+      <div class="hero-widget">
+        <svg viewBox="0 0 640 300" role="img" aria-label="跌落與 RPN">
+          <rect x="8" y="8" width="624" height="284" rx="16" fill="#121925"/>
+          <rect x="80" y="40" width="200" height="200" rx="12" fill="#1a2332" stroke="rgba(255,255,255,.1)"/>
+          <g id="dropToy" transform="translate(0 0)">
+            <ellipse cx="180" cy="100" rx="40" ry="32" fill="#ff8fab"/>
+            <circle cx="180" cy="60" r="24" fill="#ff8fab"/>
+          </g>
+          <line x1="100" y1="220" x2="260" y2="220" stroke="#9aa8bc" stroke-width="4"/>
+          <text x="180" y="245" text-anchor="middle" fill="#9aa8bc" font-size="11">地面</text>
+          <rect x="340" y="50" width="250" height="180" rx="12" fill="#1a2332"/>
+          <text x="465" y="80" text-anchor="middle" fill="#b9d0ff" font-size="13" font-weight="700">RPN = S × O × D</text>
+          <text id="rpnValue" x="465" y="150" text-anchor="middle" fill="#ffd166" font-size="36" font-weight="800">125</text>
+          <text id="rpnLevel" x="465" y="190" text-anchor="middle" fill="#ffb4ae" font-size="13">優先處理</text>
+        </svg>
+        <div class="hero-controls">
+          <button class="btn ghost" type="button" id="dropBtn">模擬跌落</button>
+          <label>S <input type="range" id="rpnS" min="1" max="10" value="5"></label>
+          <label>O <input type="range" id="rpnO" min="1" max="10" value="5"></label>
+          <label>D <input type="range" id="rpnD" min="1" max="10" value="5"></label>
+        </div>
+      </div>
+      <div class="panel" id="testPanel"><strong>測試互動</strong>：RPN 高要先改設計，唔好平均用力。</div>
+    </div>
+  </div>
+<h2>測試菜單（撳卡）</h2>
   <div class="test-grid" id="tests"></div>
-  <div class="panel" id="testPanel">揀一項測試睇方法同判定。</div>
+  
 
   <h2>簡化 FMEA（撳列睇詳情）</h2>
   <div style="overflow-x:auto">
@@ -129,6 +162,35 @@ document.getElementById('markDone').onclick=()=>{
   done['17']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
   document.getElementById('saveMsg').textContent='已儲存：單元 17 完成。';
 };
+
+
+(function(){
+  const toy=document.getElementById('dropToy');
+  const rpn=document.getElementById('rpnValue');
+  const lvl=document.getElementById('rpnLevel');
+  const panel=document.getElementById('testPanel');
+  function calc(){
+    const S=+document.getElementById('rpnS').value, O=+document.getElementById('rpnO').value, D=+document.getElementById('rpnD').value;
+    const v=S*O*D;
+    if(rpn) rpn.textContent=String(v);
+    const high=v>=100;
+    if(lvl){ lvl.textContent=high?'優先處理':'可接受／監察'; lvl.setAttribute('fill', high?'#ffb4ae':'#9fe9c0'); }
+    if(panel) panel.innerHTML=`<strong>RPN ${v}<\/strong>：S${S}×O${O}×D${D}。高分先改設計。`;
+  }
+  ['rpnS','rpnO','rpnD'].forEach(id=>document.getElementById(id)?.addEventListener('input', calc));
+  document.getElementById('dropBtn')?.addEventListener('click',()=>{
+    if(!toy) return;
+    let y=0, vy=0, frame=0;
+    const t=setInterval(()=>{
+      frame++; vy+=1.2; y+=vy;
+      if(y>110){ y=110; vy*=-0.45; }
+      toy.setAttribute('transform', `translate(0 ${y})`);
+      if(frame>50){ clearInterval(t); toy.setAttribute('transform','translate(0 0)'); }
+    },20);
+  });
+  calc();
+})();
+
 </script>
 </body>
 </html>

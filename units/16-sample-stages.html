@@ -6,6 +6,9 @@
 <title>單元 16 · 樣板階段</title>
 <link rel="stylesheet" href="../assets/course.css" />
 <style>
+.pad.on rect, .pad.on circle { fill: rgba(255,209,102,.45) !important; }
+.hit.on { outline: 2px solid var(--accent); }
+
 .chips { display:flex; gap:8px; overflow-x:auto; padding:8px 2px 16px; }
 .chip { flex:0 0 auto; padding:10px 14px; border-radius:12px; background:var(--card2); border:1px solid rgba(255,255,255,.08); font-weight:700; font-size:.85rem; cursor:pointer; position:relative; }
 .chip::after { content:"→"; position:absolute; right:-12px; color:var(--muted); }
@@ -27,16 +30,33 @@
 
   <div class="chips" id="chips"></div>
 
-  <div class="hero-stage">
+    <div class="hero-stage">
     <div class="stage3d">
-      <h3 style="margin-top:0;">階段詳情（撳時間線）</h3>
-      <div class="timeline" id="stages"></div>
+      <h3 style="margin-top:0;">樣板階段關口（撳／播放）</h3>
+      <p class="hero-caption">撳階段或按播放：睇手辦→ES→驗證→PPS→船頭——跳級會標警告。</p>
+      <div class="hero-widget">
+        <svg viewBox="0 0 640 260" role="img" aria-label="樣板階段">
+          <rect x="8" y="8" width="624" height="244" rx="16" fill="#121925"/>
+          <line x1="60" y1="100" x2="580" y2="100" stroke="#243044" stroke-width="6" stroke-linecap="round"/>
+          <g id="sampleGates"></g>
+          <text id="sampleInfo" x="320" y="200" text-anchor="middle" fill="#e8eef7" font-size="14" font-weight="700">撳階段睇關口</text>
+          <text id="sampleWarn" x="320" y="225" text-anchor="middle" fill="#ffb4ae" font-size="12"></text>
+        </svg>
+        <div class="hero-controls">
+          <button class="btn" type="button" id="samplePlay">播放階段</button>
+        </div>
+      </div>
+      <div class="panel" id="gatePanel"><strong>樣板互動</strong>：每級有關口文件同測試。 </div>
     </div>
   </div>
 
+
+    <h2>階段列表</h2>
+  <div class="timeline" id="stages"></div>
+
   <h2>關口清單（撳卡）</h2>
   <div class="gate" id="gates"></div>
-  <div class="panel" id="gatePanel">揀一個關口。</div>
+  
 
   <h2>電子毛絨特別叮囑</h2>
   <div class="timeline" id="tips"></div>
@@ -73,7 +93,7 @@ stages.forEach((s,i)=>{
   const el=document.createElement('div'); el.className='step'+(i===0?' active':'');
   el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${s.t}<\/h4><div class="detail">${s.d}<br><span class="fail">失敗：${s.f}<\/span><\/div><\/div>`;
   el.onclick=()=>activate(i);
-  stagesEl.appendChild(el);
+  if(stagesEl) stagesEl.appendChild(el);
 });
 function activate(i){
   document.querySelectorAll('.chip').forEach((c,j)=>c.classList.toggle('lit',j===i));
@@ -132,6 +152,43 @@ document.getElementById('markDone').onclick=()=>{
   done['16']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
   document.getElementById('saveMsg').textContent='已儲存：單元 16 完成。';
 };
+
+
+(function(){
+  const gates=[{t:'手辦',d:'外觀比例；電子假件佔位'},{t:'ES',d:'真電子＋真機構＋可車'},{t:'驗證',d:'安規／壽命／聲壓'},{t:'PPS',d:'大貨料大貨工藝'},{t:'船頭',d:'大貨首批確認'}];
+  const g=document.getElementById('sampleGates');
+  const info=document.getElementById('sampleInfo');
+  const warn=document.getElementById('sampleWarn');
+  const panel=document.getElementById('gatePanel');
+  if(!g) return;
+  gates.forEach((s,i)=>{
+    const x=80+i*120;
+    const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx',x); c.setAttribute('cy','100'); c.setAttribute('r','16');
+    c.setAttribute('fill','#243044'); c.setAttribute('stroke','#5b8cff'); c.style.cursor='pointer';
+    c.addEventListener('click',()=>sel(i));
+    g.appendChild(c);
+    const tx=document.createElementNS('http://www.w3.org/2000/svg','text');
+    tx.setAttribute('x',x); tx.setAttribute('y','140'); tx.setAttribute('text-anchor','middle');
+    tx.setAttribute('fill','#9aa8bc'); tx.setAttribute('font-size','12'); tx.textContent=s.t;
+    g.appendChild(tx);
+  });
+  function sel(i){
+    [...g.querySelectorAll('circle')].forEach((c,j)=>c.setAttribute('fill',j===i?'#5b8cff':'#243044'));
+    if(info) info.textContent=gates[i].t+'：'+gates[i].d;
+    if(warn) warn.textContent=i>=2?'唔好跳級：跳過驗證＝大貨還債':'';
+    if(panel) panel.innerHTML='<strong>'+gates[i].t+'<\/strong>：'+gates[i].d;
+    const steps=document.querySelectorAll('#stages .step');
+    if(steps[i]) steps[i].click();
+  }
+  let t=null,i=0;
+  document.getElementById('samplePlay')?.addEventListener('click',function(){
+    if(t){clearInterval(t);t=null;this.textContent='播放階段';return;}
+    this.textContent='停止'; t=setInterval(()=>{sel(i);i=(i+1)%gates.length;},1200);
+  });
+  sel(0);
+})();
+
 </script>
 </body>
 </html>

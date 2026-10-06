@@ -6,6 +6,9 @@
 <title>單元 04 · 喇叭同聲腔</title>
 <link rel="stylesheet" href="../assets/course.css" />
 <style>
+.pad.on rect, .pad.on circle { fill: rgba(255,209,102,.45) !important; }
+.hit.on { outline: 2px solid var(--accent); }
+
 .spk-wrap { width:min(100%,500px); margin:0 auto; }
 .spk-svg { width:100%; height:auto; }
 .wave { animation: waveMove 1.2s ease-in-out infinite; opacity:.6; }
@@ -28,57 +31,32 @@
   <h1>喇叭同聲腔</h1>
   <p class="lead">毛絨入面喇叭唔係「焊上去就得」——聲腔體積、出聲孔、布料遮擋，決定聲壓同音色。電子同軟綿要夾口。</p>
 
-  <div class="hero-stage">
+    <div class="hero-stage">
     <div class="stage3d">
-      <h3 style="margin-top:0;">聲腔剖面（撳部件）</h3>
-      <div class="spk-wrap">
-        <svg class="spk-svg" viewBox="0 0 500 340" role="img">
-          <defs>
-            <radialGradient id="fur4" cx="50%" cy="40%" r="60%">
-              <stop offset="0%" stop-color="#ffc2d4"/><stop offset="100%" stop-color="#e8799b"/>
-            </radialGradient>
-          </defs>
-          <!-- soft body -->
-          <ellipse cx="250" cy="200" rx="180" ry="110" fill="url(#fur4)" opacity=".85"/>
-          <!-- cavity -->
-          <g class="hs" data-id="cavity">
-            <ellipse cx="250" cy="195" rx="70" ry="48" fill="#1a2332" stroke="#ffd166" stroke-width="2" stroke-dasharray="5 3"/>
-            <text x="250" y="155" text-anchor="middle" fill="#ffe9b0" font-size="12">聲腔淨空</text>
-          </g>
-          <!-- speaker -->
-          <g class="hs" data-id="spk">
-            <circle cx="250" cy="195" r="32" fill="#2a3344" stroke="#7ddea2" stroke-width="3"/>
-            <circle cx="250" cy="195" r="18" fill="#1a1f2a" stroke="#ffd166" stroke-width="2"/>
-            <circle cx="250" cy="195" r="6" fill="#ffd166" class="glow"/>
-          </g>
-          <!-- mesh / fabric hole -->
-          <g class="hs" data-id="mesh">
-            <ellipse cx="250" cy="100" rx="28" ry="12" fill="#243044" stroke="#5b8cff" stroke-width="2"/>
-            <path d="M230 100 H270 M240 94 V106 M260 94 V106" stroke="#b9d0ff" stroke-width="1.5"/>
-            <text x="250" y="85" text-anchor="middle" fill="#b9d0ff" font-size="11">出聲網／孔</text>
-          </g>
-          <!-- sound waves -->
-          <g class="wave" style="transform-origin:250px 195px">
-            <ellipse cx="250" cy="195" rx="50" ry="38" fill="none" stroke="#ffd166" stroke-width="1.5" opacity=".5"/>
-            <ellipse cx="250" cy="195" rx="65" ry="50" fill="none" stroke="#ffd166" stroke-width="1" opacity=".35"/>
-          </g>
-          <!-- stuffing interference -->
-          <g class="hs" data-id="fill">
-            <circle cx="160" cy="180" r="14" fill="#ff8fab" opacity=".7"/>
-            <circle cx="340" cy="210" r="16" fill="#ff8fab" opacity=".7"/>
-            <circle cx="180" cy="240" r="12" fill="#ff8fab" opacity=".7"/>
-            <text x="120" y="175" fill="#ffd0dc" font-size="11">填充</text>
-          </g>
-          <!-- wires -->
-          <g class="hs" data-id="wire">
-            <path d="M282 195 C330 195 360 160 380 140" fill="none" stroke="#5b8cff" stroke-width="3"/>
-            <text x="390" y="135" fill="#b9d0ff" font-size="11">→ PCB</text>
-          </g>
+      <h3 style="margin-top:0;">喇叭聲腔同布料阻尼（拖動滑桿）</h3>
+      <p class="hero-caption">拖「音量」同「布料遮擋」：睇聲波幅度點變——腔體同網布決定會唔會悶聲。</p>
+      <div class="hero-widget">
+        <svg viewBox="0 0 640 300" role="img" aria-label="聲腔聲波">
+          <rect x="8" y="8" width="624" height="284" rx="16" fill="#121925"/>
+          <ellipse cx="180" cy="150" rx="70" ry="55" fill="#3a2f12" stroke="#ffd166" stroke-width="3"/>
+          <circle cx="180" cy="150" r="28" fill="#1a1f2a" stroke="#ffd166"/>
+          <text x="180" y="155" text-anchor="middle" fill="#ffe9b0" font-size="12" font-weight="700">SPK</text>
+          <rect x="100" y="70" width="160" height="160" rx="12" fill="none" stroke="#7ddea2" stroke-width="2" stroke-dasharray="6 4"/>
+          <text x="180" y="60" text-anchor="middle" fill="#9fe9c0" font-size="12">聲腔</text>
+          <path id="wavePath" d="" fill="none" stroke="#5b8cff" stroke-width="3"/>
+          <rect id="fabricVeil" x="280" y="40" width="40" height="220" fill="#ff8fab" opacity=".25"/>
+          <text x="300" y="280" text-anchor="middle" fill="#ffd0dc" font-size="11">布料</text>
+          <text id="splReadout" x="420" y="150" fill="#e8eef7" font-size="15" font-weight="700">相對聲壓：高</text>
         </svg>
+        <div class="hero-controls">
+          <label>音量 <input type="range" id="volSlider" min="1" max="10" value="7"></label>
+          <label>布料遮擋 <input type="range" id="fabricSlider" min="0" max="10" value="2"></label>
+        </div>
       </div>
-      <div class="panel" id="spkPanel"><strong>撳聲腔／喇叭／網孔／填充</strong>：睇點影響聲壓。</div>
+      <div class="panel" id="spkPanel"><strong>聲腔互動</strong>：拖滑桿即時睇聲波同遮擋效果。</div>
     </div>
   </div>
+
 
   <h2>布料遮擋實驗（互動）</h2>
   <p class="note">揀遮擋條件，睇估算聲壓損失（示意，非實驗室數據）。</p>
@@ -189,6 +167,30 @@ document.getElementById('markDone').onclick=()=>{
   done['04']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
   document.getElementById('saveMsg').textContent='已儲存：單元 04 完成。';
 };
+
+
+(function(){
+  const wave=document.getElementById('wavePath');
+  const veil=document.getElementById('fabricVeil');
+  const read=document.getElementById('splReadout');
+  const panel=document.getElementById('spkPanel');
+  function render(){
+    const vol=+document.getElementById('volSlider').value;
+    const fab=+document.getElementById('fabricSlider').value;
+    const amp=Math.max(4, vol*4 - fab*2.2);
+    let d='M280 150 ';
+    for(let x=0;x<=300;x+=8){ const y=150+Math.sin(x/18)*amp*(1-x/400); d+=`L${280+x} ${y} `; }
+    if(wave) wave.setAttribute('d',d);
+    if(veil){ veil.setAttribute('opacity', String(0.1+fab/12)); veil.setAttribute('width', String(30+fab*6)); }
+    const level = amp>25?'高': amp>12?'中':'低（偏悶）';
+    if(read) read.textContent='相對聲壓：'+level;
+    if(panel) panel.innerHTML=`<strong>聲腔<\/strong>：音量 ${vol}／遮擋 ${fab} → 聲壓 ${level}。布太厚要開孔或換網布。`;
+  }
+  document.getElementById('volSlider')?.addEventListener('input', render);
+  document.getElementById('fabricSlider')?.addEventListener('input', render);
+  render();
+})();
+
 </script>
 </body>
 </html>

@@ -48,14 +48,31 @@ h1 { font-size: clamp(1.6rem, 3vw, 2.2rem); margin: 8px 0 6px; letter-spacing: .
 }
 .pill.soon { background: rgba(154,168,188,.15); color: var(--muted); }
 .hero-stage {
-  perspective: 900px; margin: 24px 0 32px;
+  margin: 24px 0 32px;
 }
 .stage3d {
-  transform-style: preserve-3d; transition: transform .6s cubic-bezier(.2,.8,.2,1);
   background: var(--card); border-radius: 24px; border: 1px solid rgba(255,255,255,.08);
   padding: 20px; box-shadow: var(--shadow);
+  overflow: visible;
 }
-.stage3d:hover { transform: rotateX(6deg) rotateY(-8deg); }
+.stage3d:hover { transform: none; }
+.hero-caption {
+  margin: 0 0 14px; color: var(--muted); font-size: .92rem; line-height: 1.45;
+}
+.hero-widget {
+  width: 100%; max-width: 640px; margin: 0 auto; position: relative;
+}
+.hero-widget svg { width: 100%; height: auto; display: block; border-radius: 14px; background: #121925; }
+.hero-controls {
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px;
+}
+.hero-controls label { font-size: .85rem; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+.hero-controls input[type=range] { width: min(220px, 55vw); }
+.hit { cursor: pointer; transition: opacity .15s, filter .15s; }
+.hit:hover, .hit.on { filter: brightness(1.15); }
+.zone-label {
+  font-size: 11px; font-weight: 700; fill: #ffe9b0; pointer-events: none;
+}
 .layers { display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 14px; }
 .layer-btn {
   cursor:pointer; border:1px solid transparent; background: var(--card2); color: var(--text);

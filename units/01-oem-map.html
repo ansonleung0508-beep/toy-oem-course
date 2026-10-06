@@ -6,6 +6,9 @@
 <title>單元 01 · OEM 全流程地圖</title>
 <link rel="stylesheet" href="../assets/course.css" />
 <style>
+.pad.on rect, .pad.on circle { fill: rgba(255,209,102,.45) !important; }
+.hit.on { outline: 2px solid var(--accent); }
+
 .handoff {
   display:grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin: 18px 0 8px;
 }
@@ -37,12 +40,35 @@
 
   <div class="anim-flow" id="flowChips" aria-label="流程動畫"></div>
 
-  <div class="hero-stage">
+    <div class="hero-stage">
     <div class="stage3d">
-      <h3 style="margin-top:0;">可點擊階段（撳開詳情）</h3>
-      <div class="timeline" id="timeline"></div>
+      <h3 style="margin-top:0;">OEM 流程互動圖（撳階段）</h3>
+      <p class="hero-caption">由 Brief 行到大貨：撳下面圓點／方塊，睇呢個關口三條線（電子／機構／軟綿）要夾啲咩。</p>
+      <div class="hero-widget">
+        <svg viewBox="0 0 640 280" role="img" aria-label="OEM 流程">
+          <rect x="8" y="8" width="624" height="264" rx="16" fill="#121925" stroke="rgba(255,255,255,.08)"/>
+          <text x="24" y="36" fill="#9aa8bc" font-size="12">電子線</text>
+          <text x="24" y="96" fill="#9aa8bc" font-size="12">機構線</text>
+          <text x="24" y="156" fill="#9aa8bc" font-size="12">軟綿線</text>
+          <line x1="90" y1="32" x2="600" y2="32" stroke="#ffd166" stroke-width="3" opacity=".35"/>
+          <line x1="90" y1="92" x2="600" y2="92" stroke="#7ddea2" stroke-width="3" opacity=".35"/>
+          <line x1="90" y1="152" x2="600" y2="152" stroke="#ff8fab" stroke-width="3" opacity=".35"/>
+          <g id="oemGates"></g>
+          <rect x="24" y="190" width="592" height="66" rx="12" fill="#1a2332"/>
+          <text id="oemGateTitle" x="40" y="218" fill="#e8eef7" font-size="15" font-weight="700">撳一個階段開始</text>
+          <text id="oemGateDesc" x="40" y="240" fill="#9aa8bc" font-size="12">三條線喺邊度要夾口，會顯示喺度。</text>
+        </svg>
+        <div class="hero-controls">
+          <button class="btn" type="button" id="oemPlay">自動播放流程</button>
+          <span class="note" id="oemPlayNote">或手動撳各關口</span>
+        </div>
+      </div>
     </div>
   </div>
+
+
+  <h2>階段詳情（撳開）</h2>
+  <div class="timeline" id="timeline"></div>
 
   <h2>五個關鍵交接點</h2>
   <p class="note">撳卡睇說明——大貨前唔 lock 呢啲，最易燒樣板錢。</p>
@@ -78,18 +104,22 @@ const stages = [
 const tl = document.getElementById('timeline');
 const chips = document.getElementById('flowChips');
 stages.forEach((s,i) => {
-  const chip = document.createElement('div');
-  chip.className = 'chip'; chip.textContent = (i+1)+'. '+s.t; chips.appendChild(chip);
-  const el = document.createElement('div');
-  el.className = 'step'; el.tabIndex = 0;
-  el.innerHTML = `<div class="num">${i+1}<\/div><div><h4>${s.t}<\/h4>
+  if (chips) {
+    const chip = document.createElement('div');
+    chip.className = 'chip'; chip.textContent = (i+1)+'. '+s.t; chips.appendChild(chip);
+  }
+  if (tl) {
+    const el = document.createElement('div');
+    el.className = 'step'; el.tabIndex = 0;
+    el.innerHTML = `<div class="num">${i+1}<\/div><div><h4>${s.t}<\/h4>
     <div class="detail">${s.d}<br><span class="fail">常見失敗：${s.f}<\/span><\/div><\/div>`;
-  el.addEventListener('click', () => {
-    document.querySelectorAll('.step').forEach(x => x.classList.remove('active'));
-    el.classList.add('active');
-    document.querySelectorAll('.chip').forEach((c,j) => c.classList.toggle('lit', j===i));
-  });
-  tl.appendChild(el);
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.step').forEach(x => x.classList.remove('active'));
+      el.classList.add('active');
+      document.querySelectorAll('.chip').forEach((c,j) => c.classList.toggle('lit', j===i));
+    });
+    tl.appendChild(el);
+  }
 });
 // auto play chips
 let idx = 0;
@@ -97,7 +127,7 @@ setInterval(() => {
   document.querySelectorAll('.chip').forEach((c,j) => c.classList.toggle('lit', j===idx));
   idx = (idx+1) % stages.length;
 }, 1200);
-tl.querySelector('.step')?.click();
+tl && tl.querySelector('.step')?.click();
 
 const handoffs = [
   {t:'硬件包絡', c:'soft', d:'電池倉、喇叭、齒輪箱外形要喺車縫前 lock。軟綿車完先知裝唔入＝重做。'},
@@ -160,6 +190,41 @@ document.getElementById('markDone').addEventListener('click', () => {
   localStorage.setItem('toyCourseDone', JSON.stringify(done));
   document.getElementById('saveMsg').textContent = '已儲存：單元 01 完成。返目錄會顯示「已完成」。';
 });
+
+
+(function(){
+  const gates=[{t:'Brief',d:'功能／價／年齡／電池寫清',x:100},{t:'手辦',d:'外觀＋電子佔位',x:190},{t:'工程',d:'3D／PCB／BOM',x:280},{t:'ES',d:'三線第一次夾口',x:370},{t:'驗證',d:'安規／壽命',x:460},{t:'PPS',d:'大貨料工藝',x:550}];
+  const g=document.getElementById('oemGates');
+  if(!g) return;
+  gates.forEach((s,i)=>{
+    const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx',s.x); c.setAttribute('cy','92'); c.setAttribute('r','14');
+    c.setAttribute('fill','#243044'); c.setAttribute('stroke','#5b8cff'); c.setAttribute('stroke-width','2');
+    c.style.cursor='pointer';
+    c.addEventListener('click',()=>select(i));
+    g.appendChild(c);
+    const tx=document.createElementNS('http://www.w3.org/2000/svg','text');
+    tx.setAttribute('x',s.x); tx.setAttribute('y','130'); tx.setAttribute('text-anchor','middle');
+    tx.setAttribute('fill','#9aa8bc'); tx.setAttribute('font-size','11'); tx.textContent=s.t;
+    g.appendChild(tx);
+  });
+  function select(i){
+    [...g.querySelectorAll('circle')].forEach((c,j)=>{c.setAttribute('fill',j===i?'#5b8cff':'#243044');});
+    document.getElementById('oemGateTitle').textContent=gates[i].t;
+    document.getElementById('oemGateDesc').textContent=gates[i].d;
+    const steps=document.querySelectorAll('#timeline .step');
+    if(steps[i]) steps[i].click();
+  }
+  let playing=false, timer=null, idx=0;
+  document.getElementById('oemPlay')?.addEventListener('click',()=>{
+    playing=!playing;
+    document.getElementById('oemPlayNote').textContent=playing?'播放中…':'或手動撳各關口';
+    if(playing){ timer=setInterval(()=>{select(idx); idx=(idx+1)%gates.length;},1100); }
+    else clearInterval(timer);
+  });
+  select(0);
+})();
+
 </script>
 </body>
 </html>

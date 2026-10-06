@@ -6,6 +6,9 @@
 <title>單元 10 · 毛絨物料同填充</title>
 <link rel="stylesheet" href="../assets/course.css" />
 <style>
+.pad.on rect, .pad.on circle { fill: rgba(255,209,102,.45) !important; }
+.hit.on { outline: 2px solid var(--accent); }
+
 .mat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; }
 .mat-card { background:var(--card); border-radius:14px; padding:16px; cursor:pointer; border:1px solid rgba(255,255,255,.06); transition:.2s; text-align:center; }
 .mat-card:hover, .mat-card.on { border-color:var(--soft); background:rgba(255,143,171,.12); transform:translateY(-3px); }
@@ -29,39 +32,29 @@
   <div class="mat-grid" id="mats"></div>
   <div class="panel" id="matPanel">揀一種面料睇特性同風險。</div>
 
-  <div class="hero-stage">
+    <div class="hero-stage">
     <div class="stage3d">
-      <h3 style="margin-top:0;">填充分區（撳區域）</h3>
-      <div class="fill-demo">
-        <svg viewBox="0 0 480 300" role="img">
-          <defs>
-            <radialGradient id="fur10" cx="50%" cy="35%" r="65%">
-              <stop offset="0%" stop-color="#ffc2d4"/><stop offset="100%" stop-color="#e8799b"/>
-            </radialGradient>
-          </defs>
-          <ellipse cx="240" cy="190" rx="130" ry="95" fill="url(#fur10)"/>
-          <circle cx="240" cy="95" r="55" fill="url(#fur10)"/>
-          <g class="fzone" data-id="head">
-            <circle cx="240" cy="95" r="40" fill="rgba(91,140,255,.35)" stroke="#5b8cff" stroke-width="2"/>
-            <text x="240" y="100" text-anchor="middle" fill="#e8eef7" font-size="12">頭：定型棉</text>
+      <h3 style="margin-top:0;">毛絨手感同透聲（撳布樣）</h3>
+      <p class="hero-caption">撳左邊三塊布樣：右邊顯示掉毛／透聲／關節纏繞風險——出聲位可能要改網布。</p>
+      <div class="hero-widget">
+        <svg viewBox="0 0 640 280" role="img" aria-label="布料比較">
+          <rect x="8" y="8" width="624" height="264" rx="16" fill="#121925"/>
+          <g class="mat-card hit" data-mat="short" transform="translate(40 50)">
+            <rect width="140" height="120" rx="12" fill="#ffc2d4"/><text x="70" y="145" text-anchor="middle" fill="#ffd0dc" font-size="12">超柔短毛</text>
           </g>
-          <g class="fzone" data-id="chest">
-            <ellipse cx="240" cy="175" rx="50" ry="35" fill="rgba(255,209,102,.3)" stroke="#ffd166" stroke-width="2"/>
-            <text x="240" y="180" text-anchor="middle" fill="#1a2332" font-size="11">胸：少填／腔</text>
+          <g class="mat-card hit" data-mat="long" transform="translate(210 50)">
+            <rect width="140" height="120" rx="12" fill="#d4a574"/><text x="70" y="145" text-anchor="middle" fill="#e8c9a8" font-size="12">長毛絨</text>
           </g>
-          <g class="fzone" data-id="limb">
-            <ellipse cx="140" cy="200" rx="30" ry="40" fill="rgba(125,222,162,.3)" stroke="#7ddea2" stroke-width="2"/>
-            <text x="140" y="205" text-anchor="middle" fill="#1a2332" font-size="11">肢：PP棉</text>
+          <g class="mat-card hit" data-mat="stretch" transform="translate(380 50)">
+            <rect width="140" height="120" rx="12" fill="#a8c0ff"/><text x="70" y="145" text-anchor="middle" fill="#c7d8ff" font-size="12">彈力絨</text>
           </g>
-          <g class="fzone" data-id="core">
-            <rect x="210" y="210" width="60" height="40" rx="8" fill="rgba(255,123,114,.3)" stroke="#ff7b72" stroke-width="2"/>
-            <text x="240" y="235" text-anchor="middle" fill="#ffb4ae" font-size="11">機芯避位</text>
-          </g>
+          <text id="matInfo" x="320" y="230" text-anchor="middle" fill="#e8eef7" font-size="13">撳一塊布樣睇風險</text>
         </svg>
       </div>
-      <div class="panel" id="fillPanel"><strong>撳填充區</strong>：電子／機構位唔好同一般公仔一樣塞滿。</div>
+      
     </div>
   </div>
+
 
   <h2>手感・安規・交接</h2>
   <div class="timeline" id="pts"></div>
@@ -148,6 +141,27 @@ document.getElementById('markDone').onclick=()=>{
   done['10']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
   document.getElementById('saveMsg').textContent='已儲存：單元 10 完成。';
 };
+
+
+(function(){
+  const info={
+    short:{t:'超柔短毛',d:'手感好；密絨影響透聲——出聲位改網布或剪毛。',panel:'掉毛要控；聲孔位唔好用太密短毛。'},
+    long:{t:'長毛絨',d:'外觀高級但纏機構、吸塵。關節位建議短毛或內襯。',panel:'關節同齒輪箱位避免長毛進入。'},
+    stretch:{t:'彈力絨',d:'跟形好，但過伸會露骨架；要同打版伸縮匹配。',panel:'伸縮率寫入物料規格。'}
+  };
+  const matInfo=document.getElementById('matInfo');
+  const panel=document.getElementById('matPanel');
+  document.querySelectorAll('[data-mat]').forEach(el=>{
+    el.addEventListener('click',()=>{
+      document.querySelectorAll('[data-mat]').forEach(x=>x.classList.remove('on'));
+      el.classList.add('on');
+      const m=info[el.getAttribute('data-mat')];
+      if(matInfo) matInfo.textContent=m.t+'：'+m.d;
+      if(panel) panel.innerHTML='<strong>'+m.t+'<\/strong>：'+m.panel;
+    });
+  });
+})();
+
 </script>
 </body>
 </html>

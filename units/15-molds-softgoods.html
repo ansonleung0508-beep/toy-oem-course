@@ -6,6 +6,9 @@
 <title>單元 15 · 模具注塑同軟綿交接</title>
 <link rel="stylesheet" href="../assets/course.css" />
 <style>
+.pad.on rect, .pad.on circle { fill: rgba(255,209,102,.45) !important; }
+.hit.on { outline: 2px solid var(--accent); }
+
 .mold { width:min(100%,500px); margin:0 auto; }
 .mold svg { width:100%; height:auto; }
 .mp { cursor:pointer; }
@@ -21,48 +24,27 @@
   <h1>模具注塑同軟綿交接</h1>
   <p class="lead">硬膠件（頭殼、關節、電池倉、齒輪箱）點樣「長」入毛絨——倒扣、布夾、螺柱、包膠，決定外觀同拉力。</p>
 
-  <div class="hero-stage">
+    <div class="hero-stage">
     <div class="stage3d">
-      <h3 style="margin-top:0;">硬軟交接（撳介面）</h3>
-      <div class="mold">
-        <svg viewBox="0 0 500 320" role="img">
-          <defs>
-            <radialGradient id="fur15" cx="50%" cy="40%" r="60%">
-              <stop offset="0%" stop-color="#ffc2d4"/><stop offset="100%" stop-color="#e8799b"/>
-            </radialGradient>
-          </defs>
-          <ellipse cx="280" cy="200" rx="140" ry="100" fill="url(#fur15)" opacity=".85"/>
-          <!-- hard shell -->
-          <g class="mp" data-id="shell">
-            <ellipse cx="200" cy="160" rx="55" ry="45" fill="#3a4558" stroke="#9aa8bc" stroke-width="2"/>
-            <text x="200" y="165" text-anchor="middle" fill="#e8eef7" font-size="12">硬膠件</text>
-          </g>
-          <!-- flange -->
-          <g class="mp" data-id="flange">
-            <rect x="240" y="140" width="30" height="40" rx="4" fill="#7ddea2" opacity=".8"/>
-            <text x="255" y="120" text-anchor="middle" fill="#9fe9c0" font-size="11">夾布法蘭</text>
-          </g>
-          <!-- stitches -->
-          <g class="mp" data-id="sew">
-            <path d="M270 145 L310 145 M270 155 L310 155 M270 165 L310 165 M270 175 L310 175" stroke="#ffd166" stroke-width="2"/>
-            <text x="340" y="165" fill="#ffe9b0" font-size="11">車縫固定</text>
-          </g>
-          <!-- boss -->
-          <g class="mp" data-id="boss">
-            <circle cx="180" cy="200" r="14" fill="#5b8cff"/>
-            <circle cx="180" cy="200" r="5" fill="#1a2332"/>
-            <text x="180" y="230" text-anchor="middle" fill="#b9d0ff" font-size="11">螺柱</text>
-          </g>
-          <!-- undercut -->
-          <g class="mp" data-id="undercut">
-            <path d="M160 130 Q150 160 160 190" fill="none" stroke="#ff7b72" stroke-width="3"/>
-            <text x="100" y="160" fill="#ffb4ae" font-size="11">倒扣</text>
-          </g>
+      <h3 style="margin-top:0;">模具開合同夾布法蘭（拖開模）</h3>
+      <p class="hero-caption">拖「開模距離」：睇分型線同夾布槽——硬膠進毛絨嘅交接面。</p>
+      <div class="hero-widget">
+        <svg viewBox="0 0 640 300" role="img" aria-label="模具">
+          <rect x="8" y="8" width="624" height="284" rx="16" fill="#121925"/>
+          <rect id="moldA" x="120" y="80" width="160" height="140" rx="8" fill="#3a4558" stroke="#9aa8bc"/>
+          <rect id="moldB" x="360" y="80" width="160" height="140" rx="8" fill="#2a3344" stroke="#9aa8bc"/>
+          <rect id="flange" x="270" y="120" width="100" height="60" rx="4" fill="rgba(255,143,171,.35)" stroke="#ff8fab"/>
+          <text x="320" y="250" text-anchor="middle" fill="#ffd0dc" font-size="12">夾布法蘭</text>
+          <text id="moldGap" x="320" y="275" text-anchor="middle" fill="#e8eef7" font-size="14" font-weight="700">開模 40mm</text>
         </svg>
+        <div class="hero-controls">
+          <label>開模距離 <input type="range" id="moldOpen" min="0" max="80" value="40"></label>
+        </div>
       </div>
-      <div class="panel" id="moldPanel"><strong>撳交接結構</strong>：睇模具同車縫點夾口。</div>
+      <div class="panel" id="moldPanel"><strong>模具互動</strong>：分型線同法蘭寬度要同車縫拉力匹配。</div>
     </div>
   </div>
+
 
   <h2>模具要注意</h2>
   <div class="timeline" id="moldTips"></div>
@@ -148,6 +130,23 @@ document.getElementById('markDone').onclick=()=>{
   done['15']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
   document.getElementById('saveMsg').textContent='已儲存：單元 15 完成。';
 };
+
+
+(function(){
+  const a=document.getElementById('moldA');
+  const b=document.getElementById('moldB');
+  const gap=document.getElementById('moldGap');
+  const panel=document.getElementById('moldPanel');
+  function render(){
+    const o=+document.getElementById('moldOpen').value;
+    if(a) a.setAttribute('x', String(200-o));
+    if(b) b.setAttribute('x', String(280+o));
+    if(gap) gap.textContent=`開模 ${o*2}mm`;
+    if(panel) panel.innerHTML=o<15?'<strong>合模<\/strong>：注意分型線披鋒會割布。':'<strong>開模<\/strong>：夾布法蘭要露出足夠車縫位。';
+  }
+  document.getElementById('moldOpen')?.addEventListener('input', render); render();
+})();
+
 </script>
 </body>
 </html>

@@ -6,6 +6,9 @@
 <title>單元 20 · 包裝、運輸同綜合專案</title>
 <link rel="stylesheet" href="../assets/course.css" />
 <style>
+.pad.on rect, .pad.on circle { fill: rgba(255,209,102,.45) !important; }
+.hit.on { outline: 2px solid var(--accent); }
+
 .pack { width:min(100%,480px); margin:0 auto; }
 .pack svg { width:100%; height:auto; }
 .pp { cursor:pointer; }
@@ -26,47 +29,26 @@
   <h1>包裝、運輸同綜合專案</h1>
   <p class="lead">最後一哩：包材保護電子同外形、通過運輸測試、標籤合規。再用一個綜合專案串起全課程。</p>
 
-  <div class="hero-stage">
+    <div class="hero-stage">
     <div class="stage3d">
-      <h3 style="margin-top:0;">包裝結構（撳層）</h3>
-      <div class="pack">
-        <svg viewBox="0 0 480 340" role="img">
-          <!-- outer carton -->
-          <g class="pp" data-id="carton">
-            <rect x="40" y="40" width="400" height="260" rx="12" fill="none" stroke="#5b8cff" stroke-width="3" stroke-dasharray="8 4"/>
-            <text x="240" y="30" text-anchor="middle" fill="#b9d0ff" font-size="13">外箱</text>
-          </g>
-          <!-- color box -->
-          <g class="pp" data-id="colorbox">
-            <rect x="90" y="80" width="300" height="180" rx="10" fill="#243044" stroke="#ff8fab" stroke-width="2"/>
-            <text x="240" y="100" text-anchor="middle" fill="#ffd0dc" font-size="12">彩盒</text>
-          </g>
-          <!-- tray -->
-          <g class="pp" data-id="tray">
-            <rect x="120" y="130" width="240" height="100" rx="8" fill="#1a2830" stroke="#7ddea2" stroke-width="2"/>
-            <text x="240" y="155" text-anchor="middle" fill="#9fe9c0" font-size="12">吸塑／紙托</text>
-          </g>
-          <!-- product -->
-          <g class="pp" data-id="product">
-            <ellipse cx="240" cy="195" rx="50" ry="35" fill="rgba(255,143,171,.5)"/>
-            <circle cx="240" cy="175" r="22" fill="rgba(255,143,171,.6)"/>
-            <text x="240" y="250" text-anchor="middle" fill="#ffd0dc" font-size="11">產品</text>
-          </g>
-          <!-- docs -->
-          <g class="pp" data-id="docs">
-            <rect x="330" y="140" width="40" height="50" rx="3" fill="#ffd166"/>
-            <text x="350" y="210" text-anchor="middle" fill="#ffe9b0" font-size="10">說明書</text>
-          </g>
-          <!-- labels -->
-          <g class="pp" data-id="label">
-            <rect x="100" y="90" width="70" height="24" rx="4" fill="#ff7b72"/>
-            <text x="135" y="106" text-anchor="middle" fill="#1a2332" font-size="10" font-weight="700">標籤</text>
-          </g>
+      <h3 style="margin-top:0;">彩盒堆碼同跌落（拖堆高／撳跌）</h3>
+      <p class="hero-caption">拖堆碼層數；撳跌落：睇運輸保護同 Fragile 標示重唔重要。</p>
+      <div class="hero-widget">
+        <svg viewBox="0 0 640 300" role="img" aria-label="包裝堆碼">
+          <rect x="8" y="8" width="624" height="284" rx="16" fill="#121925"/>
+          <g id="cartonStack"></g>
+          <text id="packInfo" x="450" y="140" fill="#e8eef7" font-size="14" font-weight="700">堆碼 3 層</text>
+          <text id="packStress" x="450" y="170" fill="#9aa8bc" font-size="12">底箱受壓：中</text>
         </svg>
+        <div class="hero-controls">
+          <label>堆碼層數 <input type="range" id="stackN" min="1" max="6" value="3"></label>
+          <button class="btn ghost" type="button" id="packDrop">模擬摔箱</button>
+        </div>
       </div>
-      <div class="panel" id="packPanel"><strong>撳包裝層</strong>：睇保護、成本、合規。</div>
+      <div class="panel" id="packPanel"><strong>包裝互動</strong>：堆碼同跌落決定紙箱同內托規格。</div>
     </div>
   </div>
+
 
   <h2>運輸測試要點</h2>
   <div class="timeline" id="ship"></div>
@@ -164,6 +146,39 @@ document.getElementById('markDone').onclick=()=>{
   done['20']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
   document.getElementById('saveMsg').textContent='已儲存：單元 20 完成。恭喜完成全課程！返目錄睇晒「已完成」。';
 };
+
+
+(function(){
+  const stack=document.getElementById('cartonStack');
+  const info=document.getElementById('packInfo');
+  const stress=document.getElementById('packStress');
+  const panel=document.getElementById('packPanel');
+  function render(){
+    const n=+document.getElementById('stackN').value;
+    if(!stack) return;
+    stack.innerHTML='';
+    for(let i=0;i<n;i++){
+      const y=220-i*28;
+      const r=document.createElementNS('http://www.w3.org/2000/svg','rect');
+      r.setAttribute('x','80'); r.setAttribute('y',y); r.setAttribute('width','160'); r.setAttribute('height','26');
+      r.setAttribute('rx','4'); r.setAttribute('fill', i===0?'#8b6914':'#c4a35a'); r.setAttribute('stroke','#ffe9b0');
+      stack.appendChild(r);
+    }
+    const level=n<=2?'低':n<=4?'中':'高';
+    if(info) info.textContent=`堆碼 ${n} 層`;
+    if(stress) stress.textContent=`底箱受壓：${level}`;
+    if(panel) panel.innerHTML=`<strong>堆碼 ${n}<\/strong>：底箱受壓 ${level}——紙箱抗壓同濕度要寫規格。`;
+  }
+  document.getElementById('stackN')?.addEventListener('input', render);
+  document.getElementById('packDrop')?.addEventListener('click',()=>{
+    if(!stack) return;
+    stack.setAttribute('transform','rotate(-12 160 200)');
+    setTimeout(()=>stack.setAttribute('transform',''),500);
+    if(panel) panel.innerHTML='<strong>摔箱<\/strong>：檢查彩盒／內托有冇破、產品有冇變形。';
+  });
+  render();
+})();
+
 </script>
 </body>
 </html>

@@ -6,6 +6,9 @@
 <title>單元 06 · 線束同焊接可靠性</title>
 <link rel="stylesheet" href="../assets/course.css" />
 <style>
+.pad.on rect, .pad.on circle { fill: rgba(255,209,102,.45) !important; }
+.hit.on { outline: 2px solid var(--accent); }
+
 .harness { width:min(100%,520px); margin:0 auto; }
 .harness svg { width:100%; height:auto; }
 .node { cursor:pointer; }
@@ -26,52 +29,29 @@
   <h1>線束同焊接可靠性</h1>
   <p class="lead">線係軟綿玩具「隱形殺手」：車針刺穿、拉扯斷焊、絞線疲勞。路徑同應力釋放要同車縫一齊設計。</p>
 
-  <div class="hero-stage">
+    <div class="hero-stage">
     <div class="stage3d">
-      <h3 style="margin-top:0;">線束路徑（撳節點）</h3>
-      <div class="harness">
-        <svg viewBox="0 0 520 300" role="img">
-          <!-- soft outline -->
-          <ellipse cx="260" cy="160" rx="200" ry="120" fill="rgba(255,143,171,.15)" stroke="#ff8fab" stroke-width="2" stroke-dasharray="4 3"/>
-          <!-- PCB -->
-          <g class="node" data-id="pcb">
-            <rect x="220" y="130" width="70" height="45" rx="6" fill="#3a2f12" stroke="#ffd166" stroke-width="2"/>
-            <text x="255" y="158" text-anchor="middle" fill="#ffe9b0" font-size="12">PCB</text>
-          </g>
-          <!-- speaker -->
-          <g class="node" data-id="spk">
-            <circle cx="100" cy="120" r="28" fill="#1f3d2d" stroke="#7ddea2" stroke-width="2"/>
-            <text x="100" y="125" text-anchor="middle" fill="#9fe9c0" font-size="11">喇叭</text>
-          </g>
-          <!-- switch -->
-          <g class="node" data-id="sw">
-            <rect x="380" y="80" width="50" height="30" rx="6" fill="#1a2332" stroke="#5b8cff" stroke-width="2"/>
-            <text x="405" y="100" text-anchor="middle" fill="#b9d0ff" font-size="11">開關</text>
-          </g>
-          <!-- battery -->
-          <g class="node" data-id="bat">
-            <rect x="360" y="200" width="70" height="40" rx="6" fill="#1a2332" stroke="#ffd166" stroke-width="2"/>
-            <text x="395" y="225" text-anchor="middle" fill="#ffe9b0" font-size="11">電池倉</text>
-          </g>
-          <!-- sew risk zone -->
-          <g class="node" data-id="sew">
-            <rect x="150" y="60" width="90" height="36" rx="8" fill="rgba(255,123,114,.25)" stroke="#ff7b72" stroke-width="2"/>
-            <text x="195" y="83" text-anchor="middle" fill="#ffb4ae" font-size="11">車縫危險區</text>
-          </g>
-          <!-- strain relief -->
-          <g class="node" data-id="strain">
-            <circle cx="200" cy="150" r="12" fill="#7ddea2" opacity=".8"/>
-            <text x="200" y="175" text-anchor="middle" fill="#9fe9c0" font-size="10">應力釋放</text>
-          </g>
-          <!-- wires -->
-          <path class="pulse-line" d="M128 120 C170 120 200 140 220 150" fill="none" stroke="#ffd166" stroke-width="2.5"/>
-          <path class="pulse-line" d="M290 140 C340 110 360 100 380 95" fill="none" stroke="#5b8cff" stroke-width="2.5"/>
-          <path class="pulse-line" d="M290 160 C330 180 350 210 360 220" fill="none" stroke="#ff7b72" stroke-width="2.5"/>
+      <h3 style="margin-top:0;">線束路徑同服務圈（拖線長）</h3>
+      <p class="hero-caption">拖「預留線長」：睇服務圈同彎位——太短會扯焊點，太長會勾縫針。</p>
+      <div class="hero-widget">
+        <svg viewBox="0 0 640 300" role="img" aria-label="線束路徑">
+          <rect x="8" y="8" width="624" height="284" rx="16" fill="#121925"/>
+          <rect x="60" y="110" width="70" height="50" rx="8" fill="#3a2f12" stroke="#ffd166"/>
+          <text x="95" y="140" text-anchor="middle" fill="#ffe9b0" font-size="11">PCB</text>
+          <circle cx="520" cy="140" r="28" fill="#3a2f12" stroke="#ffd166"/>
+          <text x="520" y="144" text-anchor="middle" fill="#ffe9b0" font-size="11">喇叭</text>
+          <path id="harnessPath" d="" fill="none" stroke="#7ddea2" stroke-width="4" stroke-linecap="round"/>
+          <circle id="strainLoop" cx="300" cy="140" r="0" fill="none" stroke="#ffd166" stroke-width="3"/>
+          <text id="harnessLen" x="320" y="260" text-anchor="middle" fill="#e8eef7" font-size="14" font-weight="700">線長 120mm（含服務圈）</text>
         </svg>
+        <div class="hero-controls">
+          <label>預留線長 <input type="range" id="wireLen" min="80" max="200" value="120"></label>
+        </div>
       </div>
-      <div class="panel" id="hPanel"><strong>撳節點</strong>：睇焊接、路徑、車縫避位。</div>
+      <div class="panel" id="hPanel"><strong>線束互動</strong>：應力釋放同服務圈要寫入 SOP。</div>
     </div>
   </div>
+
 
   <h2>高發風險（撳卡）</h2>
   <div class="risk" id="risks"></div>
@@ -162,6 +142,24 @@ document.getElementById('markDone').onclick=()=>{
   done['06']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
   document.getElementById('saveMsg').textContent='已儲存：單元 06 完成。';
 };
+
+
+(function(){
+  const path=document.getElementById('harnessPath');
+  const loop=document.getElementById('strainLoop');
+  const lab=document.getElementById('harnessLen');
+  const panel=document.getElementById('hPanel');
+  function render(){
+    const L=+document.getElementById('wireLen').value;
+    const slack=Math.max(0,(L-100)/4);
+    if(path) path.setAttribute('d', `M130 135 C ${200+slack} ${135-slack*2}, ${380-slack} ${135+slack*2}, 490 140`);
+    if(loop){ loop.setAttribute('r', String(8+slack/2)); loop.setAttribute('cy', String(135-slack)); }
+    if(lab) lab.textContent=`線長 ${L}mm（含服務圈 ${Math.round(slack*2)}mm）`;
+    if(panel) panel.innerHTML = L<100 ? '<strong>太短<\/strong>：無服務圈，振動位易斷。' : L>170 ? '<strong>太長<\/strong>：易勾車針／外觀鼓起。' : '<strong>合適<\/strong>：有服務圈同彎位餘量。';
+  }
+  document.getElementById('wireLen')?.addEventListener('input', render); render();
+})();
+
 </script>
 </body>
 </html>

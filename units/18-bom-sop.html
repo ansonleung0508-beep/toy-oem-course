@@ -6,6 +6,9 @@
 <title>單元 18 · BOM／SOP／工藝檔</title>
 <link rel="stylesheet" href="../assets/course.css" />
 <style>
+.pad.on rect, .pad.on circle { fill: rgba(255,209,102,.45) !important; }
+.hit.on { outline: 2px solid var(--accent); }
+
 .doc-tabs { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
 .doc-tabs button { padding:10px 14px; border-radius:10px; background:var(--card2); border:1px solid rgba(255,255,255,.08); color:var(--text); cursor:pointer; font-weight:700; }
 .doc-tabs button.on { border-color:var(--accent); background:rgba(91,140,255,.2); }
@@ -24,12 +27,26 @@
   <h1>BOM／SOP／工藝檔</h1>
   <p class="lead">文件係產線嘅「唯一真相」。BOM 錯＝買錯料；SOP 含糊＝靠老師傅；工藝檔唔更新＝ECN 失控。</p>
 
-  <div class="doc-tabs" id="tabs">
+  
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">BOM 樹狀展開（撳節點）</h3>
+      <p class="hero-caption">撳 BOM 節點展開／收合：電子／機構／軟綿分階要清楚。</p>
+      <div class="hero-widget">
+        <svg viewBox="0 0 640 300" role="img" aria-label="BOM 樹">
+          <rect x="8" y="8" width="624" height="284" rx="16" fill="#121925"/>
+          <g id="bomTree"></g>
+        </svg>
+      </div>
+      <div class="panel" id="tabPanel"><strong>BOM 互動</strong>：撳節點展開子件。</div>
+    </div>
+  </div>
+<div class="doc-tabs" id="tabs">
     <button type="button" class="on" data-tab="bom">BOM</button>
     <button type="button" data-tab="sop">SOP</button>
     <button type="button" data-tab="proc">工藝檔</button>
   </div>
-  <div class="panel" id="tabPanel"></div>
+  
 
   <div id="bomView">
     <h3>示例 BOM（撳行）</h3>
@@ -159,6 +176,46 @@ document.getElementById('markDone').onclick=()=>{
   done['18']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
   document.getElementById('saveMsg').textContent='已儲存：單元 18 完成。';
 };
+
+
+(function(){
+  const tree=[
+    {id:'root', name:'成品毛絨', kids:[
+      {id:'elec', name:'電子', kids:[{id:'pcb',name:'PCBA'},{id:'bat',name:'電池倉'},{id:'spk',name:'喇叭'}]},
+      {id:'mech', name:'機構', kids:[{id:'gb',name:'齒輪箱'},{id:'sk',name:'骨架'}]},
+      {id:'soft', name:'軟綿', kids:[{id:'fab',name:'布料'},{id:'fill',name:'填充'},{id:'sew',name:'車縫工時'}]}
+    ]}
+  ];
+  const g=document.getElementById('bomTree');
+  const panel=document.getElementById('tabPanel');
+  const open=new Set(['root','elec']);
+  function draw(nodes, x, y, depth){
+    if(!g) return y;
+    nodes.forEach(n=>{
+      const has=n.kids&&n.kids.length;
+      const r=document.createElementNS('http://www.w3.org/2000/svg','rect');
+      r.setAttribute('x',x); r.setAttribute('y',y); r.setAttribute('width','160'); r.setAttribute('height','28');
+      r.setAttribute('rx','8'); r.setAttribute('fill', open.has(n.id)?'#243044':'#1a2332'); r.setAttribute('stroke','#5b8cff');
+      r.style.cursor='pointer';
+      r.addEventListener('click',()=>{
+        if(has){ if(open.has(n.id)) open.delete(n.id); else open.add(n.id); render(); }
+        if(panel) panel.innerHTML='<strong>'+n.name+'<\/strong>：'+(has?'撳可展開子件。':'葉子料——核對料號同用量。');
+      });
+      g.appendChild(r);
+      const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+      t.setAttribute('x',x+10); t.setAttribute('y',y+19); t.setAttribute('fill','#e8eef7'); t.setAttribute('font-size','13');
+      t.textContent=(has?(open.has(n.id)?'▼ ':'▶ '):'• ')+n.name;
+      t.style.pointerEvents='none';
+      g.appendChild(t);
+      y+=36;
+      if(has && open.has(n.id)) y=draw(n.kids, x+24, y, depth+1);
+    });
+    return y;
+  }
+  function render(){ if(!g) return; g.innerHTML=''; draw(tree, 40, 30, 0); }
+  render();
+})();
+
 </script>
 </body>
 </html>

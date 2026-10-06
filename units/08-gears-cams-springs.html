@@ -6,6 +6,9 @@
 <title>單元 08 · 齒輪／凸輪／彈簧</title>
 <link rel="stylesheet" href="../assets/course.css" />
 <style>
+.pad.on rect, .pad.on circle { fill: rgba(255,209,102,.45) !important; }
+.hit.on { outline: 2px solid var(--accent); }
+
 .gb { width:min(100%,480px); margin:0 auto; position:relative; }
 .gb svg { width:100%; height:auto; }
 .gear { transform-origin: center; transform-box: fill-box; }
@@ -29,53 +32,34 @@
   <h1>齒輪／凸輪／彈簧</h1>
   <p class="lead">傳動決定動作、噪音、壽命同電流。OEM 要 lock 齒數比、材料、潤滑同堵轉保護。</p>
 
-  <div class="hero-stage">
+    <div class="hero-stage">
     <div class="stage3d">
-      <h3 style="margin-top:0;">齒輪箱示意（撳零件 · 開傳動動畫）</h3>
-      <div class="ctrl">
-        <button type="button" id="spinOn" class="on">▶ 傳動中</button>
-        <button type="button" id="spinOff">⏸ 暫停</button>
-      </div>
-      <div class="gb">
-        <svg id="gearSvg" class="spinning" viewBox="0 0 480 320" role="img">
-          <rect x="60" y="50" width="360" height="220" rx="16" fill="#1a2830" stroke="#7ddea2" stroke-width="2"/>
-          <!-- motor -->
-          <g class="part" data-id="motor">
-            <rect x="80" y="120" width="70" height="50" rx="8" fill="#3a2f12" stroke="#ffd166" stroke-width="2"/>
-            <text x="115" y="150" text-anchor="middle" fill="#ffe9b0" font-size="11">馬達</text>
+      <h3 style="margin-top:0;">齒輪減速同扭矩（拖齒數比）</h3>
+      <p class="hero-caption">拖「減速比」：轉速跌、扭矩升——堵轉電流同壽命要一齊計。</p>
+      <div class="hero-widget">
+        <svg viewBox="0 0 640 300" role="img" aria-label="齒輪傳動">
+          <rect x="8" y="8" width="624" height="284" rx="16" fill="#121925"/>
+          <g id="gearSmall" transform="translate(180 150)">
+            <circle r="36" fill="#243044" stroke="#7ddea2" stroke-width="3"/>
+            <circle r="8" fill="#ffd166"/>
           </g>
-          <!-- gear 1 -->
-          <g class="part g1 gear" data-id="gear" transform="translate(200,145)">
-            <circle r="36" fill="#2a3d32" stroke="#7ddea2" stroke-width="3"/>
-            <circle r="10" fill="#7ddea2"/>
-            <path d="M0-36 L4-28 L-4-28 Z M0 36 L4 28 L-4 28 Z M36 0 L28 4 L28-4 Z M-36 0 L-28 4 L-28-4 Z" fill="#7ddea2"/>
+          <g id="gearBig" transform="translate(320 150)">
+            <circle r="70" fill="#1f3d2d" stroke="#7ddea2" stroke-width="3"/>
+            <circle r="10" fill="#ffd166"/>
           </g>
-          <!-- gear 2 -->
-          <g class="part g2 gear" data-id="gear2" transform="translate(280,160)">
-            <circle r="48" fill="#243528" stroke="#4bbf7a" stroke-width="3"/>
-            <circle r="12" fill="#4bbf7a"/>
-          </g>
-          <!-- cam -->
-          <g class="part cam gear" data-id="cam" transform="translate(355,150)">
-            <ellipse rx="28" ry="18" fill="#2a3344" stroke="#5b8cff" stroke-width="2"/>
-            <circle r="6" fill="#5b8cff"/>
-            <text y="45" text-anchor="middle" fill="#b9d0ff" font-size="11">凸輪</text>
-          </g>
-          <!-- spring -->
-          <g class="part" data-id="spring">
-            <path d="M100 220 Q110 210 120 220 Q130 230 140 220 Q150 210 160 220 Q170 230 180 220" fill="none" stroke="#ff8fab" stroke-width="3"/>
-            <text x="140" y="250" text-anchor="middle" fill="#ffd0dc" font-size="11">复位彈簧</text>
-          </g>
-          <!-- output -->
-          <g class="part" data-id="out">
-            <rect x="340" y="70" width="50" height="14" rx="4" fill="#ffd166"/>
-            <text x="365" y="60" text-anchor="middle" fill="#ffe9b0" font-size="11">輸出軸</text>
-          </g>
+          <rect x="400" y="130" width="90" height="40" rx="8" fill="#3a2f12" stroke="#ffd166"/>
+          <text x="445" y="155" text-anchor="middle" fill="#ffe9b0" font-size="12">輸出</text>
+          <text id="gearReadout" x="320" y="260" text-anchor="middle" fill="#e8eef7" font-size="14" font-weight="700">比 1:3 → 轉速÷3、扭矩×3</text>
         </svg>
+        <div class="hero-controls">
+          <label>減速比 <input type="range" id="gearRatio" min="2" max="8" value="3"></label>
+          <button class="btn ghost" type="button" id="gearSpin">轉動</button>
+        </div>
       </div>
-      <div class="panel" id="gbPanel"><strong>撳馬達／齒輪／凸輪／彈簧</strong>：睇設計同失效。</div>
+      <div class="panel" id="gbPanel"><strong>齒輪互動</strong>：比愈大愈大力，但轉慢同可能更嘈。</div>
     </div>
   </div>
+
 
   <h2>噪音・壽命・堵轉</h2>
   <div class="timeline" id="keys"></div>
@@ -112,8 +96,8 @@ document.querySelectorAll('.part').forEach(p=>{
   });
 });
 const svg=document.getElementById('gearSvg');
-document.getElementById('spinOn').onclick=()=>{ svg.classList.add('spinning'); document.getElementById('spinOn').classList.add('on'); document.getElementById('spinOff').classList.remove('on'); };
-document.getElementById('spinOff').onclick=()=>{ svg.classList.remove('spinning'); document.getElementById('spinOff').classList.add('on'); document.getElementById('spinOn').classList.remove('on'); };
+const _so=document.getElementById('spinOn'); if(_so) _so.onclick=()=>{ svg && svg.classList.add('spinning'); document.getElementById('spinOn').classList.add('on'); document.getElementById('spinOff').classList.remove('on'); };
+const _sf=document.getElementById('spinOff'); if(_sf) _sf.onclick=()=>{ svg && svg.classList.remove('spinning'); document.getElementById('spinOff').classList.add('on'); document.getElementById('spinOn').classList.remove('on'); };
 
 const keys=[
   {t:'噪音',d:'齒形、側隙、箱體剛度、潤滑。驗收：距離 X cm ≤ Y dBA。毛絨會吸音，但要以裸箱＋整機各測一次。'},
@@ -152,6 +136,32 @@ document.getElementById('markDone').onclick=()=>{
   done['08']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
   document.getElementById('saveMsg').textContent='已儲存：單元 08 完成。';
 };
+
+
+(function(){
+  const big=document.getElementById('gearBig');
+  const small=document.getElementById('gearSmall');
+  const read=document.getElementById('gearReadout');
+  const panel=document.getElementById('gbPanel');
+  let ang=0, spinT=null;
+  function render(){
+    const r=+document.getElementById('gearRatio').value;
+    if(read) read.textContent=`比 1:${r} → 轉速÷${r}、扭矩×${r}`;
+    if(panel) panel.innerHTML=`<strong>減速 ${r}:1<\/strong>：輸出更大力，馬達堵轉電流仍要按最差情況計。`;
+  }
+  function tick(){
+    const r=+document.getElementById('gearRatio').value;
+    ang+=6; if(small) small.setAttribute('transform', `translate(180 150) rotate(${ang})`);
+    if(big) big.setAttribute('transform', `translate(320 150) rotate(${-ang/r})`);
+  }
+  document.getElementById('gearRatio')?.addEventListener('input', render);
+  document.getElementById('gearSpin')?.addEventListener('click', function(){
+    if(spinT){ clearInterval(spinT); spinT=null; this.textContent='轉動'; return; }
+    this.textContent='停止'; spinT=setInterval(tick,40);
+  });
+  render();
+})();
+
 </script>
 </body>
 </html>

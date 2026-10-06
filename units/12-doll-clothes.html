@@ -6,6 +6,9 @@
 <title>單元 12 · 公仔衫同服飾</title>
 <link rel="stylesheet" href="../assets/course.css" />
 <style>
+.pad.on rect, .pad.on circle { fill: rgba(255,209,102,.45) !important; }
+.hit.on { outline: 2px solid var(--accent); }
+
 .doll { width:min(100%,420px); margin:0 auto; }
 .doll svg { width:100%; height:auto; }
 .cpart { cursor:pointer; transition:.2s; }
@@ -24,50 +27,38 @@
   <h1>公仔衫同服飾</h1>
   <p class="lead">Fashion doll／着衫公仔：樣版、面料、車縫、脫穿便利同安規細件（紐扣、拉鍊）一齊管。</p>
 
-  <div class="hero-stage">
+    <div class="hero-stage">
     <div class="stage3d">
-      <h3 style="margin-top:0;">服飾分層（撳件）</h3>
-      <div class="doll">
-        <svg viewBox="0 0 420 380" role="img">
-          <!-- body -->
-          <ellipse cx="210" cy="220" rx="55" ry="70" fill="#f5d0c5"/>
-          <circle cx="210" cy="100" r="45" fill="#f5d0c5"/>
-          <circle cx="195" cy="95" r="5" fill="#2b2430"/><circle cx="225" cy="95" r="5" fill="#2b2430"/>
-          <ellipse cx="210" cy="110" rx="7" ry="5" fill="#e8899a"/>
-          <!-- hair -->
-          <g class="cpart" data-id="hair">
-            <path d="M165 100 Q170 50 210 45 Q250 50 255 100" fill="#6b3a2a" stroke="#8b5a3a" stroke-width="2"/>
-            <text x="300" y="70" fill="#ffd0dc" font-size="12">頭髮／頭飾</text>
+      <h3 style="margin-top:0;">公仔衫紙樣同扣件（撳裁片）</h3>
+      <p class="hero-caption">撳紙樣裁片同扣件：睇行程活動位同細件安規——衫唔可以擋開關／IR。</p>
+      <div class="hero-widget">
+        <svg viewBox="0 0 640 300" role="img" aria-label="紙樣">
+          <rect x="8" y="8" width="624" height="284" rx="16" fill="#121925"/>
+          <g class="cpart hit" data-id="dress">
+            <path d="M260 70 L320 50 L380 70 L400 200 L240 200 Z" fill="rgba(91,140,255,.25)" stroke="#5b8cff" stroke-width="2"/>
+            <text x="320" y="140" text-anchor="middle" class="zone-label" style="fill:#c7d8ff">衫／裙</text>
           </g>
-          <!-- dress -->
-          <g class="cpart" data-id="dress">
-            <path d="M160 180 L260 180 L290 300 L130 300 Z" fill="#ff8fab" stroke="#e8799b" stroke-width="2"/>
-            <text x="210" y="250" text-anchor="middle" fill="#1a2332" font-size="12" font-weight="700">衫／裙</text>
+          <g class="cpart hit" data-id="sleeve">
+            <path d="M180 90 L240 110 L230 180 L160 160 Z" fill="rgba(125,222,162,.25)" stroke="#7ddea2" stroke-width="2"/>
+            <text x="200" y="140" text-anchor="middle" fill="#c9f5db" font-size="11" font-weight="700">袖</text>
           </g>
-          <!-- shoes -->
-          <g class="cpart" data-id="shoes">
-            <ellipse cx="180" cy="340" rx="28" ry="14" fill="#5b8cff"/>
-            <ellipse cx="240" cy="340" rx="28" ry="14" fill="#5b8cff"/>
-            <text x="210" y="370" text-anchor="middle" fill="#b9d0ff" font-size="12">鞋</text>
+          <g class="cpart hit" data-id="fast">
+            <circle cx="320" cy="170" r="14" fill="#ffd166"/><text x="320" y="210" text-anchor="middle" fill="#ffe9b0" font-size="11">扣件</text>
           </g>
-          <!-- fasteners -->
-          <g class="cpart" data-id="fast">
-            <circle cx="210" cy="200" r="6" fill="#ffd166"/>
-            <circle cx="210" cy="220" r="6" fill="#ffd166"/>
-            <circle cx="210" cy="240" r="6" fill="#ffd166"/>
-            <text x="100" y="220" fill="#ffe9b0" font-size="11">紐扣／魔術貼</text>
+          <g class="cpart hit" data-id="shoes">
+            <ellipse cx="280" cy="250" rx="28" ry="14" fill="#a67c52"/><ellipse cx="360" cy="250" rx="28" ry="14" fill="#a67c52"/>
+            <text x="320" y="275" text-anchor="middle" fill="#e8c9a8" font-size="11">鞋</text>
           </g>
-          <!-- arms cloth -->
-          <g class="cpart" data-id="sleeve">
-            <rect x="100" y="180" width="50" height="20" rx="8" fill="#e8799b" transform="rotate(-30 125 190)"/>
-            <rect x="270" y="180" width="50" height="20" rx="8" fill="#e8799b" transform="rotate(30 295 190)"/>
-            <text x="70" y="170" fill="#ffd0dc" font-size="11">袖</text>
+          <g class="cpart hit" data-id="hair">
+            <path d="M300 40 Q320 10 340 40" fill="none" stroke="#ff8fab" stroke-width="8" stroke-linecap="round"/>
+            <text x="400" y="40" fill="#ffd0dc" font-size="11">頭髮</text>
           </g>
         </svg>
       </div>
-      <div class="panel" id="dollPanel"><strong>撳服飾件</strong>：睇樣版同安規要點。</div>
+      <div class="panel" id="dollPanel"><strong>服飾互動</strong>：撳裁片睇同機構／電子嘅交接。</div>
     </div>
   </div>
+
 
   <h2>樣版重點（撳卡）</h2>
   <div class="pat-grid" id="pats"></div>
@@ -157,6 +148,28 @@ document.getElementById('markDone').onclick=()=>{
   done['12']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
   document.getElementById('saveMsg').textContent='已儲存：單元 12 完成。';
 };
+
+
+(function(){
+  // existing page may already bind .cpart — ensure hero groups work with dollPanel
+  const map={
+    dress:'衫／裙要跟關節行程；太貼會撕縫。',
+    sleeve:'袖筒淨空要容納舉手；唔好露骨架。',
+    fast:'扣件過細件安規；唔好擋開關。',
+    shoes:'易脫穿同防丟；硬料防刮腿。',
+    hair:'頭飾拉力同膠粘；唔擋 IR。'
+  };
+  document.querySelectorAll('svg .cpart').forEach(el=>{
+    el.addEventListener('click',()=>{
+      document.querySelectorAll('svg .cpart').forEach(x=>x.classList.remove('on'));
+      el.classList.add('on');
+      const id=el.getAttribute('data-id');
+      const p=document.getElementById('dollPanel');
+      if(p && map[id]) p.innerHTML='<strong>'+id+'<\/strong>：'+map[id];
+    });
+  });
+})();
+
 </script>
 </body>
 </html>

@@ -6,6 +6,9 @@
 <title>單元 19 · 工廠審核、報價、變更</title>
 <link rel="stylesheet" href="../assets/course.css" />
 <style>
+.pad.on rect, .pad.on circle { fill: rgba(255,209,102,.45) !important; }
+.hit.on { outline: 2px solid var(--accent); }
+
 .audit { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; }
 .audit .card { cursor:pointer; min-height:100px; }
 .audit .card.active { border-color:rgba(91,140,255,.5); }
@@ -26,7 +29,22 @@
   <h1>工廠審核、報價、變更</h1>
   <p class="lead">選廠、鎖價、改料——三件事決定你能不能安睡。電子毛絨要睇電子產線同車縫產線係咪真係夾到。</p>
 
-  <h2>審核維度（撳卡）</h2>
+  
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">報價同 ECN 流程（撳步驟）</h3>
+      <p class="hero-caption">撳審廠→報價→鎖價→ECN：睇改料點影響已鎖成本。</p>
+      <div class="hero-widget">
+        <svg viewBox="0 0 640 260" role="img" aria-label="ECN 流程">
+          <rect x="8" y="8" width="624" height="244" rx="16" fill="#121925"/>
+          <g id="ecnSteps"></g>
+          <text id="ecnInfo" x="320" y="210" text-anchor="middle" fill="#e8eef7" font-size="14" font-weight="700">撳步驟</text>
+        </svg>
+      </div>
+      <div class="panel" id="ecnPanel"><strong>ECN 互動</strong>：未評估成本同安規嘅變更唔好批。</div>
+    </div>
+  </div>
+<h2>審核維度（撳卡）</h2>
   <div class="audit" id="audit"></div>
   <div class="panel" id="auditPanel">揀一維度。</div>
 
@@ -46,7 +64,7 @@
 
   <h2>ECN 流程（自動播放）</h2>
   <div class="ecn-flow" id="ecn"></div>
-  <div class="panel" id="ecnPanel">變更要過影響評估先執行。</div>
+  
 
   <h2>紅旗</h2>
   <div class="timeline" id="red"></div>
@@ -139,6 +157,37 @@ document.getElementById('markDone').onclick=()=>{
   done['19']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
   document.getElementById('saveMsg').textContent='已儲存：單元 19 完成。';
 };
+
+
+(function(){
+  const steps=[{t:'審廠',d:'產能／品質／電子／車縫／責任'},{t:'報價',d:'拆工時同料價，鎖匯率假設'},{t:'鎖價',d:'FOB／MOQ／付款條件'},{t:'ECN',d:'改料要重估成本同安規'},{t:'大貨',d:'巡檢同客訴閉環'}];
+  const g=document.getElementById('ecnSteps');
+  const info=document.getElementById('ecnInfo');
+  const panel=document.getElementById('ecnPanel');
+  if(!g) return;
+  steps.forEach((s,i)=>{
+    const x=50+i*115;
+    const r=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    r.setAttribute('x',x); r.setAttribute('y','70'); r.setAttribute('width','100'); r.setAttribute('height','50');
+    r.setAttribute('rx','10'); r.setAttribute('fill','#1a2332'); r.setAttribute('stroke','#5b8cff'); r.style.cursor='pointer';
+    r.addEventListener('click',()=>{
+      [...g.querySelectorAll('rect')].forEach((c,j)=>c.setAttribute('fill',j===i?'#5b8cff':'#1a2332'));
+      if(info) info.textContent=s.t+'：'+s.d;
+      if(panel) panel.innerHTML='<strong>'+s.t+'<\/strong>：'+s.d;
+    });
+    g.appendChild(r);
+    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x',x+50); t.setAttribute('y','100'); t.setAttribute('text-anchor','middle');
+    t.setAttribute('fill','#e8eef7'); t.setAttribute('font-size','13'); t.setAttribute('font-weight','700');
+    t.textContent=s.t; t.style.pointerEvents='none'; g.appendChild(t);
+    if(i<steps.length-1){
+      const a=document.createElementNS('http://www.w3.org/2000/svg','text');
+      a.setAttribute('x',x+105); a.setAttribute('y','100'); a.setAttribute('fill','#9aa8bc'); a.textContent='→'; g.appendChild(a);
+    }
+  });
+  g.querySelector('rect')?.dispatchEvent(new Event('click'));
+})();
+
 </script>
 </body>
 </html>

@@ -6,6 +6,9 @@
 <title>單元 05 · 開關／感測／IR</title>
 <link rel="stylesheet" href="../assets/course.css" />
 <style>
+.pad.on rect, .pad.on circle { fill: rgba(255,209,102,.45) !important; }
+.hit.on { outline: 2px solid var(--accent); }
+
 .sw-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; margin:14px 0; }
 .sw-card { background:var(--card); border-radius:14px; padding:16px; text-align:center; cursor:pointer; border:1px solid rgba(255,255,255,.06); transition:.2s; }
 .sw-card:hover, .sw-card.on { border-color:var(--elec); background:rgba(255,209,102,.12); transform:translateY(-3px); }
@@ -31,36 +34,30 @@
   <div class="sw-grid" id="swTypes"></div>
   <div class="panel" id="swPanel">揀一種觸發，睇優缺同交接。</div>
 
-  <div class="hero-stage">
+    <div class="hero-stage">
     <div class="stage3d">
-      <h3 style="margin-top:0;">軟綿觸發區示意（撳粉紅區）</h3>
-      <div class="plush-demo">
-        <svg viewBox="0 0 420 300" role="img">
-          <defs>
-            <radialGradient id="fur5" cx="50%" cy="35%" r="65%">
-              <stop offset="0%" stop-color="#ffc2d4"/><stop offset="100%" stop-color="#e8799b"/>
-            </radialGradient>
-          </defs>
-          <ellipse cx="210" cy="190" rx="120" ry="90" fill="url(#fur5)"/>
-          <circle cx="210" cy="100" r="58" fill="url(#fur5)"/>
-          <circle cx="188" cy="92" r="6" fill="#2b2430"/><circle cx="232" cy="92" r="6" fill="#2b2430"/>
-          <ellipse cx="210" cy="110" rx="9" ry="6" fill="#ff6b8a"/>
-          <!-- zones -->
-          <ellipse class="zone" data-id="paw" cx="130" cy="200" rx="36" ry="28" fill="rgba(255,209,102,.45)" stroke="#ffd166" stroke-width="2"/>
-          <text x="130" y="205" text-anchor="middle" fill="#1a2332" font-size="11" font-weight="700">手掌</text>
-          <ellipse class="zone" data-id="belly" cx="210" cy="200" rx="40" ry="32" fill="rgba(125,222,162,.4)" stroke="#7ddea2" stroke-width="2"/>
-          <text x="210" y="205" text-anchor="middle" fill="#1a2332" font-size="11" font-weight="700">肚</text>
-          <ellipse class="zone" data-id="head" cx="210" cy="70" rx="30" ry="16" fill="rgba(91,140,255,.4)" stroke="#5b8cff" stroke-width="2"/>
-          <text x="210" y="74" text-anchor="middle" fill="#e8eef7" font-size="11" font-weight="700">頭頂</text>
-          <circle class="zone" data-id="ir" cx="300" cy="150" r="22" fill="rgba(255,123,114,.35)" stroke="#ff7b72" stroke-width="2"/>
-          <text x="300" y="154" text-anchor="middle" fill="#ffb4ae" font-size="10">IR</text>
+      <h3 style="margin-top:0;">撳肚皮觸發開關（撳／按住）</h3>
+      <p class="hero-caption">撳或按住粉紅肚皮：睇開關行程（travel）同觸發電平——軟綿太厚會吞行程。</p>
+      <div class="hero-widget">
+        <svg viewBox="0 0 640 300" role="img" aria-label="開關行程">
+          <rect x="8" y="8" width="624" height="284" rx="16" fill="#121925"/>
+          <ellipse cx="200" cy="180" rx="110" ry="85" fill="url(#furSw)" id="bellyHit" class="hit" style="cursor:pointer"/>
+          <circle cx="200" cy="95" r="55" fill="url(#furSw)"/>
+          <circle cx="180" cy="88" r="6" fill="#2b2430"/><circle cx="220" cy="88" r="6" fill="#2b2430"/>
+          <defs><radialGradient id="furSw" cx="50%" cy="35%" r="65%"><stop offset="0%" stop-color="#ffc2d4"/><stop offset="100%" stop-color="#e8799b"/></radialGradient></defs>
+          <rect x="380" y="60" width="200" height="180" rx="12" fill="#1a2332" stroke="rgba(255,255,255,.1)"/>
+          <text x="480" y="90" text-anchor="middle" fill="#9aa8bc" font-size="12">開關行程</text>
+          <rect x="430" y="110" width="100" height="18" rx="4" fill="#243044"/>
+          <rect id="swTravel" x="430" y="110" width="20" height="18" rx="4" fill="#ffd166"/>
+          <text id="swState" x="480" y="160" text-anchor="middle" fill="#ffe9b0" font-size="14" font-weight="700">未觸發</text>
+          <text id="swForce" x="480" y="190" text-anchor="middle" fill="#9aa8bc" font-size="12">按壓力 0%</text>
+          <text x="200" y="280" text-anchor="middle" fill="#ffd0dc" font-size="12">← 撳／按住肚皮</text>
         </svg>
       </div>
-      <div class="panel" id="zonePanel"><strong>撳觸發區</strong>：睇行程、誤觸風險同固定方式。</div>
-      <p class="note">觸發力示意（綠＝剛好，黃＝偏硬，紅＝太硬／小朋友撳唔動）</p>
-      <div class="force-bar"><i id="forceI"></i></div>
+      
     </div>
   </div>
+
 
   <h2>可靠性要點</h2>
   <div class="timeline" id="rel"></div>
@@ -149,6 +146,34 @@ document.getElementById('markDone').onclick=()=>{
   done['05']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
   document.getElementById('saveMsg').textContent='已儲存：單元 05 完成。';
 };
+
+
+(function(){
+  const belly=document.getElementById('bellyHit');
+  const bar=document.getElementById('swTravel');
+  const st=document.getElementById('swState');
+  const fr=document.getElementById('swForce');
+  const panel=document.getElementById('swPanel');
+  let hold=null;
+  function setForce(p){
+    p=Math.max(0,Math.min(100,p));
+    if(bar) bar.setAttribute('width', String(20+p*0.8));
+    const on=p>=55;
+    if(st){ st.textContent=on?'已觸發':'未觸發'; st.setAttribute('fill', on?'#3dd68c':'#ffe9b0'); }
+    if(fr) fr.textContent='按壓力 '+p+'%';
+    if(panel) panel.innerHTML=on?'<strong>觸發<\/strong>：行程到位。軟綿壓縮量要同觸發力匹配。':'<strong>未觸發<\/strong>：繼續按下——太厚嘅填充會吞行程。';
+  }
+  function start(){ let p=0; hold=setInterval(()=>{ p=Math.min(100,p+8); setForce(p); },40); }
+  function end(){ clearInterval(hold); let p=100; const t=setInterval(()=>{ p=Math.max(0,p-12); setForce(p); if(p<=0) clearInterval(t); },30); }
+  if(belly){
+    belly.addEventListener('mousedown', start); belly.addEventListener('mouseup', end); belly.addEventListener('mouseleave', end);
+    belly.addEventListener('touchstart', e=>{e.preventDefault(); start();},{passive:false});
+    belly.addEventListener('touchend', end);
+    belly.addEventListener('click', ()=>{ setForce(70); setTimeout(()=>setForce(0),400); });
+  }
+  setForce(0);
+})();
+
 </script>
 </body>
 </html>

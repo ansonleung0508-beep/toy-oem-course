@@ -6,6 +6,9 @@
 <title>單元 09 · 動作行程同軟綿干涉</title>
 <link rel="stylesheet" href="../assets/course.css" />
 <style>
+.pad.on rect, .pad.on circle { fill: rgba(255,209,102,.45) !important; }
+.hit.on { outline: 2px solid var(--accent); }
+
 .motion { width:min(100%,500px); margin:0 auto; }
 .motion svg { width:100%; height:auto; }
 #armMove { transform-origin: 150px 160px; }
@@ -27,52 +30,30 @@
   <h1>動作行程同軟綿干涉</h1>
   <p class="lead">機構「得」，整機未必得——舉手扯爛腋下縫、擺頭扯甩眼珠，都係干涉問題。三線一齊做行程檢查。</p>
 
-  <div class="hero-stage">
+    <div class="hero-stage">
     <div class="stage3d">
-      <h3 style="margin-top:0;">舉手干涉示意</h3>
-      <div class="ctrl">
-        <button type="button" id="go" class="on">▶ 舉手循環</button>
-        <button type="button" id="stop">⏸ 停</button>
-      </div>
-      <div class="motion">
-        <svg id="motSvg" class="moving" viewBox="0 0 500 340" role="img">
-          <defs>
-            <radialGradient id="fur9" cx="50%" cy="40%" r="60%">
-              <stop offset="0%" stop-color="#ffc2d4"/><stop offset="100%" stop-color="#e8799b"/>
-            </radialGradient>
-          </defs>
-          <ellipse cx="280" cy="200" rx="110" ry="90" fill="url(#fur9)"/>
-          <circle cx="280" cy="100" r="55" fill="url(#fur9)"/>
-          <circle cx="260" cy="92" r="6" fill="#2b2430"/><circle cx="300" cy="92" r="6" fill="#2b2430"/>
-          <!-- seam risk -->
-          <g class="issue" data-id="seam">
-            <path class="warn-zone" d="M200 160 Q220 180 210 220" fill="none" stroke="#ff7b72" stroke-width="6" stroke-linecap="round"/>
-            <text x="150" y="190" fill="#ffb4ae" font-size="12">腋下縫</text>
+      <h3 style="margin-top:0;">舉手行程 vs 軟綿干涉（拖角度）</h3>
+      <p class="hero-caption">拖手臂角度：撞到腋下縫／布面會標紅——動作位要同打版一齊改。</p>
+      <div class="hero-widget">
+        <svg viewBox="0 0 640 320" role="img" aria-label="動作干涉">
+          <rect x="8" y="8" width="624" height="304" rx="16" fill="#121925"/>
+          <ellipse cx="280" cy="200" rx="100" ry="80" fill="#e8799b" opacity=".45"/>
+          <circle cx="280" cy="110" r="50" fill="#e8799b" opacity=".55"/>
+          <path id="seamHot" d="M200 160 Q240 140 260 180" fill="none" stroke="#ff7b72" stroke-width="0" stroke-linecap="round"/>
+          <g id="armGroup" transform="rotate(20 260 170)">
+            <rect x="250" y="170" width="28" height="110" rx="12" fill="#7ddea2"/>
           </g>
-          <!-- arm -->
-          <g id="armMove" class="issue" data-id="arm">
-            <rect x="80" y="150" width="100" height="22" rx="10" fill="#e8799b" stroke="#ff8fab" stroke-width="2"/>
-            <circle cx="150" cy="161" r="12" fill="#7ddea2"/>
-            <circle cx="90" cy="161" r="14" fill="#ffc2d4" stroke="#ff8fab" stroke-width="2"/>
-          </g>
-          <!-- eye risk -->
-          <g class="issue" data-id="eye">
-            <circle cx="300" cy="92" r="14" fill="none" stroke="#ffd166" stroke-width="2" stroke-dasharray="3 2"/>
-            <text x="330" y="70" fill="#ffe9b0" font-size="11">五官拉力</text>
-          </g>
-          <!-- fill bunch -->
-          <g class="issue" data-id="bunch">
-            <ellipse cx="230" cy="170" rx="24" ry="18" class="warn-zone"/>
-            <text x="230" y="145" text-anchor="middle" fill="#ffb4ae" font-size="11">填充堆積</text>
-          </g>
-          <!-- safe envelope -->
-          <path class="ok-zone" d="M150 161 A90 90 0 0 1 150 70" fill="none" stroke="#7ddea2" stroke-width="2" stroke-dasharray="6 4"/>
-          <text x="100" y="50" fill="#9fe9c0" font-size="11">設計行程包絡</text>
+          <text id="collides" x="480" y="150" text-anchor="middle" fill="#3dd68c" font-size="14" font-weight="700">間隙 OK</text>
+          <text id="armDeg" x="320" y="290" text-anchor="middle" fill="#9aa8bc" font-size="13">手臂角 20°</text>
         </svg>
+        <div class="hero-controls">
+          <label>舉手角度 <input type="range" id="armLift" min="0" max="90" value="20"></label>
+        </div>
       </div>
-      <div class="panel" id="motPanel"><strong>撳紅／黃警示位</strong>：睇干涉同對策。綠虛線＝允許行程。</div>
+      <div class="panel" id="motPanel"><strong>干涉互動</strong>：標紅＝要減行程、加加固或改袖型。</div>
     </div>
   </div>
+
 
   <h2>檢查流程</h2>
   <div class="timeline" id="flow"></div>
@@ -108,8 +89,8 @@ document.querySelectorAll('.issue').forEach(el=>{
   });
 });
 const svg=document.getElementById('motSvg');
-document.getElementById('go').onclick=()=>{ svg.classList.add('moving'); document.getElementById('go').classList.add('on'); document.getElementById('stop').classList.remove('on'); };
-document.getElementById('stop').onclick=()=>{ svg.classList.remove('moving'); document.getElementById('stop').classList.add('on'); document.getElementById('go').classList.remove('on'); };
+const _go=document.getElementById('go'); if(_go) _go.onclick=()=>{ svg && svg.classList.add('moving'); document.getElementById('go').classList.add('on'); document.getElementById('stop').classList.remove('on'); };
+const _st=document.getElementById('stop'); if(_st) _st.onclick=()=>{ svg && svg.classList.remove('moving'); document.getElementById('stop').classList.add('on'); document.getElementById('go').classList.remove('on'); };
 
 const flow=[
   {t:'1. 裸機構行程',d:'無布狀態量角度、力矩、限位。'},
@@ -159,6 +140,26 @@ document.getElementById('markDone').onclick=()=>{
   done['09']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
   document.getElementById('saveMsg').textContent='已儲存：單元 09 完成。';
 };
+
+
+(function(){
+  const arm=document.getElementById('armGroup');
+  const seam=document.getElementById('seamHot');
+  const col=document.getElementById('collides');
+  const deg=document.getElementById('armDeg');
+  const panel=document.getElementById('motPanel');
+  function render(){
+    const a=+document.getElementById('armLift').value;
+    if(arm) arm.setAttribute('transform', `rotate(${a} 260 170)`);
+    const hit=a>=55;
+    if(seam) seam.setAttribute('stroke-width', hit?'10':'0');
+    if(col){ col.textContent=hit?'⚠ 干涉／拉縫':'間隙 OK'; col.setAttribute('fill', hit?'#ff7b72':'#3dd68c'); }
+    if(deg) deg.textContent=`手臂角 ${a}°`;
+    if(panel) panel.innerHTML=hit?'<strong>干涉<\/strong>：腋下縫受力——減行程或加加固條。':'<strong>OK<\/strong>：動作同布筒淨空足夠。';
+  }
+  document.getElementById('armLift')?.addEventListener('input', render); render();
+})();
+
 </script>
 </body>
 </html>

@@ -6,6 +6,9 @@
 <title>單元 03 · 電池倉同電源安全</title>
 <link rel="stylesheet" href="../assets/course.css" />
 <style>
+.pad.on rect, .pad.on circle { fill: rgba(255,209,102,.45) !important; }
+.hit.on { outline: 2px solid var(--accent); }
+
 .batt-stage { position:relative; width:min(100%,480px); margin:0 auto; aspect-ratio:5/4; }
 .batt-svg { width:100%; height:auto; }
 .hotspot { cursor:pointer; transition:.2s; }
@@ -25,56 +28,32 @@
   <h1>電池倉同電源安全</h1>
   <p class="lead">電池倉係軟綿玩具最易踩安規同客訴嘅位：極性、倉蓋螺絲、彈片接觸、漏液防護，全部要喺工程樣前 lock。</p>
 
-  <div class="hero-stage">
+    <div class="hero-stage">
     <div class="stage3d">
-      <h3 style="margin-top:0;">電池倉剖面（撳零件）</h3>
-      <div class="batt-stage">
-        <svg class="batt-svg" viewBox="0 0 480 360" role="img">
+      <h3 style="margin-top:0;">電池串並同極性（撳切換）</h3>
+      <p class="hero-caption">撳「極性正確／反接」同「串聯／並聯」，睇電壓、電流箭嘴同逆向保護有冇亮紅燈。</p>
+      <div class="hero-widget">
+        <svg viewBox="0 0 640 300" role="img" aria-label="電池極性示意">
+          <rect x="8" y="8" width="624" height="284" rx="16" fill="#121925"/>
+          <g id="battCells"></g>
+          <path id="battFlow" d="M120 150 H520" stroke="#3dd68c" stroke-width="4" marker-end="url(#arrowOk)" opacity=".9"/>
           <defs>
-            <linearGradient id="plastic" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#3a4558"/><stop offset="100%" stop-color="#1e2636"/>
-            </linearGradient>
-            <filter id="sh"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-opacity=".4"/></filter>
+            <marker id="arrowOk" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#3dd68c"/></marker>
+            <marker id="arrowBad" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ff7b72"/></marker>
           </defs>
-          <!-- housing -->
-          <rect class="hotspot" data-id="housing" x="60" y="80" width="280" height="200" rx="16" fill="url(#plastic)" stroke="#6b7c93" stroke-width="2" filter="url(#sh)"/>
-          <!-- cells -->
-          <g class="hotspot" data-id="cells">
-            <rect x="90" y="110" width="50" height="140" rx="8" fill="#2a3344" stroke="#ffd166" stroke-width="2"/>
-            <rect x="155" y="110" width="50" height="140" rx="8" fill="#2a3344" stroke="#ffd166" stroke-width="2"/>
-            <rect x="220" y="110" width="50" height="140" rx="8" fill="#2a3344" stroke="#ffd166" stroke-width="2"/>
-            <text x="115" y="185" text-anchor="middle" fill="#ffe9b0" font-size="12">AAA</text>
-            <text x="180" y="185" text-anchor="middle" fill="#ffe9b0" font-size="12">AAA</text>
-            <text x="245" y="185" text-anchor="middle" fill="#ffe9b0" font-size="12">AAA</text>
-          </g>
-          <!-- spring -->
-          <g class="hotspot" data-id="spring">
-            <path d="M85 120 Q70 130 85 140 Q70 150 85 160 Q70 170 85 180 Q70 190 85 200 Q70 210 85 220" fill="none" stroke="#7ddea2" stroke-width="3"/>
-            <text x="55" y="175" fill="#9fe9c0" font-size="11" transform="rotate(-90 55 175)">彈簧</text>
-          </g>
-          <!-- contact plate -->
-          <g class="hotspot" data-id="contact">
-            <rect x="275" y="120" width="12" height="120" rx="2" fill="#ffd166"/>
-            <text x="310" y="185" fill="#ffe9b0" font-size="11">正極片</text>
-          </g>
-          <!-- cover + screw -->
-          <g class="hotspot" data-id="cover">
-            <rect x="360" y="100" width="90" height="160" rx="10" fill="#243044" stroke="#5b8cff" stroke-width="2"/>
-            <circle cx="405" cy="180" r="14" fill="#1a2332" stroke="#b9d0ff" stroke-width="2"/>
-            <rect x="398" y="172" width="14" height="16" rx="2" fill="#9aa8bc"/>
-            <text x="405" y="280" text-anchor="middle" fill="#b9d0ff" font-size="12">倉蓋+螺絲</text>
-          </g>
-          <!-- wires -->
-          <g class="hotspot" data-id="wires">
-            <path d="M290 140 C340 100 380 90 400 90" fill="none" stroke="#ff7b72" stroke-width="3" stroke-dasharray="6 3"/>
-            <path d="M80 240 C40 280 40 300 80 320" fill="none" stroke="#5b8cff" stroke-width="3" stroke-dasharray="6 3"/>
-            <text x="120" y="340" fill="#9aa8bc" font-size="11">出線 → PCB</text>
-          </g>
+          <circle id="battProt" cx="560" cy="80" r="18" fill="#3dd68c"/>
+          <text x="560" y="84" text-anchor="middle" fill="#0f1419" font-size="11" font-weight="800">OK</text>
+          <text id="battVolt" x="320" y="270" text-anchor="middle" fill="#ffe9b0" font-size="16" font-weight="700">電壓 4.5V（3×1.5V 串聯）</text>
         </svg>
+        <div class="hero-controls">
+          <button class="btn" type="button" id="battPolarity">極性：正確</button>
+          <button class="btn ghost" type="button" id="battMode">接法：串聯</button>
+        </div>
       </div>
-      <div class="panel" id="battPanel"><strong>撳倉內零件</strong>：睇每個位喺 OEM 要點 lock。</div>
+      <div class="panel" id="battPanel"><strong>電池倉互動</strong>：試吓反接會點——產線同安規都要防呆。</div>
     </div>
   </div>
+
 
   <h2>極性同防呆</h2>
   <div class="polarity" id="polarity"></div>
@@ -185,6 +164,47 @@ document.getElementById('markDone').onclick=()=>{
   done['03']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
   document.getElementById('saveMsg').textContent='已儲存：單元 03 完成。';
 };
+
+
+(function(){
+  let reverse=false, parallel=false;
+  const cellsG=document.getElementById('battCells');
+  const flow=document.getElementById('battFlow');
+  const prot=document.getElementById('battProt');
+  const volt=document.getElementById('battVolt');
+  const panel=document.getElementById('battPanel');
+  function draw(){
+    if(!cellsG) return;
+    cellsG.innerHTML='';
+    const n=3; const gap=parallel?70:90; const start=parallel?180:160;
+    for(let i=0;i<n;i++){
+      const x=start+i*gap, y=parallel?100:110;
+      const pol = reverse ? (i%2===0?'-':'+') : (i%2===0?'+':'-');
+      const re=document.createElementNS('http://www.w3.org/2000/svg','rect');
+      re.setAttribute('x',x); re.setAttribute('y',y); re.setAttribute('width','50'); re.setAttribute('height','90');
+      re.setAttribute('rx','8'); re.setAttribute('fill','#2a3344'); re.setAttribute('stroke', reverse?'#ff7b72':'#7ddea2'); re.setAttribute('stroke-width','2');
+      cellsG.appendChild(re);
+      const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+      t.setAttribute('x',x+25); t.setAttribute('y',y+50); t.setAttribute('text-anchor','middle');
+      t.setAttribute('fill','#e8eef7'); t.setAttribute('font-size','18'); t.setAttribute('font-weight','800'); t.textContent=pol;
+      cellsG.appendChild(t);
+    }
+    const v = parallel ? 1.5 : 4.5;
+    volt.textContent = reverse ? `反接！保護動作中（標稱 ${v}V）` : (parallel?`電壓 ${v}V（並聯，容量↑）`:`電壓 ${v}V（3×1.5V 串聯）`);
+    flow.setAttribute('stroke', reverse?'#ff7b72':'#3dd68c');
+    prot.setAttribute('fill', reverse?'#ff7b72':'#3dd68c');
+    prot.nextElementSibling && (prot.nextElementSibling.textContent = reverse?'NG':'OK');
+    if(panel) panel.innerHTML = reverse ? '<strong>逆向<\/strong>：未保護會倒灌／發熱——倉簧同絲印要防呆。' : '<strong>正常<\/strong>：串聯加電壓、並聯加容量；玩具多數串聯鹼性。';
+  }
+  document.getElementById('battPolarity')?.addEventListener('click', function(){
+    reverse=!reverse; this.textContent='極性：'+(reverse?'反接':'正確'); draw();
+  });
+  document.getElementById('battMode')?.addEventListener('click', function(){
+    parallel=!parallel; this.textContent='接法：'+(parallel?'並聯':'串聯'); draw();
+  });
+  draw();
+})();
+
 </script>
 </body>
 </html>

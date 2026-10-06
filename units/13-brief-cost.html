@@ -6,6 +6,9 @@
 <title>單元 13 · Brief 同成本結構</title>
 <link rel="stylesheet" href="../assets/course.css" />
 <style>
+.pad.on rect, .pad.on circle { fill: rgba(255,209,102,.45) !important; }
+.hit.on { outline: 2px solid var(--accent); }
+
 .cost { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:8px; margin:14px 0; }
 .cost-item { background:var(--card); border-radius:12px; padding:12px; text-align:center; cursor:pointer; border:1px solid rgba(255,255,255,.06); }
 .cost-item.on { border-color:var(--accent); background:var(--card2); }
@@ -27,14 +30,30 @@
   <h1>Brief 同成本結構</h1>
   <p class="lead">寫得清嘅 Brief 慳樣板錢；拆得明嘅成本表先同工廠談得攏。功能、年齡、電池、目標價要一齊出現。</p>
 
-  <h2>Brief 必填欄（撳睇）</h2>
+  
+  <div class="hero-stage">
+    <div class="stage3d">
+      <h3 style="margin-top:0;">Brief 成本瀑布（撳成本塊）</h3>
+      <p class="hero-caption">撳功能加配：睇 FOB 成本條點疊高——冇目標價＝設計無限加配。</p>
+      <div class="hero-widget">
+        <svg viewBox="0 0 640 300" role="img" aria-label="成本瀑布">
+          <rect x="8" y="8" width="624" height="284" rx="16" fill="#121925"/>
+          <g id="costBars"></g>
+          <text id="costTotal" x="320" y="270" text-anchor="middle" fill="#ffe9b0" font-size="15" font-weight="700">目標 FOB：$0</text>
+        </svg>
+        <div class="hero-controls" id="costToggles"></div>
+      </div>
+      <div class="panel" id="costPanel"><strong>成本互動</strong>：勾選功能睇成本疊加。</div>
+    </div>
+  </div>
+<h2>Brief 必填欄（撳睇）</h2>
   <div class="brief-form" id="brief"></div>
   <div class="panel" id="briefPanel">揀一欄睇點寫。</div>
 
   <h2>示意成本結構（撳塊）</h2>
   <div class="stack" id="stack"></div>
   <div class="cost" id="cost"></div>
-  <div class="panel" id="costPanel">撳成本塊睇內容同砍價空間。</div>
+  
 
   <h2>常見 Brief 失敗</h2>
   <div class="timeline" id="fails"></div>
@@ -126,6 +145,46 @@ document.getElementById('markDone').onclick=()=>{
   done['13']=true; localStorage.setItem('toyCourseDone',JSON.stringify(done));
   document.getElementById('saveMsg').textContent='已儲存：單元 13 完成。';
 };
+
+
+(function(){
+  const items=[{id:'base',n:'基價',c:4.2,on:true,fixed:true},{id:'voice',n:'語音芯片',c:1.1,on:false},{id:'motor',n:'擺頭馬達',c:1.6,on:false},{id:'led',n:'LED',c:0.4,on:false},{id:'cloth',n:'公仔衫',c:1.3,on:false}];
+  const bars=document.getElementById('costBars');
+  const toggles=document.getElementById('costToggles');
+  const total=document.getElementById('costTotal');
+  const panel=document.getElementById('costPanel');
+  function render(){
+    if(!bars) return;
+    bars.innerHTML='';
+    let sum=0, x=60;
+    items.filter(i=>i.on).forEach(i=>{
+      sum+=i.c;
+      const h=i.c*28;
+      const r=document.createElementNS('http://www.w3.org/2000/svg','rect');
+      r.setAttribute('x',x); r.setAttribute('y',220-h); r.setAttribute('width','70'); r.setAttribute('height',h);
+      r.setAttribute('rx','6'); r.setAttribute('fill','#5b8cff'); r.style.cursor='pointer';
+      bars.appendChild(r);
+      const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+      t.setAttribute('x',x+35); t.setAttribute('y',240); t.setAttribute('text-anchor','middle');
+      t.setAttribute('fill','#9aa8bc'); t.setAttribute('font-size','11'); t.textContent=i.n;
+      bars.appendChild(t);
+      x+=90;
+    });
+    if(total) total.textContent=`估算 FOB：$${sum.toFixed(2)}`;
+    if(panel) panel.innerHTML=`<strong>成本<\/strong>：目前 $${sum.toFixed(2)}。目標價要反向限制功能表。`;
+  }
+  if(toggles){
+    items.forEach(i=>{
+      if(i.fixed) return;
+      const b=document.createElement('button');
+      b.type='button'; b.className='btn ghost'; b.textContent=i.n+' +$'+i.c;
+      b.addEventListener('click',()=>{ i.on=!i.on; b.classList.toggle('on', i.on); render(); });
+      toggles.appendChild(b);
+    });
+  }
+  render();
+})();
+
 </script>
 </body>
 </html>
