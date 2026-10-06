@@ -66,9 +66,9 @@ const briefs=[
 const briefEl=document.getElementById('brief');
 briefs.forEach(b=>{
   const r=document.createElement('div'); r.className='brief-row';
-  r.innerHTML=`<b>${b.t}</b><span style="color:var(--muted);font-size:.9rem">撳睇寫法</span>`;
+  r.innerHTML=`<b>${b.t}<\/b><span style="color:var(--muted);font-size:.9rem">撳睇寫法<\/span>`;
   r.onclick=()=>{ document.querySelectorAll('.brief-row').forEach(x=>x.classList.remove('on')); r.classList.add('on');
-    document.getElementById('briefPanel').innerHTML=`<strong>${b.t}</strong>：${b.d}`; };
+    document.getElementById('briefPanel').innerHTML=`<strong>${b.t}<\/strong>：${b.d}`; };
   briefEl.appendChild(r);
 });
 const costs=[
@@ -84,9 +84,9 @@ const costEl=document.getElementById('cost');
 costs.forEach(c=>{
   const s=document.createElement('span'); s.style.width=c.pct+'%'; s.style.background=c.c; stack.appendChild(s);
   const item=document.createElement('div'); item.className='cost-item';
-  item.innerHTML=`<div class="pct">${c.pct}%</div><div>${c.t}</div>`;
+  item.innerHTML=`<div class="pct">${c.pct}%<\/div><div>${c.t}<\/div>`;
   item.onclick=()=>{ document.querySelectorAll('.cost-item').forEach(x=>x.classList.remove('on')); item.classList.add('on');
-    document.getElementById('costPanel').innerHTML=`<strong>${c.t}（約 ${c.pct}%）</strong>：${c.d}`; };
+    document.getElementById('costPanel').innerHTML=`<strong>${c.t}（約 ${c.pct}%）<\/strong>：${c.d}`; };
   costEl.appendChild(item);
 });
 const fails=[
@@ -97,7 +97,7 @@ const fails=[
 ];
 fails.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('fails').appendChild(el);
 });
 const quizItems=[
@@ -110,7 +110,7 @@ const quizItems=[
 const quiz=document.getElementById('quiz');
 quizItems.forEach((item,i)=>{
   const lab=document.createElement('label');
-  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change',score);
 });

@@ -65,9 +65,9 @@
 </div>
 <script>
 const tabInfo={
-  bom:'<strong>BOM</strong>：料號、名稱、規格、用量、位階、供應商、替代料、環保屬性。電子／機構／軟綿分階清楚。',
-  sop:'<strong>SOP</strong>：圖文步驟、扭矩、工時、防錯、安全。關鍵工位要有「不良示例」相。',
-  proc:'<strong>工藝檔</strong>：車縫圖、線位圖、填充圖、測試工站、包裝摺法——同 BOM／SOP 互鎖版本號。',
+  bom:'<strong>BOM<\/strong>：料號、名稱、規格、用量、位階、供應商、替代料、環保屬性。電子／機構／軟綿分階清楚。',
+  sop:'<strong>SOP<\/strong>：圖文步驟、扭矩、工時、防錯、安全。關鍵工位要有「不良示例」相。',
+  proc:'<strong>工藝檔<\/strong>：車縫圖、線位圖、填充圖、測試工站、包裝摺法——同 BOM／SOP 互鎖版本號。',
 };
 document.getElementById('tabPanel').innerHTML=tabInfo.bom;
 document.querySelectorAll('#tabs button').forEach(b=>{
@@ -91,9 +91,9 @@ const bom=[
 const bomList=document.getElementById('bomList');
 bom.forEach(r=>{
   const row=document.createElement('div'); row.className='bom-row';
-  row.innerHTML=`<span>${r.pn}</span><span>${r.n}</span><span>${r.qty}</span><span>${r.lvl}</span>`;
+  row.innerHTML=`<span>${r.pn}<\/span><span>${r.n}<\/span><span>${r.qty}<\/span><span>${r.lvl}<\/span>`;
   row.onclick=()=>{ document.querySelectorAll('.bom-row').forEach(x=>x.classList.remove('on')); row.classList.add('on');
-    document.getElementById('tabPanel').innerHTML=`<strong>${r.pn} ${r.n}</strong>：${r.d}`; };
+    document.getElementById('tabPanel').innerHTML=`<strong>${r.pn} ${r.n}<\/strong>：${r.d}`; };
   bomList.appendChild(row);
 });
 const sops=[
@@ -106,7 +106,7 @@ const sops=[
 const sopList=document.getElementById('sopList');
 sops.forEach(s=>{
   const el=document.createElement('div'); el.className='sop-step';
-  el.innerHTML=`<strong>${s.t}</strong>`;
+  el.innerHTML=`<strong>${s.t}<\/strong>`;
   el.onclick=()=>{ document.querySelectorAll('.sop-step').forEach(x=>x.classList.remove('on')); el.classList.add('on');
     document.getElementById('tabPanel').innerHTML=s.d; };
   sopList.appendChild(el);
@@ -119,7 +119,7 @@ const procs=[
 ];
 procs.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('procList').appendChild(el);
 });
 const ver=[
@@ -130,7 +130,7 @@ const ver=[
 ];
 ver.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('ver').appendChild(el);
 });
 const quizItems=[
@@ -143,7 +143,7 @@ const quizItems=[
 const quiz=document.getElementById('quiz');
 quizItems.forEach((item,i)=>{
   const lab=document.createElement('label');
-  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change',score);
 });

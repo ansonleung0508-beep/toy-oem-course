@@ -93,16 +93,16 @@ const mats=[
 const matEl=document.getElementById('mats');
 mats.forEach(m=>{
   const c=document.createElement('div'); c.className='mat-card';
-  c.innerHTML=`<div class="swatch" style="background:${m.c}"></div><strong>${m.t}</strong>`;
+  c.innerHTML=`<div class="swatch" style="background:${m.c}"><\/div><strong>${m.t}<\/strong>`;
   c.onclick=()=>{ document.querySelectorAll('.mat-card').forEach(x=>x.classList.remove('on')); c.classList.add('on');
-    document.getElementById('matPanel').innerHTML=`<strong>${m.t}</strong>：${m.d}`; };
+    document.getElementById('matPanel').innerHTML=`<strong>${m.t}<\/strong>：${m.d}`; };
   matEl.appendChild(c);
 });
 const fills={
-  head:'<strong>頭：定型棉／切片棉</strong>：保形、五官不沉。太鬆＝塌臉；太實＝擺頭力矩大。',
-  chest:'<strong>胸：少填或硬腔</strong>：讓位畀喇叭／PCB。用布袋隔離，防棉入聲腔。',
-  limb:'<strong>肢：PP棉</strong>：常用、回彈好。關節活動位少填或用珠棉／泡沫粒控形。',
-  core:'<strong>機芯避位</strong>：齒輪箱周圍禁止亂填。用隔板或成形泡沫定位。',
+  head:'<strong>頭：定型棉／切片棉<\/strong>：保形、五官不沉。太鬆＝塌臉；太實＝擺頭力矩大。',
+  chest:'<strong>胸：少填或硬腔<\/strong>：讓位畀喇叭／PCB。用布袋隔離，防棉入聲腔。',
+  limb:'<strong>肢：PP棉<\/strong>：常用、回彈好。關節活動位少填或用珠棉／泡沫粒控形。',
+  core:'<strong>機芯避位<\/strong>：齒輪箱周圍禁止亂填。用隔板或成形泡沫定位。',
 };
 document.querySelectorAll('.fzone').forEach(z=>{
   z.addEventListener('click',()=>{
@@ -119,7 +119,7 @@ const pts=[
 ];
 pts.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('pts').appendChild(el);
 });
 const quizItems=[
@@ -132,7 +132,7 @@ const quizItems=[
 const quiz=document.getElementById('quiz');
 quizItems.forEach((item,i)=>{
   const lab=document.createElement('label');
-  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change',score);
 });

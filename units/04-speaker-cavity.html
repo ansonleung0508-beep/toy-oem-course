@@ -109,11 +109,11 @@
 </div>
 <script>
 const info={
-  cavity:'<strong>聲腔淨空</strong>：喇叭背面要有密封或半密封腔體。體積影響低頻；填充塞滿＝悶聲。毛絨要預留「硬膠腔」或「布袋定型」。',
-  spk:'<strong>喇叭</strong>：常 28/36/40mm、8Ω。標額定／最大功率、共振頻率。焊盤極性同線長寫入接口文件。',
-  mesh:'<strong>出聲網／孔</strong>：外觀布要開孔或用透聲網。孔太密／布太厚＝高頻損；孔太大＝露內部、安規異物。',
-  fill:'<strong>填充干涉</strong>：珍珠棉／PP棉擠住振膜＝失真、雜音。要用隔板或腔體隔離。',
-  wire:'<strong>喇叭線</strong>：短、固定、避車針。振動位要留服務圈，防焊點疲勞。'
+  cavity:'<strong>聲腔淨空<\/strong>：喇叭背面要有密封或半密封腔體。體積影響低頻；填充塞滿＝悶聲。毛絨要預留「硬膠腔」或「布袋定型」。',
+  spk:'<strong>喇叭<\/strong>：常 28/36/40mm、8Ω。標額定／最大功率、共振頻率。焊盤極性同線長寫入接口文件。',
+  mesh:'<strong>出聲網／孔<\/strong>：外觀布要開孔或用透聲網。孔太密／布太厚＝高頻損；孔太大＝露內部、安規異物。',
+  fill:'<strong>填充干涉<\/strong>：珍珠棉／PP棉擠住振膜＝失真、雜音。要用隔板或腔體隔離。',
+  wire:'<strong>喇叭線<\/strong>：短、固定、避車針。振動位要留服務圈，防焊點疲勞。'
 };
 document.querySelectorAll('.hs').forEach(h=>{
   h.addEventListener('click',()=>{
@@ -149,7 +149,7 @@ const locks=[
 ];
 locks.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('locks').appendChild(el);
 });
 const fails=[
@@ -160,7 +160,7 @@ const fails=[
 ];
 fails.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('fails').appendChild(el);
 });
 const quizItems=[
@@ -173,7 +173,7 @@ const quizItems=[
 const quiz=document.getElementById('quiz');
 quizItems.forEach((item,i)=>{
   const lab=document.createElement('label');
-  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change',score);
 });

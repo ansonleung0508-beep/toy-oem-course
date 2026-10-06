@@ -107,12 +107,12 @@
 </div>
 <script>
 const info = {
-  housing: '<strong>倉體</strong>：ABS/PC 常用。壁厚、加強筋、同軟綿固定（螺柱／布袋）。要預留洩壓／導液槽，防漏液腐蚀 PCB。',
-  cells: '<strong>電芯位</strong>：標化學（鹼性／碳性）、節數、串並。直徑公差要計；太鬆＝接觸不良，太緊＝裝唔入。',
-  spring: '<strong>負極彈簧</strong>：彈力、鍍層（鎳）、圈數。彈力不足→間歇斷電；過度變形→塑性失效。',
-  contact: '<strong>正極片</strong>：沖壓銅片鍍鎳。極性絲印／凸點防呆；錯極保護要喺板或二极管。',
-  cover: '<strong>倉蓋+螺絲</strong>：必須工具開啟（ASTM F963 / EN71）。螺牙鑲件定自攻？扭矩同防掉螺絲要測。',
-  wires: '<strong>出線</strong>：極性色標（紅正黑負）、應力釋放、由邊穿出軟綿——車針刺線係高發失效。'
+  housing: '<strong>倉體<\/strong>：ABS/PC 常用。壁厚、加強筋、同軟綿固定（螺柱／布袋）。要預留洩壓／導液槽，防漏液腐蚀 PCB。',
+  cells: '<strong>電芯位<\/strong>：標化學（鹼性／碳性）、節數、串並。直徑公差要計；太鬆＝接觸不良，太緊＝裝唔入。',
+  spring: '<strong>負極彈簧<\/strong>：彈力、鍍層（鎳）、圈數。彈力不足→間歇斷電；過度變形→塑性失效。',
+  contact: '<strong>正極片<\/strong>：沖壓銅片鍍鎳。極性絲印／凸點防呆；錯極保護要喺板或二极管。',
+  cover: '<strong>倉蓋+螺絲<\/strong>：必須工具開啟（ASTM F963 / EN71）。螺牙鑲件定自攻？扭矩同防掉螺絲要測。',
+  wires: '<strong>出線<\/strong>：極性色標（紅正黑負）、應力釋放、由邊穿出軟綿——車針刺線係高發失效。'
 };
 document.querySelectorAll('.hotspot').forEach(h => {
   h.addEventListener('click', () => {
@@ -132,7 +132,7 @@ pols.forEach(p => {
   const b = document.createElement('button');
   b.type='button'; b.className='pol-btn'; b.textContent=p.t;
   b.onclick=()=>{ document.querySelectorAll('.pol-btn').forEach(x=>x.classList.remove('on')); b.classList.add('on');
-    document.getElementById('polPanel').innerHTML='<strong>'+p.t+'</strong>：'+p.d; };
+    document.getElementById('polPanel').innerHTML='<strong>'+p.t+'<\/strong>：'+p.d; };
   polEl.appendChild(b);
 });
 const fails = [
@@ -144,7 +144,7 @@ const fails = [
 const failsEl=document.getElementById('fails');
 fails.forEach((f,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${f.t}</h4><div class="detail" style="display:block">${f.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${f.t}<\/h4><div class="detail" style="display:block">${f.d}<\/div><\/div>`;
   failsEl.appendChild(el);
 });
 const hos=[
@@ -156,7 +156,7 @@ const hos=[
 const hoEl=document.getElementById('handoffs');
 hos.forEach((h,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${h.t}</h4><div class="detail" style="display:block">${h.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${h.t}<\/h4><div class="detail" style="display:block">${h.d}<\/div><\/div>`;
   hoEl.appendChild(el);
 });
 const quizItems=[
@@ -169,7 +169,7 @@ const quizItems=[
 const quiz=document.getElementById('quiz');
 quizItems.forEach((item,i)=>{
   const lab=document.createElement('label');
-  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change',score);
 });

@@ -71,9 +71,9 @@ const tests=[
 const testEl=document.getElementById('tests');
 tests.forEach(t=>{
   const c=document.createElement('div'); c.className='test-card';
-  c.innerHTML=`<strong>${t.t}</strong>`;
+  c.innerHTML=`<strong>${t.t}<\/strong>`;
   c.onclick=()=>{ document.querySelectorAll('.test-card').forEach(x=>x.classList.remove('on')); c.classList.add('on');
-    document.getElementById('testPanel').innerHTML=`<strong>${t.t}</strong>：${t.d}`; };
+    document.getElementById('testPanel').innerHTML=`<strong>${t.t}<\/strong>：${t.d}`; };
   testEl.appendChild(c);
 });
 const fmea=[
@@ -87,9 +87,9 @@ const tb=document.querySelector('#fmea tbody');
 fmea.forEach((r,i)=>{
   const tr=document.createElement('tr');
   const rpn=r.s*r.o*r.d;
-  tr.innerHTML=`<td>${r.f}</td><td>${r.s}</td><td>${r.o}</td><td>${r.d}</td><td class="rpn">${rpn}</td>`;
+  tr.innerHTML=`<td>${r.f}<\/td><td>${r.s}<\/td><td>${r.o}<\/td><td>${r.d}<\/td><td class="rpn">${rpn}<\/td>`;
   tr.onclick=()=>{ document.querySelectorAll('#fmea tr').forEach(x=>x.classList.remove('on')); tr.classList.add('on');
-    document.getElementById('fmeaPanel').innerHTML=`<strong>${r.f}</strong>（RPN ${rpn}）：${r.a}`; };
+    document.getElementById('fmeaPanel').innerHTML=`<strong>${r.f}<\/strong>（RPN ${rpn}）：${r.a}`; };
   tb.appendChild(tr);
 });
 const loop=[
@@ -100,7 +100,7 @@ const loop=[
 ];
 loop.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('loop').appendChild(el);
 });
 const quizItems=[
@@ -113,7 +113,7 @@ const quizItems=[
 const quiz=document.getElementById('quiz');
 quizItems.forEach((item,i)=>{
   const lab=document.createElement('label');
-  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change',score);
 });

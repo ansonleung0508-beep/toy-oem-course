@@ -111,13 +111,13 @@
 </div>
 <script>
 const info={
-  head:'<strong>頭板</strong>：固定五官／頭殼，傳擺頭力矩。太軟＝五官歪；太重＝馬達吃力、頸關節壽命短。',
-  neck:'<strong>頸關節</strong>：軸承／軸銷／限位。標角度（例如 ±30°）、間隙、潤滑。限位要硬碰硬，唔好靠布扯停。',
-  spine:'<strong>主幹</strong>：承受齒輪箱同電池重量。材料 POM／ABS／尼龍；壁厚同加強筋防彎。',
-  gearbox:'<strong>齒輪箱座</strong>：孔距、防轉、螺絲規格。座變形＝齒輪咬死或噪音。',
-  armL:'<strong>臂關節</strong>：舉手行程、同袖／縫干涉。軸銷防脫（卡簧／熱鉚）。',
-  armR:'<strong>臂關節（右）</strong>：左右對稱或單邊驅動要標明；虛位臂都要固位防晃。',
-  mount:'<strong>固位點</strong>：同布袋／車縫／螺柱連接。至少 3 點防轉；細件要過拉力測試。',
+  head:'<strong>頭板<\/strong>：固定五官／頭殼，傳擺頭力矩。太軟＝五官歪；太重＝馬達吃力、頸關節壽命短。',
+  neck:'<strong>頸關節<\/strong>：軸承／軸銷／限位。標角度（例如 ±30°）、間隙、潤滑。限位要硬碰硬，唔好靠布扯停。',
+  spine:'<strong>主幹<\/strong>：承受齒輪箱同電池重量。材料 POM／ABS／尼龍；壁厚同加強筋防彎。',
+  gearbox:'<strong>齒輪箱座<\/strong>：孔距、防轉、螺絲規格。座變形＝齒輪咬死或噪音。',
+  armL:'<strong>臂關節<\/strong>：舉手行程、同袖／縫干涉。軸銷防脫（卡簧／熱鉚）。',
+  armR:'<strong>臂關節（右）<\/strong>：左右對稱或單邊驅動要標明；虛位臂都要固位防晃。',
+  mount:'<strong>固位點<\/strong>：同布袋／車縫／螺柱連接。至少 3 點防轉；細件要過拉力測試。',
 };
 document.querySelectorAll('.j').forEach(j=>{
   j.addEventListener('click',()=>{
@@ -147,7 +147,7 @@ const pts=[
 ];
 pts.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('pts').appendChild(el);
 });
 const fails=[
@@ -158,7 +158,7 @@ const fails=[
 ];
 fails.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('fails').appendChild(el);
 });
 const quizItems=[
@@ -171,7 +171,7 @@ const quizItems=[
 const quiz=document.getElementById('quiz');
 quizItems.forEach((item,i)=>{
   const lab=document.createElement('label');
-  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change',score);
 });

@@ -93,11 +93,11 @@
 </div>
 <script>
 const parts={
-  hair:'<strong>頭髮／頭飾</strong>：植髮密度、膠粘、拉力。細件（髮夾）過安規；唔好擋 IR／開關。',
-  dress:'<strong>衫／裙</strong>：樣版要跟身體＋關節行程。太貼＝舉手撕縫；太鬆＝露骨架。面料伸縮同色牢度。',
-  shoes:'<strong>鞋</strong>：易脫穿、防丟（腳踝帶）。物料硬度防刮花腿部。',
-  fast:'<strong>紐扣／魔術貼／拉鍊</strong>：細件安全（扭力拉力）、咬合壽命、兒童年齡分級。',
-  sleeve:'<strong>袖</strong>：臂關節活動空間；電子手掌開關要按得到——袖口唔好太緊。',
+  hair:'<strong>頭髮／頭飾<\/strong>：植髮密度、膠粘、拉力。細件（髮夾）過安規；唔好擋 IR／開關。',
+  dress:'<strong>衫／裙<\/strong>：樣版要跟身體＋關節行程。太貼＝舉手撕縫；太鬆＝露骨架。面料伸縮同色牢度。',
+  shoes:'<strong>鞋<\/strong>：易脫穿、防丟（腳踝帶）。物料硬度防刮花腿部。',
+  fast:'<strong>紐扣／魔術貼／拉鍊<\/strong>：細件安全（扭力拉力）、咬合壽命、兒童年齡分級。',
+  sleeve:'<strong>袖<\/strong>：臂關節活動空間；電子手掌開關要按得到——袖口唔好太緊。',
 };
 document.querySelectorAll('.cpart').forEach(p=>{
   p.addEventListener('click',()=>{
@@ -115,9 +115,9 @@ const pats=[
 const patEl=document.getElementById('pats');
 pats.forEach(p=>{
   const c=document.createElement('div'); c.className='card';
-  c.innerHTML=`<h3>${p.t}</h3><p>撳睇</p>`;
+  c.innerHTML=`<h3>${p.t}<\/h3><p>撳睇<\/p>`;
   c.onclick=()=>{ document.querySelectorAll('.pat-grid .card').forEach(x=>x.classList.remove('active')); c.classList.add('active');
-    document.getElementById('patPanel').innerHTML=`<strong>${p.t}</strong>：${p.d}`; };
+    document.getElementById('patPanel').innerHTML=`<strong>${p.t}<\/strong>：${p.d}`; };
   patEl.appendChild(c);
 });
 const ho=[
@@ -128,7 +128,7 @@ const ho=[
 ];
 ho.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('ho').appendChild(el);
 });
 const quizItems=[
@@ -141,7 +141,7 @@ const quizItems=[
 const quiz=document.getElementById('quiz');
 quizItems.forEach((item,i)=>{
   const lab=document.createElement('label');
-  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change',score);
 });

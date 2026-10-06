@@ -71,7 +71,7 @@ stages.forEach((s,i)=>{
   chip.onclick=()=>activate(i);
   chips.appendChild(chip);
   const el=document.createElement('div'); el.className='step'+(i===0?' active':'');
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${s.t}</h4><div class="detail">${s.d}<br><span class="fail">失敗：${s.f}</span></div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${s.t}<\/h4><div class="detail">${s.d}<br><span class="fail">失敗：${s.f}<\/span><\/div><\/div>`;
   el.onclick=()=>activate(i);
   stagesEl.appendChild(el);
 });
@@ -90,9 +90,9 @@ const gates=[
 const gateEl=document.getElementById('gates');
 gates.forEach(g=>{
   const c=document.createElement('div'); c.className='card';
-  c.innerHTML=`<h3>${g.t}</h3><p>撳睇</p>`;
+  c.innerHTML=`<h3>${g.t}<\/h3><p>撳睇<\/p>`;
   c.onclick=()=>{ document.querySelectorAll('.gate .card').forEach(x=>x.classList.remove('active')); c.classList.add('active');
-    document.getElementById('gatePanel').innerHTML=`<strong>${g.t}</strong>：${g.d}`; };
+    document.getElementById('gatePanel').innerHTML=`<strong>${g.t}<\/strong>：${g.d}`; };
   gateEl.appendChild(c);
 });
 const tips=[
@@ -103,7 +103,7 @@ const tips=[
 ];
 tips.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('tips').appendChild(el);
 });
 const quizItems=[
@@ -116,7 +116,7 @@ const quizItems=[
 const quiz=document.getElementById('quiz');
 quizItems.forEach((item,i)=>{
   const lab=document.createElement('label');
-  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change',score);
 });

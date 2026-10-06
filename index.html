@@ -96,14 +96,14 @@ units.forEach(u => {
   const a = document.createElement(u.ready ? 'a' : 'div');
   if (u.ready) a.href = u.href;
   a.className = 'card' + (u.ready ? '' : ' locked');
-  a.innerHTML = '<span class="pill '+(u.ready?'':'soon')+'">'+(u.ready?(done[u.id]?'已完成':'可開始'):'即將推出')+'</span>'+
-    '<h3>單元 '+u.id+' · '+u.title+'</h3><p><strong style="color:#b9d0ff">'+u.track+'</strong> · '+u.desc+'</p>';
+  a.innerHTML = '<span class="pill '+(u.ready?'':'soon')+'">'+(u.ready?(done[u.id]?'已完成':'可開始'):'即將推出')+'<\/span>'+
+    '<h3>單元 '+u.id+' · '+u.title+'<\/h3><p><strong style="color:#b9d0ff">'+u.track+'<\/strong> · '+u.desc+'<\/p>';
   grid.appendChild(a);
 });
 const tips = {
-  soft: '<strong>軟綿層（第三學）</strong>：面料、填充、車縫、公仔衫、外觀手感。',
-  mech: '<strong>機構層（第二學）</strong>：骨架、齒輪箱、凸輪、彈簧、關節行程。',
-  elec: '<strong>電子層（第一學）</strong>：PCB、喇叭、開關、電池倉、線束。'
+  soft: '<strong>軟綿層（第三學）<\/strong>：面料、填充、車縫、公仔衫、外觀手感。',
+  mech: '<strong>機構層（第二學）<\/strong>：骨架、齒輪箱、凸輪、彈簧、關節行程。',
+  elec: '<strong>電子層（第一學）<\/strong>：PCB、喇叭、開關、電池倉、線束。'
 };
 document.querySelectorAll('.layer-btn').forEach(btn => {
   btn.addEventListener('click', () => {

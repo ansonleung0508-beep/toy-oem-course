@@ -92,16 +92,16 @@ const types=[
 const swEl=document.getElementById('swTypes');
 types.forEach(t=>{
   const c=document.createElement('div'); c.className='sw-card';
-  c.innerHTML=`<div class="sw-icon">${t.icon}</div><strong>${t.t}</strong>`;
+  c.innerHTML=`<div class="sw-icon">${t.icon}<\/div><strong>${t.t}<\/strong>`;
   c.onclick=()=>{ document.querySelectorAll('.sw-card').forEach(x=>x.classList.remove('on')); c.classList.add('on');
-    document.getElementById('swPanel').innerHTML=`<strong>${t.t}</strong>：${t.d}`; };
+    document.getElementById('swPanel').innerHTML=`<strong>${t.t}<\/strong>：${t.d}`; };
   swEl.appendChild(c);
 });
 const zones={
-  paw:{d:'<strong>手掌</strong>：最常見。布層壓縮量要 ≥ 開關行程+裕量。太厚＝撳唔著；太薄＝誤觸同露形。', f:'55%'},
-  belly:{d:'<strong>肚</strong>：面積大易誤觸（抱住就響）。要用較高觸發力或雙點確認。', f:'70%'},
-  head:{d:'<strong>頭頂</strong>：常配輕觸或磁簧。注意跌落時頭部撞擊會唔會誤觸或損壞。', f:'45%'},
-  ir:{d:'<strong>IR 窗</strong>：避開厚毛同深色吸光布。標接收角度同測試距離；日光燈／陽光要做誤觸測試。', f:'35%'},
+  paw:{d:'<strong>手掌<\/strong>：最常見。布層壓縮量要 ≥ 開關行程+裕量。太厚＝撳唔著；太薄＝誤觸同露形。', f:'55%'},
+  belly:{d:'<strong>肚<\/strong>：面積大易誤觸（抱住就響）。要用較高觸發力或雙點確認。', f:'70%'},
+  head:{d:'<strong>頭頂<\/strong>：常配輕觸或磁簧。注意跌落時頭部撞擊會唔會誤觸或損壞。', f:'45%'},
+  ir:{d:'<strong>IR 窗<\/strong>：避開厚毛同深色吸光布。標接收角度同測試距離；日光燈／陽光要做誤觸測試。', f:'35%'},
 };
 document.querySelectorAll('.zone').forEach(z=>{
   z.addEventListener('click',()=>{
@@ -120,7 +120,7 @@ const rel=[
 ];
 rel.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('rel').appendChild(el);
 });
 const quizItems=[
@@ -133,7 +133,7 @@ const quizItems=[
 const quiz=document.getElementById('quiz');
 quizItems.forEach((item,i)=>{
   const lab=document.createElement('label');
-  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change',score);
 });

@@ -97,10 +97,10 @@
 </div>
 <script>
 const info={
-  seam:'<strong>腋下縫</strong>：舉手拉應力集中。對策：加大縫份、加固條、減行程、改關節位置。',
-  arm:'<strong>手臂</strong>：布筒太窄＝卡；太鬆＝露骨架。袖型同行程一齊打版。',
-  eye:'<strong>五官</strong>：擺頭／扯布令眼鼻鬆脫。對策：五官背扣加固、頭內骨架分力。',
-  bunch:'<strong>填充堆積</strong>：動作位棉團卡住機構。對策：局部少填、隔布袋、定型棉。',
+  seam:'<strong>腋下縫<\/strong>：舉手拉應力集中。對策：加大縫份、加固條、減行程、改關節位置。',
+  arm:'<strong>手臂<\/strong>：布筒太窄＝卡；太鬆＝露骨架。袖型同行程一齊打版。',
+  eye:'<strong>五官<\/strong>：擺頭／扯布令眼鼻鬆脫。對策：五官背扣加固、頭內骨架分力。',
+  bunch:'<strong>填充堆積<\/strong>：動作位棉團卡住機構。對策：局部少填、隔布袋、定型棉。',
 };
 document.querySelectorAll('.issue').forEach(el=>{
   el.addEventListener('click',()=>{
@@ -119,7 +119,7 @@ const flow=[
 ];
 flow.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('flow').appendChild(el);
 });
 const fail=[
@@ -130,7 +130,7 @@ const fail=[
 ];
 fail.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('fail').appendChild(el);
 });
 const quizItems=[
@@ -143,7 +143,7 @@ const quizItems=[
 const quiz=document.getElementById('quiz');
 quizItems.forEach((item,i)=>{
   const lab=document.createElement('label');
-  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change',score);
 });

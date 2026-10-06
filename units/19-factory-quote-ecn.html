@@ -78,9 +78,9 @@ const audits=[
 const auditEl=document.getElementById('audit');
 audits.forEach(a=>{
   const c=document.createElement('div'); c.className='card';
-  c.innerHTML=`<h3>${a.t}</h3><p>撳睇</p>`;
+  c.innerHTML=`<h3>${a.t}<\/h3><p>撳睇<\/p>`;
   c.onclick=()=>{ document.querySelectorAll('.audit .card').forEach(x=>x.classList.remove('active')); c.classList.add('active');
-    document.getElementById('auditPanel').innerHTML=`<strong>${a.t}</strong>：${a.d}`; };
+    document.getElementById('auditPanel').innerHTML=`<strong>${a.t}<\/strong>：${a.d}`; };
   auditEl.appendChild(c);
 });
 const ecnSteps=[
@@ -98,7 +98,7 @@ ecnSteps.forEach(s=>{
 let ei=0;
 setInterval(()=>{
   document.querySelectorAll('#ecn span').forEach((x,j)=>x.classList.toggle('on',j===ei));
-  document.getElementById('ecnPanel').innerHTML=`<strong>${ecnSteps[ei].t}</strong>：${ecnSteps[ei].d}`;
+  document.getElementById('ecnPanel').innerHTML=`<strong>${ecnSteps[ei].t}<\/strong>：${ecnSteps[ei].d}`;
   ei=(ei+1)%ecnSteps.length;
 }, 1600);
 
@@ -110,7 +110,7 @@ const red=[
 ];
 red.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('red').appendChild(el);
 });
 const quizItems=[
@@ -123,7 +123,7 @@ const quizItems=[
 const quiz=document.getElementById('quiz');
 quizItems.forEach((item,i)=>{
   const lab=document.createElement('label');
-  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change',score);
 });

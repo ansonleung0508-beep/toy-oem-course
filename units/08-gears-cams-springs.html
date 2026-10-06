@@ -97,12 +97,12 @@
 </div>
 <script>
 const info={
-  motor:'<strong>馬達</strong>：額定／堵轉電流、電壓、轉向。電子驅動要按堵轉計；EMI 可能影響語音芯片。',
-  gear:'<strong>齒輪</strong>：模數、齒數比、材料（POM 常用）。側隙太大＝空程噪音；太小＝咬死發熱。',
-  gear2:'<strong>大齒輪</strong>：減速級。注意軸承位磨損；潤滑脂型號同量要寫 SOP（過多甩油、過少干磨）。',
-  cam:'<strong>凸輪</strong>：把旋轉變擺頭／舉手曲線。曲線要順，避免衝擊；從動件行程同軟綿干涉一齊查。',
-  spring:'<strong>复位彈簧</strong>：扭簧／拉簧。疲勞壽命、預壓、生鏽（鍍層）。彈力影響馬達電流。',
-  out:'<strong>輸出軸</strong>：鍵槽／D 型／螺絲固定。防脫同對中；輸出力矩要夠帶負載（頭＋布）。',
+  motor:'<strong>馬達<\/strong>：額定／堵轉電流、電壓、轉向。電子驅動要按堵轉計；EMI 可能影響語音芯片。',
+  gear:'<strong>齒輪<\/strong>：模數、齒數比、材料（POM 常用）。側隙太大＝空程噪音；太小＝咬死發熱。',
+  gear2:'<strong>大齒輪<\/strong>：減速級。注意軸承位磨損；潤滑脂型號同量要寫 SOP（過多甩油、過少干磨）。',
+  cam:'<strong>凸輪<\/strong>：把旋轉變擺頭／舉手曲線。曲線要順，避免衝擊；從動件行程同軟綿干涉一齊查。',
+  spring:'<strong>复位彈簧<\/strong>：扭簧／拉簧。疲勞壽命、預壓、生鏽（鍍層）。彈力影響馬達電流。',
+  out:'<strong>輸出軸<\/strong>：鍵槽／D 型／螺絲固定。防脫同對中；輸出力矩要夠帶負載（頭＋布）。',
 };
 document.querySelectorAll('.part').forEach(p=>{
   p.addEventListener('click',()=>{
@@ -123,7 +123,7 @@ const keys=[
 ];
 keys.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('keys').appendChild(el);
 });
 const quizItems=[
@@ -136,7 +136,7 @@ const quizItems=[
 const quiz=document.getElementById('quiz');
 quizItems.forEach((item,i)=>{
   const lab=document.createElement('label');
-  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change',score);
 });

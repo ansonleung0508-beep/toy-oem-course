@@ -95,12 +95,12 @@
 </div>
 <script>
 const pack={
-  carton:'<strong>外箱</strong>：抗壓、堆碼、濕度。標：SKU、數量、Fragile、向上箭頭。混裝規則寫清。',
-  colorbox:'<strong>彩盒</strong>：銷售外觀＋開窗（如有）要防刮毛。結構要固定頭肢，減少運輸變形。',
-  tray:'<strong>吸塑／紙托</strong>：定位產品、保護臉同機構。電子位防壓；材料過化學。',
-  product:'<strong>產品</strong>：包裝前功能抽測、外觀 AQL、電池隔離（運輸法規／防耗電）。',
-  docs:'<strong>說明書／警告</strong>：年齡、電池、清洗、故障排查。多語言跟市場。',
-  label:'<strong>標籤</strong>：追溯、認證標記、條碼。同 CPC／技術文件一致。',
+  carton:'<strong>外箱<\/strong>：抗壓、堆碼、濕度。標：SKU、數量、Fragile、向上箭頭。混裝規則寫清。',
+  colorbox:'<strong>彩盒<\/strong>：銷售外觀＋開窗（如有）要防刮毛。結構要固定頭肢，減少運輸變形。',
+  tray:'<strong>吸塑／紙托<\/strong>：定位產品、保護臉同機構。電子位防壓；材料過化學。',
+  product:'<strong>產品<\/strong>：包裝前功能抽測、外觀 AQL、電池隔離（運輸法規／防耗電）。',
+  docs:'<strong>說明書／警告<\/strong>：年齡、電池、清洗、故障排查。多語言跟市場。',
+  label:'<strong>標籤<\/strong>：追溯、認證標記、條碼。同 CPC／技術文件一致。',
 };
 document.querySelectorAll('.pp').forEach(p=>{
   p.addEventListener('click',()=>{
@@ -117,7 +117,7 @@ const ship=[
 ];
 ship.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('ship').appendChild(el);
 });
 const caps=[
@@ -133,9 +133,9 @@ const caps=[
 const capEl=document.getElementById('cap');
 caps.forEach(c=>{
   const card=document.createElement('div'); card.className='card';
-  card.innerHTML=`<h3>${c.t}</h3><p>撳睇交付</p>`;
+  card.innerHTML=`<h3>${c.t}<\/h3><p>撳睇交付<\/p>`;
   card.onclick=()=>{ document.querySelectorAll('.cap .card').forEach(x=>x.classList.remove('active')); card.classList.add('active');
-    document.getElementById('capPanel').innerHTML=`<strong>${c.t}</strong>：${c.d}`; };
+    document.getElementById('capPanel').innerHTML=`<strong>${c.t}<\/strong>：${c.d}`; };
   capEl.appendChild(card);
 });
 const quizItems=[
@@ -148,7 +148,7 @@ const quizItems=[
 const quiz=document.getElementById('quiz');
 quizItems.forEach((item,i)=>{
   const lab=document.createElement('label');
-  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change',score);
 });

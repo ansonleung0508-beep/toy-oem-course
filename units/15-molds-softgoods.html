@@ -87,11 +87,11 @@
 </div>
 <script>
 const info={
-  shell:'<strong>硬膠件</strong>：材料（ABS/PC/POM）、表面（晒紋／亮面）、縮水。外觀面同藏布面要分清。',
-  flange:'<strong>夾布法蘭</strong>：布夾入膠件槽再車或熱壓。寬度要夠拉力；毛向同厚度要試。',
-  sew:'<strong>車縫固定</strong>：針距、距離邊緣、加固。開孔位要預留，唔好車崩膠。',
-  boss:'<strong>螺柱</strong>：壁厚、牙型、扭矩。過緊崩柱；過鬆晃動。',
-  undercut:'<strong>倒扣</strong>：裝配快但模具要滑塊／強制頂出——成本升。評：產量 vs 模費。',
+  shell:'<strong>硬膠件<\/strong>：材料（ABS/PC/POM）、表面（晒紋／亮面）、縮水。外觀面同藏布面要分清。',
+  flange:'<strong>夾布法蘭<\/strong>：布夾入膠件槽再車或熱壓。寬度要夠拉力；毛向同厚度要試。',
+  sew:'<strong>車縫固定<\/strong>：針距、距離邊緣、加固。開孔位要預留，唔好車崩膠。',
+  boss:'<strong>螺柱<\/strong>：壁厚、牙型、扭矩。過緊崩柱；過鬆晃動。',
+  undercut:'<strong>倒扣<\/strong>：裝配快但模具要滑塊／強制頂出——成本升。評：產量 vs 模費。',
 };
 document.querySelectorAll('.mp').forEach(p=>{
   p.addEventListener('click',()=>{
@@ -108,7 +108,7 @@ const tips=[
 ];
 tips.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('moldTips').appendChild(el);
 });
 const fails=[
@@ -119,7 +119,7 @@ const fails=[
 ];
 fails.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('fails').appendChild(el);
 });
 const quizItems=[
@@ -132,7 +132,7 @@ const quizItems=[
 const quiz=document.getElementById('quiz');
 quizItems.forEach((item,i)=>{
   const lab=document.createElement('label');
-  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change',score);
 });

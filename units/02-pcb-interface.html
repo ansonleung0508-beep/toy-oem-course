@@ -89,12 +89,15 @@
   <div class="footer-nav">
     <a class="btn ghost" href="01-oem-map.html">← 單元 01</a>
     <a class="btn ghost" href="03-battery-power.html">單元 03 →</a>
-   = {
-  spk: '<strong>喇叭焊盤</strong>：正負極、線長、喇叭阻抗（常 8Ω）。聲腔同布料遮擋會影響音量——電子要畀聲壓目標，毛絨要預留孔位／網布。',
-  bat: '<strong>電池輸入</strong>：電壓、極性、保險／過流。倉蓋方向決定線由邊出；逆向保護要畫喺板或線束。',
-  sw: '<strong>開關接口</strong>：按鍵／磁簧／膜片。軟綿壓縮行程要同觸發力匹配，避免誤觸或撳唔著。',
-  motor: '<strong>馬達驅動</strong>：峰值電流、PWM、EMC。齒輪箱堵轉電流可能大幾倍——電容量同驅動晶片要按堵轉計。',
-  mount: '<strong>安裝孔</strong>：同骨架／布袋定位。孔唔對＝產線靠膠紙，安規同壽命都危。'
+  </div>
+</div>
+<script>
+const padInfo = {
+  spk: '<strong>喇叭焊盤<\/strong>：正負極、線長、喇叭阻抗（常 8Ω）。聲腔同布料遮擋會影響音量——電子要畀聲壓目標，毛絨要預留孔位／網布。',
+  bat: '<strong>電池輸入<\/strong>：電壓、極性、保險／過流。倉蓋方向決定線由邊出；逆向保護要畫喺板或線束。',
+  sw: '<strong>開關接口<\/strong>：按鍵／磁簧／膜片。軟綿壓縮行程要同觸發力匹配，避免誤觸或撳唔著。',
+  motor: '<strong>馬達驅動<\/strong>：峰值電流、PWM、EMC。齒輪箱堵轉電流可能大幾倍——電容量同驅動晶片要按堵轉計。',
+  mount: '<strong>安裝孔<\/strong>：同骨架／布袋定位。孔唔對＝產線靠膠紙，安規同壽命都危。'
 };
 document.querySelectorAll('.pad').forEach(p => {
   p.addEventListener('click', () => {
@@ -120,7 +123,7 @@ pins.forEach(p => {
   b.onclick = () => {
     document.querySelectorAll('.pin').forEach(x=>x.classList.remove('on'));
     b.classList.add('on');
-    document.getElementById('pinPanel').innerHTML = '<strong>'+p.n+'</strong>：'+p.d;
+    document.getElementById('pinPanel').innerHTML = '<strong>'+p.n+'<\/strong>：'+p.d;
   };
   pinRow.appendChild(b);
 });
@@ -135,7 +138,7 @@ const asksEl = document.getElementById('asks');
 asks.forEach((a,i) => {
   const el = document.createElement('div');
   el.className = 'step';
-  el.innerHTML = '<div class="num">'+(i+1)+'</div><div><h4>'+a.t+'</h4><div class="detail" style="display:block">'+a.d+'</div></div>';
+  el.innerHTML = '<div class="num">'+(i+1)+'<\/div><div><h4>'+a.t+'<\/h4><div class="detail" style="display:block">'+a.d+'<\/div><\/div>';
   asksEl.appendChild(el);
 });
 
@@ -149,7 +152,7 @@ const quizItems = [
 const quiz = document.getElementById('quiz');
 quizItems.forEach((item,i) => {
   const lab = document.createElement('label');
-  lab.innerHTML = '<input type="checkbox" id="q'+i+'"> <span>'+item.q+'</span>';
+  lab.innerHTML = '<input type="checkbox" id="q'+i+'"> <span>'+item.q+'<\/span>';
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change', score);
 });

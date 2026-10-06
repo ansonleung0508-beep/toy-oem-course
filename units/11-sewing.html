@@ -83,11 +83,11 @@
 </div>
 <script>
 const parts={
-  outline:'<strong>外輪廓縫</strong>：針距（例如 3–4mm）、線色、縫份。毛向要對齊，否則外觀花。',
-  open:'<strong>翻口／裝配口</strong>：電子整機裝入後先封口。暗縫／拉鍊／魔術貼取捨：外觀 vs 維修。',
-  reinf:'<strong>加固</strong>：腋下、頸、耳朵根。動作位雙車或加布條；同單元 09 干涉對應。',
-  channel:'<strong>線通道</strong>：車縫前埋布筒或套管，避免車針刺線。位置同線位圖一致。',
-  face:'<strong>五官</strong>：繡／塑膠眼／燙印。拉力測試、尖點安規；同頭骨固位。',
+  outline:'<strong>外輪廓縫<\/strong>：針距（例如 3–4mm）、線色、縫份。毛向要對齊，否則外觀花。',
+  open:'<strong>翻口／裝配口<\/strong>：電子整機裝入後先封口。暗縫／拉鍊／魔術貼取捨：外觀 vs 維修。',
+  reinf:'<strong>加固<\/strong>：腋下、頸、耳朵根。動作位雙車或加布條；同單元 09 干涉對應。',
+  channel:'<strong>線通道<\/strong>：車縫前埋布筒或套管，避免車針刺線。位置同線位圖一致。',
+  face:'<strong>五官<\/strong>：繡／塑膠眼／燙印。拉力測試、尖點安規；同頭骨固位。',
 };
 document.querySelectorAll('.spart').forEach(p=>{
   p.addEventListener('click',()=>{
@@ -107,9 +107,9 @@ const aqls=[
 const aqlEl=document.getElementById('aql');
 aqls.forEach(a=>{
   const c=document.createElement('div'); c.className='card';
-  c.innerHTML=`<h3>${a.t}</h3><p>撳睇</p>`;
+  c.innerHTML=`<h3>${a.t}<\/h3><p>撳睇<\/p>`;
   c.onclick=()=>{ document.querySelectorAll('.aql .card').forEach(x=>x.classList.remove('active')); c.classList.add('active');
-    document.getElementById('aqlPanel').innerHTML=`<strong>${a.t}</strong>：${a.d}`; };
+    document.getElementById('aqlPanel').innerHTML=`<strong>${a.t}<\/strong>：${a.d}`; };
   aqlEl.appendChild(c);
 });
 const lock=[
@@ -120,7 +120,7 @@ const lock=[
 ];
 lock.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('lock').appendChild(el);
 });
 const quizItems=[
@@ -133,7 +133,7 @@ const quizItems=[
 const quiz=document.getElementById('quiz');
 quizItems.forEach((item,i)=>{
   const lab=document.createElement('label');
-  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change',score);
 });

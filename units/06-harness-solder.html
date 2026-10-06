@@ -97,12 +97,12 @@
 </div>
 <script>
 const nodes={
-  pcb:'<strong>PCB 焊點</strong>：焊盤尺寸、助焊劑殘留、點膠加固。振動位（近馬達／喇叭）必須有應力釋放或膠固。',
-  spk:'<strong>喇叭端</strong>：留服務圈；線唔好硬扯振膜。焊錫溫度同時間寫 SOP，防脫焊。',
-  sw:'<strong>開關端</strong>：端子壓接或焊；線由活動關節經過要套管／絞線。',
-  bat:'<strong>電池線</strong>：截面積按峰值電流；極性色標；倉口應力釋放。',
-  sew:'<strong>車縫危險區</strong>：線唔好穿過車針路徑。用布通道、膠管或避開縫位——同車縫工程師對圖。',
-  strain:'<strong>應力釋放</strong>：打結、熱縮、線扣、點膠、布縫固定。每個出線口至少一種。',
+  pcb:'<strong>PCB 焊點<\/strong>：焊盤尺寸、助焊劑殘留、點膠加固。振動位（近馬達／喇叭）必須有應力釋放或膠固。',
+  spk:'<strong>喇叭端<\/strong>：留服務圈；線唔好硬扯振膜。焊錫溫度同時間寫 SOP，防脫焊。',
+  sw:'<strong>開關端<\/strong>：端子壓接或焊；線由活動關節經過要套管／絞線。',
+  bat:'<strong>電池線<\/strong>：截面積按峰值電流；極性色標；倉口應力釋放。',
+  sew:'<strong>車縫危險區<\/strong>：線唔好穿過車針路徑。用布通道、膠管或避開縫位——同車縫工程師對圖。',
+  strain:'<strong>應力釋放<\/strong>：打結、熱縮、線扣、點膠、布縫固定。每個出線口至少一種。',
 };
 document.querySelectorAll('.node').forEach(n=>{
   n.addEventListener('click',()=>{
@@ -120,9 +120,9 @@ const risks=[
 const riskEl=document.getElementById('risks');
 risks.forEach(r=>{
   const c=document.createElement('div'); c.className='card';
-  c.innerHTML=`<h3>${r.t}</h3><p>撳睇對策</p>`;
+  c.innerHTML=`<h3>${r.t}<\/h3><p>撳睇對策<\/p>`;
   c.onclick=()=>{ document.querySelectorAll('.risk .card').forEach(x=>x.classList.remove('active')); c.classList.add('active');
-    document.getElementById('riskPanel').innerHTML=`<strong>${r.t}</strong>：${r.d}`; };
+    document.getElementById('riskPanel').innerHTML=`<strong>${r.t}<\/strong>：${r.d}`; };
   riskEl.appendChild(c);
 });
 const chk=[
@@ -133,7 +133,7 @@ const chk=[
 ];
 chk.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('chk').appendChild(el);
 });
 const quizItems=[
@@ -146,7 +146,7 @@ const quizItems=[
 const quiz=document.getElementById('quiz');
 quizItems.forEach((item,i)=>{
   const lab=document.createElement('label');
-  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change',score);
 });

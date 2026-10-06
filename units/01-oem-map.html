@@ -82,8 +82,8 @@ stages.forEach((s,i) => {
   chip.className = 'chip'; chip.textContent = (i+1)+'. '+s.t; chips.appendChild(chip);
   const el = document.createElement('div');
   el.className = 'step'; el.tabIndex = 0;
-  el.innerHTML = `<div class="num">${i+1}</div><div><h4>${s.t}</h4>
-    <div class="detail">${s.d}<br><span class="fail">常見失敗：${s.f}</span></div></div>`;
+  el.innerHTML = `<div class="num">${i+1}<\/div><div><h4>${s.t}<\/h4>
+    <div class="detail">${s.d}<br><span class="fail">常見失敗：${s.f}<\/span><\/div><\/div>`;
   el.addEventListener('click', () => {
     document.querySelectorAll('.step').forEach(x => x.classList.remove('active'));
     el.classList.add('active');
@@ -110,11 +110,11 @@ const hf = document.getElementById('handoff');
 handoffs.forEach(h => {
   const card = document.createElement('div');
   card.className = 'card';
-  card.innerHTML = `<h3>${h.t}</h3><p>撳睇詳情</p>`;
+  card.innerHTML = `<h3>${h.t}<\/h3><p>撳睇詳情<\/p>`;
   card.addEventListener('click', () => {
     document.querySelectorAll('.handoff .card').forEach(x => x.classList.remove('active'));
     card.classList.add('active');
-    document.getElementById('handoffPanel').innerHTML = '<strong>'+h.t+'</strong>：'+h.d;
+    document.getElementById('handoffPanel').innerHTML = '<strong>'+h.t+'<\/strong>：'+h.d;
   });
   hf.appendChild(card);
 });
@@ -131,7 +131,7 @@ const quiz = document.getElementById('quiz');
 quizItems.forEach((item,i) => {
   const id = 'q'+i;
   const lab = document.createElement('label');
-  lab.innerHTML = `<input type="checkbox" id="${id}"> <span>${item.q}</span>`;
+  lab.innerHTML = `<input type="checkbox" id="${id}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change', score);
 });

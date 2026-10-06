@@ -62,9 +62,9 @@ const regs=[
 const regEl=document.getElementById('regs');
 regs.forEach(r=>{
   const c=document.createElement('div'); c.className='reg-card';
-  c.innerHTML=`<h4>${r.t}</h4><p style="margin:0;color:var(--muted);font-size:.85rem">撳睇</p>`;
+  c.innerHTML=`<h4>${r.t}<\/h4><p style="margin:0;color:var(--muted);font-size:.85rem">撳睇<\/p>`;
   c.onclick=()=>{ document.querySelectorAll('.reg-card').forEach(x=>x.classList.remove('on')); c.classList.add('on');
-    document.getElementById('regPanel').innerHTML=`<strong>${r.t}</strong>：${r.d}`; };
+    document.getElementById('regPanel').innerHTML=`<strong>${r.t}<\/strong>：${r.d}`; };
   regEl.appendChild(c);
 });
 const checks=[
@@ -78,9 +78,9 @@ const checks=[
 const chkEl=document.getElementById('checks');
 checks.forEach(c=>{
   const card=document.createElement('div'); card.className='card';
-  card.innerHTML=`<h3>${c.t}</h3><p>撳睇</p>`;
+  card.innerHTML=`<h3>${c.t}<\/h3><p>撳睇<\/p>`;
   card.onclick=()=>{ document.querySelectorAll('.check-map .card').forEach(x=>x.classList.remove('active')); card.classList.add('active');
-    document.getElementById('chkPanel').innerHTML=`<strong>${c.t}</strong>：${c.d}`; };
+    document.getElementById('chkPanel').innerHTML=`<strong>${c.t}<\/strong>：${c.d}`; };
   chkEl.appendChild(card);
 });
 const prac=[
@@ -91,7 +91,7 @@ const prac=[
 ];
 prac.forEach((a,i)=>{
   const el=document.createElement('div'); el.className='step';
-  el.innerHTML=`<div class="num">${i+1}</div><div><h4>${a.t}</h4><div class="detail" style="display:block">${a.d}</div></div>`;
+  el.innerHTML=`<div class="num">${i+1}<\/div><div><h4>${a.t}<\/h4><div class="detail" style="display:block">${a.d}<\/div><\/div>`;
   document.getElementById('prac').appendChild(el);
 });
 const quizItems=[
@@ -104,7 +104,7 @@ const quizItems=[
 const quiz=document.getElementById('quiz');
 quizItems.forEach((item,i)=>{
   const lab=document.createElement('label');
-  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}</span>`;
+  lab.innerHTML=`<input type="checkbox" id="q${i}"> <span>${item.q}<\/span>`;
   quiz.appendChild(lab);
   lab.querySelector('input').addEventListener('change',score);
 });
